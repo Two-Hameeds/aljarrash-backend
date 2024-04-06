@@ -47,20 +47,20 @@ class StructuralReviewStatus(models.TextChoices):
 
 
 class Stages(models.TextChoices):
-    Sketch = 1
-    Sketch_Review = 2
-    Awaiting_Client_Approval = 3
-    Execution_Stage = 4
-    AutoCAD_Review = 5
-    Ready_to_Print = 6
-    Validate_Sign_Review_Copy = 7
-    Ready_to_Collect = 8
-    Client_Received_Copy = 9
-    Edit_Client_Notes = 10
-    License_Issuance = 11
-    Ready_for_Final_Receipt = 12
-    Completed_Projects = 13
-    Inactive_Projects = 14
+    Sketch = '1'
+    Sketch_Review = '2'
+    Awaiting_Client_Approval = '3'
+    Execution_Stage = '4'
+    AutoCAD_Review = '5'
+    Ready_to_Print = '6'
+    Validate_Sign_Review_Copy = '7'
+    Ready_to_Collect = '8'
+    Client_Received_Copy = '9'
+    Edit_Client_Notes = '10'
+    License_Issuance = '11'
+    Ready_for_Final_Receipt = '12'
+    Completed_Projects = '13'
+    Inactive_Projects = '14'
 
 
 
@@ -109,12 +109,12 @@ class Project(models.Model):
     architect_end_date = models.DateField(null=True, blank=True)
     architect_stop_reason = models.CharField(max_length=255, null=True, blank=True)
     construction_status = models.CharField(max_length=100, null=True, blank=True)
-    construction_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL,related_name='contruction engineer', null=True, blank=True)
+    construction_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL,related_name='contruction_engineer', null=True, blank=True)
     construction_start_date = models.DateField(null=True, blank=True)
     construction_end_date = models.DateField(null=True, blank=True)
     construction_stop_reason = models.CharField(max_length=255, null=True, blank=True)
     plumbing_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    plumbing_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='plumbing engineer', null=True, blank=True)
+    plumbing_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='plumbing_engineer', null=True, blank=True)
     plumbing_start_date = models.DateField(null=True, blank=True)
     plumbing_end_date = models.DateField(null=True, blank=True)
     plumbin_stop_reason = models.CharField(max_length=255, null=True, blank=True)
@@ -123,19 +123,19 @@ class Project(models.Model):
     electrical_start_date = models.DateField(null=True, blank=True)
     electrical_end_date = models.DateField(null=True, blank=True)
     electrical_stop_reason = models.CharField(max_length=255, null=True, blank=True)
-    architecture_review = models.CharField(max_legnth=255, null=True, blank=True)
-    architecture_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='architecture reviewer', null=True, blank=True)
+    architecture_review = models.CharField(max_length=255, null=True, blank=True)
+    architecture_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='architecture_reviewer', null=True, blank=True)
     construction_review = models.CharField(max_length=255, null=True, blank=True)
-    construction_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='construction reviewer', null=True, blank=True)
+    construction_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='construction_reviewer', null=True, blank=True)
     plumbing_review = models.CharField(max_length=255, null=True, blank=True)
-    plumbing_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='plumbing reviewer', null=True, blank=True)
+    plumbing_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='plumbing_reviewer', null=True, blank=True)
     electrical_review = models.CharField(max_length=255, null=True, blank=True)
-    electrical_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='electrical reviewer', null=True, blank=True)
+    electrical_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='electrical_reviewer', null=True, blank=True)
     client_received_review_copy_date = models.DateField(null=True, blank=True)
     received_review_copy_from_client_date = models.DateField(null=True, blank=True)
     architecture_notes = models.CharField(max_length=255, null=True, blank=True)
     noted_fields = models.CharField(max_length=100, null=True, blank=True)
-    corrector = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='corrector')
+    corrector = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='corrector', null=True, blank=True)
     correction_date = models.DateField(null=True, blank=True)
     receive_final_copy_date = models.DateField(null=True, blank=True)
 
