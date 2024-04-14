@@ -3,10 +3,19 @@
 import os
 import sys
 
+from dotenv import load_dotenv
+
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aljarrash_backend.settings')
+    
+    if 'WEBSITE_HOSTNAME' not in os.environ:
+        print("Loading environment variables for .env file")
+        load_dotenv('./.env')
+        
+    settings_module = "aljarrash_backend.production" if 'WEBSITE_HOSTNAME' in os.environ else 'aljarrash_backend.settings'
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
