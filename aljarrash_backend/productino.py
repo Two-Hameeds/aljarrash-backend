@@ -20,16 +20,17 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-conn_str = os.environ['AZURE_SQL_CONNECTIONSTRING']
-conn_str_params = {pair.split('=')[0]: pair.split('=')[0] for pair in conn_str.split(' ')}
+# conn_str = os.environ['AZURE_SQL_CONNECTIONSTRING']
+# conn_str_params = {pair.split('=')[0]: pair.split('=')[0] for pair in conn_str.split(' ')}
 
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': conn_str_params['dbname'],
-        'HOST': conn_str_params['host'],
-        'USER': conn_str_params['user'],
-        'PASSWORD': conn_str_params['password'],
+        'HOST': os.environ['AZURE_SQL_SERVER'],
+        'PORT': os.environ['AZURE_SQL_PORT'],
+        'NAME': os.environ['AZURE_SQL_DATABASE'],
+        'USER': os.environ['AZURE_SQL_USER'],
+        'PASSWORD': os.environ['AZURE_SQL_PASSWORD'],
     }
 }
 
