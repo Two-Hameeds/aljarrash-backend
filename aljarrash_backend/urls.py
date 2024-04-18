@@ -22,7 +22,7 @@ from .views import RootView
 
 
 urlpatterns = [
-    path('/', RootView.as_view(), name="root"),
+    path('', RootView.as_view(), name="root"),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
