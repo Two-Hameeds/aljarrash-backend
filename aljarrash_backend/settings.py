@@ -92,35 +92,33 @@ WSGI_APPLICATION = 'aljarrash_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # DATABASES = {
 #     'default': dj_database_url.parse(os.environ.get("DBSTRING"))
 # }
 
-print(os.environ.get("DBSTRING"))  # Print the raw DBSTRING value
+# print(os.environ.get("DBSTRING"))  # Print the raw DBSTRING value
 # print(dj_database_url.parse(os.environ.get("DBSTRING")))
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': os.getenv("DB_NAME", "aljarrash-db"),
-#         'HOST': os.getenv("DB_SERVER", "aljarrash.database.windows.net"),
-#         'PORT': '1433',
-#         'USER': os.getenv("DB_USER", "user"),
-#         'PASSWORD': os.getenv("DB_PASSWORD", "Aljarrash@123"),
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 18 for SQL Server', 
-#         },
-#     }
-# }
-# print(DATABASES)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "db",
+        'HOST': "app-146b4b6c-518c-42c0-85bd-29ec9855e5ef-do-user-16378565-0.c.db.ondigitalocean.com",
+        'PORT': '25060',
+        'USER': "db",
+        'PASSWORD': "AVNS_23b4EChwei2H0TJwEb4",
+    }
+}
+print(DATABASES)
 
 AUTH_USER_MODEL = 'api.Employee'
 
