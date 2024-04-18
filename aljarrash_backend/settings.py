@@ -86,32 +86,32 @@ REST_FRAMEWORK = {
     ]
 }
 
-WSGI_APPLICATION = 'aljarrash_backend.wsgi.application'
-
+WSGI_APPLICATION = '.application'
+aljarrash_backend.wsgi
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': os.getenv("DB_NAME", "aljarrash-db"),
-        'HOST': os.getenv("DB_SERVER", "aljarrash.database.windows.net"),
-        'PORT': '1433',
-        'USER': os.getenv("DB_USER", "user"),
-        'PASSWORD': os.getenv("DB_PASSWORD", "Aljarrash@123"),
-        'OPTIONS': {
-            'driver': 'ODBC Driver 18 for SQL Server', 
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': os.getenv("DB_NAME", "aljarrash-db"),
+#         'HOST': os.getenv("DB_SERVER", "aljarrash.database.windows.net"),
+#         'PORT': '1433',
+#         'USER': os.getenv("DB_USER", "user"),
+#         'PASSWORD': os.getenv("DB_PASSWORD", "Aljarrash@123"),
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 18 for SQL Server', 
+#         },
+#     }
+# }
 # print(DATABASES)
 
 AUTH_USER_MODEL = 'api.Employee'
@@ -159,10 +159,10 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_URL = 'static/'
-STATIC_ROOT = 'static'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = 'static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

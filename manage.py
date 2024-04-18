@@ -14,7 +14,8 @@ def main():
         load_dotenv('./.env')
         
     settings_module = "aljarrash_backend.production" if 'WEBSITE_HOSTNAME' in os.environ else 'aljarrash_backend.settings'
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aljarrash_backend.settings')
     
     try:
         from django.core.management import execute_from_command_line
