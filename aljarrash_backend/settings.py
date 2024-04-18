@@ -103,7 +103,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': dj_database_url.parse(os.environ.get("DBSTRING"))
 # }
-print(dj_database_url.parse(os.environ.get("DBSTRING")))
+
+print(os.environ.get("DBSTRING"))  # Print the raw DBSTRING value
+# print(dj_database_url.parse(os.environ.get("DBSTRING")))
 
 # DATABASES = {
 #     'default': {
