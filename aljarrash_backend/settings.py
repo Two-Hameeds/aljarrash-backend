@@ -99,6 +99,8 @@ DATABASES = {
     }
 }
 
+print(os.getenv("DBSTRING", "env var not added"))
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'mssql',
