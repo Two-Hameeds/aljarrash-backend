@@ -1,13 +1,17 @@
 from .models import Employee, Client, Project, Comment, TableView
 from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
 
+from django.contrib.auth import login
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 from knox.models import AuthToken
+from knox.views import LoginView as KnoxLoginView
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -30,6 +34,17 @@ class RegisterAPI(GenericAPIView):
         return Response({"employee": EmployeeSerializer(employee, context=self.get_serializer_context()).data,
                          "token": AuthToken.objects.create(employee)[1]
                          })
+    
+
+class LoginAPI(KnoxLoginView):
+    permission_classes = (AllowAny,)
+    
+    def post(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        employee = serializer.validated_data['user']
+        login(request, employee)
+        return super(LoginAPI, self).post(request, format=None)
     
 
 class ClientsViewSet(ModelViewSet):

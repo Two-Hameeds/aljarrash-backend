@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'api',
     
     'rest_framework',
-    'rest_framework.authtoken', # to be commented
+    # 'rest_framework.authtoken', # to be commented
     'knox',
     'django_filters'
 ]
