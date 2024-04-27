@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import EmployeesViewSet, ClientsViewSet, ProjectsViewSet, CommentsViewSet, TableViewsViewSet, HelloView
+from .views import EmployeesViewSet, RegisterAPI, ClientsViewSet, ProjectsViewSet, CommentsViewSet, TableViewsViewSet, HelloView
 
 from rest_framework.routers import DefaultRouter
-from rest_framework.authtoken.views import obtain_auth_token
+# from rest_framework.authtoken.views import obtain_auth_token
 
 router = DefaultRouter()
 router.register("employees", EmployeesViewSet)
@@ -14,5 +14,6 @@ router.register("table_views", TableViewsViewSet)
 
 urlpatterns = router.urls + [
     path("hello/", HelloView.as_view(), name="hello"),
-    path("auth/", obtain_auth_token, name="api_token_auth"),
+    # path("auth/", obtain_auth_token, name="api_token_auth"),
+    path('register/', RegisterAPI.as_view(), name="register"),
 ]

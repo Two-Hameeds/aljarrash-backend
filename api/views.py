@@ -1,10 +1,13 @@
 from .models import Employee, Client, Project, Comment, TableView
-from .serializers import EmployeeSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
+from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
 
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+
+from knox.models import AuthToken
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -14,6 +17,19 @@ class EmployeesViewSet(ModelViewSet):
     
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    
+
+class RegisterAPI(GenericAPIView):
+    serializer_class = RegisterSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        employee = serializer.save()
+        
+        return Response({"employee": EmployeeSerializer(employee, context=self.get_serializer_context()).data,
+                         "token": AuthToken.objects.create(employee)[1]
+                         })
     
 
 class ClientsViewSet(ModelViewSet):

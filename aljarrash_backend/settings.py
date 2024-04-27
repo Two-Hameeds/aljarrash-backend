@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'api',
     
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken', # to be commented
+    'knox',
     'django_filters'
 ]
 
@@ -79,7 +80,8 @@ TEMPLATES = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'knox.auth.TokenAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
@@ -118,7 +120,6 @@ DATABASES = {
         'PASSWORD': "AVNS_23b4EChwei2H0TJwEb4",
     }
 }
-print(DATABASES)
 
 AUTH_USER_MODEL = 'api.Employee'
 
