@@ -1,5 +1,6 @@
 from .models import Employee, Client, Project, Comment, TableView
 from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
+from .permissions import HasGroupPermission
 
 from django.contrib.auth import login
 
@@ -62,6 +63,18 @@ class ProjectsViewSet(ModelViewSet):
     
     filter_backends = [DjangoFilterBackend, ]
     filterset_fields = ['stage']
+    
+    def put(self, request, pk):
+        try:
+            obj = Project.objects.get(id=pk)
+        except Project.DoesNotExist:
+            return Response(status=404)
+        
+        serializer = ProjectSerializer(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
     
 
 class CommentsViewSet(ModelViewSet):
