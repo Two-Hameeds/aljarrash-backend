@@ -41,9 +41,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         elif table_view:
             table_view_data = TableView.objects.values_list().get(name=table_view)[4]
         else:
-            table_view_data = default
+            table_view_data = list(default.keys())
         
-        table_view_data.append('id')
+        table_view_data.insert(0, 'id')
         
         # print(user.is_staff)
             
