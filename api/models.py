@@ -108,7 +108,7 @@ class Project(models.Model):
     obstacles = models.CharField(max_length=100, null=True, blank=True)
     
     # sensetive fields
-    project_value = models.FloatField(null=True, blank=True)
+    s_project_value = models.FloatField(null=True, blank=True)
     first_payment = models.FloatField(null=True, blank=True)
     first_payment_date = models.DateField(null=True, blank=True)
     second_payment = models.FloatField(null=True, blank=True)
