@@ -43,6 +43,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         else:
             table_view_data = default
         
+        table_view_data.append('id')
+        
         # print(user.is_staff)
             
             
