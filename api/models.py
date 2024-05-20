@@ -153,7 +153,7 @@ class Project(models.Model):
     architecture_notes = models.CharField(max_length=255, null=True, blank=True)
     noted_fields = models.CharField(max_length=100, null=True, blank=True)
     corrector = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='corrector', null=True, blank=True)
-    correction_date = models.DateField(null=True, blank=True)
+    corrector_date = models.DateField(null=True, blank=True)
     receive_final_copy_date = models.DateField(null=True, blank=True)
 
     typeof_follow_up = models.CharField(max_length=100, choices=FollowUpTypes.choices, null=True, blank=True)
