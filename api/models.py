@@ -118,6 +118,7 @@ class Project(models.Model):
     s_first_payment_stage = models.CharField(max_length=100, null=True, blank=True)
     s_second_payment_stage = models.CharField(max_length=100, null=True, blank=True)
     s_third_payment_stage = models.CharField(max_length=100, null=True, blank=True)
+    s_modification_price = models.FloatField(null=True, blank=True)
     
     architecture_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
     architect = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='architect', null=True, blank=True)
@@ -160,7 +161,6 @@ class Project(models.Model):
     project_number = models.IntegerField(null=True, blank=True)
     sketch_design_progress_status = models.CharField(max_length=100, choices=DesignStatus.choices, null=True, blank=True)
     plan_delivery_date = models.DateField(null=True, blank=True)
-    modification_price = models.FloatField(null=True, blank=True)
     created_at = models.DateField(null=True, blank=True)
     moved_at = models.DateField(null=True, blank=True)
 
