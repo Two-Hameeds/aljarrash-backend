@@ -161,7 +161,8 @@ class Project(models.Model):
     project_number = models.IntegerField(null=True, blank=True)
     sketch_design_progress_status = models.CharField(max_length=100, choices=DesignStatus.choices, null=True, blank=True)
     plan_delivery_date = models.DateField(null=True, blank=True)
-    created_at = models.DateField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(null=True, blank=True)
     moved_at = models.DateField(null=True, blank=True)
 
     
