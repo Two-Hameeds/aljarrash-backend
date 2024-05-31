@@ -1,8 +1,9 @@
+from django.forms.models import model_to_dict
+from django.contrib.auth import login
+
 from .models import Employee, Client, Project, Comment, TableView
 from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
 from .permissions import HasGroupPermission
-
-from django.contrib.auth import login
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import GenericAPIView
@@ -76,6 +77,31 @@ class ProjectsViewSet(ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
     
+class CopyProjectsView(APIView):
+    def post(self, request):
+        ids = request.data.get('ids')
+        stage = request.data.get('stage')
+        
+        if not ids or not stage:
+            return Response({'message': 'ids and stage are required'}, status=400)
+        
+        try:
+            projects = Project.objects.filter(id__in=ids)
+            new_projects = []
+            for project in projects:
+                project.id = None
+                project.stage = stage
+                
+                project.save()
+                new_projects.append(project)
+            
+            serializer = ProjectSerializer(new_projects, many=True)
+
+            return Response(serializer.data, status=201)
+            
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
 
 class CommentsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )

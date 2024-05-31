@@ -19,9 +19,19 @@ class Client(models.Model):
         return self.name
 
 class ProjectTypes(models.TextChoices):
-    New = 'new'
-    Addition = 'addition'
+    Destruction = 'destruction'
     Restoration = 'restoration'
+    AddFloors = 'add_floors'
+    Addition = 'addition'
+    New = 'new'
+    
+class UseTypes(models.TextChoices):
+    Entertaining = 'entertaining'
+    Agricultural = 'agricultural'
+    ResidentialCommercial = 'residential_commercial'
+    Commercial = 'commercial'  
+    Residential = 'residential'
+
 
 class Status(models.TextChoices):
     Working_on_it = 'Working on it'
@@ -95,7 +105,7 @@ class Project(models.Model):
     client_number = models.ForeignKey(Client, on_delete=models.SET_NULL, related_name='client', null=True, blank=True)
     contract_sign_date = models.DateField(null=True, blank=True)
     project_type = models.CharField(max_length=100, choices=ProjectTypes.choices, null=True, blank=True)
-    use_type = models.CharField(max_length=100, null=True, blank=True)
+    use_type = models.CharField(max_length=100, choices=UseTypes.choices, null=True, blank=True)
     land_number = models.CharField(max_length=100, null=True, blank=True)
     plan_number = models.CharField(max_length=100, null=True, blank=True)
     land_area = models.FloatField(null=True, blank=True)

@@ -75,7 +75,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_fields(self):
         default = super().get_fields()
         
+        if not self.context:
+            return default
+        
         filtered_fields = self.get_filtered_fields(default)
+        
         return filtered_fields   
     
     def create(self, validated_data):
@@ -84,6 +88,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     # def update(self, instance, validated_data):
     #     print(instance)
+    #     print(validated_data)
     #     # validated_data['updated_at'] = timezone.now()
     #     return super().update(instance, validated_data)
     
