@@ -113,6 +113,9 @@ class DashboardView(APIView):
 class CommentsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )
     
+    filter_Backends = [DjangoFilterBackend, ]
+    filterset_fields = ['written_for']
+    
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     

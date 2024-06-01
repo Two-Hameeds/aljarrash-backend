@@ -84,6 +84,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data['created_at'] = timezone.now()
+        validated_data['moved_at'] = timezone.now()
         return super().create(validated_data)
     
     # def update(self, instance, validated_data):
