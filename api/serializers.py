@@ -46,7 +46,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         else:
             table_view_data = list(default.keys())
         
-        table_view_data.insert(0, 'id')
         
         if('attachments' in table_view_data):
             table_view_data = table_view_data[:table_view_data.index('attachments')] + ['f_contract',
@@ -69,7 +68,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         'f_civil_defense',
         'f_water_authority'] + table_view_data[table_view_data.index('attachments'):]            
             
-        
+        table_view_data.insert(0, 'id')
+
         return {key: default[key] for key in table_view_data if key in default}
     
     def get_fields(self):
@@ -202,6 +202,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    written_at = serializers.DateTimeField(read_only=True)
+    
+    def create(self, validated_data):
+        validated_data['written_at'] = timezone.now()
+        return super().create(validated_data)
+    
     class Meta:
         model = Comment
         fields = "__all__"

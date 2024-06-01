@@ -1,5 +1,6 @@
 from django.forms.models import model_to_dict
 from django.contrib.auth import login
+from django.utils import timezone
 
 from .models import Employee, Client, Project, Comment, TableView
 from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
@@ -91,7 +92,7 @@ class CopyProjectsView(APIView):
             for project in projects:
                 project.id = None
                 project.stage = stage
-                
+                project.created_at = timezone.now()
                 project.save()
                 new_projects.append(project)
             
