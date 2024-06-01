@@ -173,7 +173,7 @@ class Project(models.Model):
     plan_delivery_date = models.DateField(null=True, blank=True)
     
     created_at = models.DateTimeField(null=True, blank=True)
-    moved_at = models.DateField(null=True, blank=True)
+    moved_at = models.DateTimeField(null=True, blank=True)
 
     
 
@@ -185,7 +185,7 @@ class Project(models.Model):
 class Comment(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
     content = models.TextField(max_length=255, null=True, blank=True)
-    written_at = models.DateField(null=True, blank=True)
+    written_at = models.DateTimeField(null=True, blank=True)
     attachment = models.FileField(upload_to="static/attachments/", null=True, blank=True)
     written_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
     written_for = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)

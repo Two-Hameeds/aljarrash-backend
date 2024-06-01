@@ -103,6 +103,12 @@ class CopyProjectsView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=400)
 
+class DashboardView(APIView):
+    def get(self, request):
+        total_projects = Project.objects.all().count()
+        active_projects = Project.objects.filter(stage__in=[1,2,3,4,5,6,7,8,9,10,11,12]).count()
+        completed_projects = Project.objects.filter(stage=13).count()
+
 class CommentsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )
     
