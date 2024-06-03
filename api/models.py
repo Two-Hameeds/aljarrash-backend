@@ -76,7 +76,7 @@ class Stages(models.TextChoices):
 
 class Project(models.Model):
     # stages info
-    previous_stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
+    previous_stage = models.CharField(max_length=100, choices=Stages.choices, null=True, blank=True)
     current_stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
     
     sketch_start_time = models.DateTimeField(null=True, blank=True) # stage 1 entrance
