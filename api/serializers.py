@@ -52,7 +52,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         stage = self.context['request'].query_params.get('current_stage')
         table_view = self.context['request'].query_params.get('table_view')
         
-        if (not stage and not table_view) or stage > 12:
+        if (not stage and not table_view) or (stage == "13" or stage == "14"):
             table_view_data = list(default.keys())
         elif stage and table_view:
             table_view_data = TableView.objects.values_list().get(stage=stage, name=table_view)[4]
