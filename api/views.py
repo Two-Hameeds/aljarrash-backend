@@ -63,20 +63,35 @@ class ProjectsViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.order_by('moved_at')
+        return queryset
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        current_stage = instance.current_stage
+        new_stage = request.data.get('current_stage')
+      
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        if(current_stage != new_stage):
+            instance.moved_at = timezone.now()
+        instance.save()
+        return Response(serializer.data)
+
+
+        
+        
+    
     filter_backends = [DjangoFilterBackend, ]
     filterset_fields = ['current_stage']
     
-    def put(self, request, pk):
-        try:
-            obj = Project.objects.get(id=pk)
-        except Project.DoesNotExist:
-            return Response(status=404)
-        
-        serializer = ProjectSerializer(obj, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=400)
     
 class CopyProjectsView(APIView):
     def post(self, request):
