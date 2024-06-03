@@ -3,9 +3,23 @@ from .models import Employee, Client, Project, Comment, TableView
 from django.utils import timezone
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    
+    def to_representation(self, instance):
+        default = super().to_representation(instance)
+        
+        default["name"] = self.get_name(instance)
+        
+        return super().to_representation(instance)
+    
     class Meta:
         model = Employee
         fields = "__all__"
+        
+    def get_name(self, obj):
+        if obj.first_name == "" and obj.last_name == "":
+            return None
+        return obj.first_name + " " + obj.last_name
         
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,14 +51,15 @@ class ProjectSerializer(serializers.ModelSerializer):
         # user = self.context['request'].user
         stage = self.context['request'].query_params.get('stage')
         table_view = self.context['request'].query_params.get('table_view')
-        if stage and table_view:
+        
+        if (not stage and not table_view) or stage > 12:
+            table_view_data = list(default.keys())
+        elif stage and table_view:
             table_view_data = TableView.objects.values_list().get(stage=stage, name=table_view)[4]
         elif stage:
             table_view_data = TableView.objects.values_list().get(stage=stage, name='default')[4]
         elif table_view:
             table_view_data = TableView.objects.values_list().get(name=table_view)[4]
-        else:
-            table_view_data = list(default.keys())
         
         
         if('attachments' in table_view_data):
@@ -199,9 +214,6 @@ class ProjectSerializer(serializers.ModelSerializer):
     #     return obj.structural_eng.first_name
     
     
-
-
-
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)
     

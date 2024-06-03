@@ -109,6 +109,9 @@ class DashboardView(APIView):
         total_projects = Project.objects.all().count()
         active_projects = Project.objects.filter(stage__in=[1,2,3,4,5,6,7,8,9,10,11,12]).count()
         completed_projects = Project.objects.filter(stage=13).count()
+        inactive_projects = total_projects - (active_projects + completed_projects)
+        
+        return Response({'total_projects': total_projects, 'active_projects': active_projects, 'completed_projects': completed_projects, 'inactive_projects': inactive_projects}, status=200)
 
 class CommentsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )

@@ -75,8 +75,55 @@ class Stages(models.TextChoices):
 
 
 class Project(models.Model):
-    stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
-
+    # stages info
+    previous_stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
+    current_stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
+    
+    sketch_start_time = models.DateTimeField(null=True, blank=True) # stage 1 entrance
+    sketch_end_time = models.DateTimeField(null=True, blank=True) # stage 1 exit
+    
+    sketch_review_start_time = models.DateTimeField(null=True, blank=True) # stage 2 entrance
+    sketch_review_end_time = models.DateTimeField(null=True, blank=True) # stage 2 exit
+    
+    awaiting_client_approval_start_time = models.DateTimeField(null=True, blank=True) # stage 3 entrance
+    awaiting_client_approval_end_time = models.DateTimeField(null=True, blank=True) # stage 3 exit
+    
+    execution_stage_start_time = models.DateTimeField(null=True, blank=True) # stage 4 entrance
+    execution_stage_end_time = models.DateTimeField(null=True, blank=True) # stage 4 exit
+    
+    autocad_start_time = models.DateTimeField(null=True, blank=True) # stage 5 entrance
+    autocad_end_time = models.DateTimeField(null=True, blank=True) # stage 5 exit
+    
+    ready_to_print_start_time = models.DateTimeField(null=True, blank=True) # stage 6 entrance
+    ready_to_print_end_time = models.DateTimeField(null=True, blank=True) # stage 6 exit
+    
+    validate_sign_review_copy_start_time = models.DateTimeField(null=True, blank=True) # stage 7 entrance
+    validate_sign_review_copy_end_time = models.DateTimeField(null=True, blank=True) # stage 7 exit
+    
+    ready_to_collect_start_time = models.DateTimeField(null=True, blank=True) # stage 8 entrance
+    ready_to_collect_end_time = models.DateTimeField(null=True, blank=True) # stage 8 exit
+    
+    client_received_copy_start_time = models.DateTimeField(null=True, blank=True) # stage 9 entrance
+    client_received_copy_end_time = models.DateTimeField(null=True, blank=True) # stage 9 exit
+    
+    edit_client_notes_start_time = models.DateTimeField(null=True, blank=True) # stage 10 entrance
+    edit_client_notes_end_time = models.DateTimeField(null=True, blank=True) # stage 10 exit
+    
+    license_issuance_start_time = models.DateTimeField(null=True, blank=True) # stage 11 entrance
+    license_issuance_end_time = models.DateTimeField(null=True, blank=True) # stage 11 exit
+    
+    ready_for_final_receipt_start_time = models.DateTimeField(null=True, blank=True) # stage 12 entrance
+    ready_for_final_receipt_end_time = models.DateTimeField(null=True, blank=True) # stage 12 exit
+    
+    completed_projects_start_time = models.DateTimeField(null=True, blank=True) # stage 13 entrance
+    completed_projects_end_time = models.DateTimeField(null=True, blank=True) # stage 13 exit
+    
+    inactive_projects_start_time = models.DateTimeField(null=True, blank=True) # stage 14 entrance
+    inactive_projects_end_time = models.DateTimeField(null=True, blank=True) # stage 14 exit
+    
+    
+    
+    
     project_name = models.CharField(max_length=100, null=True, blank=True)
     
     # attachments
