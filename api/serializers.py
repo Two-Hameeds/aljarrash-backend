@@ -49,7 +49,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     def get_filtered_fields(self, default):
         # user = self.context['request'].user
-        stage = self.context['request'].query_params.get('stage')
+        stage = self.context['request'].query_params.get('current_stage')
         table_view = self.context['request'].query_params.get('table_view')
         
         if (not stage and not table_view) or stage > 12:
