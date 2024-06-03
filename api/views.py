@@ -113,6 +113,39 @@ class DashboardView(APIView):
         
         return Response({'total_projects': total_projects, 'active_projects': active_projects, 'completed_projects': completed_projects, 'inactive_projects': inactive_projects}, status=200)
 
+class DelayedProjectsView(APIView):
+    def get(self, request):
+        sketch_projects = Project.objects.filter(current_stage=1).order_by('-moved_at')
+        execution_stage_projects = Project.objects.filter(current_stage=4).order_by('-moved_at')
+        
+        result = {}
+        
+        result['sketch_projects'] = []
+        for project in sketch_projects:
+            days_since_moved = (timezone.now() - project.moved_at).days if project.moved_at else None
+
+            result['sketch_projects'].append({
+                'id': project.id,
+                'project_name': project.project_name,
+                'current_stage': project.current_stage,
+                'moved_at': project.moved_at,
+                'days_since_moved': days_since_moved
+            })
+        
+        result['execution_stage_projects'] = []
+        for project in execution_stage_projects:
+            days_since_moved = (timezone.now() - project.moved_at).days if project.moved_at else None
+            
+            result['execution_stage_projects'].append({
+                'id': project.id,
+                'project_name': project.project_name,
+                'current_stage': project.current_stage,
+                'moved_at': project.moved_at,
+                'days_since_moved': days_since_moved
+            })  
+                    
+        return Response(result, status=200)
+
 class CommentsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )
     
