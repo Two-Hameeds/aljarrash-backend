@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EmployeesViewSet, RegisterAPI, LoginAPI, ClientsViewSet, ProjectsViewSet, CopyProjectsView, DashboardView, DelayedProjectsView, CommentsViewSet, TableViewsViewSet, HelloView
+from .views import EmployeesViewSet, RegisterAPI, LoginAPI, ClientsViewSet, ProjectsViewSet, AttachmentsViewSet, CopyProjectsView, DashboardView, DelayedProjectsView, CommentsViewSet, TableViewsViewSet, HelloView
 
 from rest_framework.routers import DefaultRouter
 
@@ -13,6 +13,7 @@ router.register("clients", ClientsViewSet)
 router.register("projects", ProjectsViewSet)
 router.register("comments", CommentsViewSet)
 router.register("table_views", TableViewsViewSet)
+router.register("attachments", AttachmentsViewSet)
 
 urlpatterns = router.urls + [
     path("projects/copy", CopyProjectsView.as_view(), name="copy_projects"),

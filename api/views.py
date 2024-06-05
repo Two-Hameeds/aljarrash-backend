@@ -2,8 +2,8 @@ from django.forms.models import model_to_dict
 from django.contrib.auth import login
 from django.utils import timezone
 
-from .models import Employee, Client, Project, Comment, TableView
-from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, CommentSerializer, TableViewSerializer
+from .models import Employee, Client, Project, Attachment, Comment, TableView
+from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer
 from .permissions import HasGroupPermission
 
 from rest_framework.viewsets import ModelViewSet
@@ -118,6 +118,13 @@ class CopyProjectsView(APIView):
             
         except Exception as e:
             return Response({'error': str(e)}, status=400)
+
+class AttachmentsViewSet(ModelViewSet):
+    queryset = Attachment.objects.all()
+    serializer_class = AttachmentSerializer
+    
+    filter_backends = [DjangoFilterBackend, ]
+    filterset_fields = ['uploaded_for', 'uploaded_by']
 
 class DashboardView(APIView):
     def get(self, request):

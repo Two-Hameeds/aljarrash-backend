@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Employee, Client, Project, Comment, TableView
+from .models import Employee, Client, Project, Attachment, Comment, TableView
 from django.utils import timezone
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -62,26 +62,26 @@ class ProjectSerializer(serializers.ModelSerializer):
             table_view_data = TableView.objects.values_list().get(name=table_view)[4]
         
         
-        if('attachments' in table_view_data):
-            table_view_data = table_view_data[:table_view_data.index('attachments')] + ['f_contract',
-        'f_deed',
-        'f_report',
-        'f_identity',
-        'f_container_contract',
-        'f_license',
-        'f_plan',
-        'f_load_bearing_certificate',
-        'f_location_certificate',
-        'f_land_survey',
-        'f_soil_test',
-        'f_coordinate_certificate',
-        'f_technical_report',
-        'f_demolition_letters',
-        'f_autocad',
-        'f_client_form',
-        'f_old_license',
-        'f_civil_defense',
-        'f_water_authority'] + table_view_data[table_view_data.index('attachments'):]            
+        # if('attachments' in table_view_data):
+        #     table_view_data = table_view_data[:table_view_data.index('attachments')] + ['f_contract',
+        # 'f_deed',
+        # 'f_report',
+        # 'f_identity',
+        # 'f_container_contract',
+        # 'f_license',
+        # 'f_plan',
+        # 'f_load_bearing_certificate',
+        # 'f_location_certificate',
+        # 'f_land_survey',
+        # 'f_soil_test',
+        # 'f_coordinate_certificate',
+        # 'f_technical_report',
+        # 'f_demolition_letters',
+        # 'f_autocad',
+        # 'f_client_form',
+        # 'f_old_license',
+        # 'f_civil_defense',
+        # 'f_water_authority'] + table_view_data[table_view_data.index('attachments'):]            
             
         table_view_data.insert(0, 'id')
 
@@ -213,7 +213,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     #         return None
     #     return obj.structural_eng.first_name
     
-    
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
+        fields = "__all__"
+   
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)
     

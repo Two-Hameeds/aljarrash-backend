@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.db import models
+from django.utils.deconstruct import deconstructible
 from django.contrib.auth.models import AbstractUser
 
 
@@ -126,26 +127,26 @@ class Project(models.Model):
     
     project_name = models.CharField(max_length=100, null=True, blank=True)
     
-    # attachments
-    f_contract = models.FileField(upload_to="static/contracts/", null=True, blank=True)
-    f_deed = models.FileField(upload_to="static/deeds/", null=True, blank=True)
-    f_report = models.FileField(upload_to="static/reports/", null=True, blank=True)
-    f_identity = models.FileField(upload_to="static/identities/", null=True, blank=True)
-    f_container_contract = models.FileField(upload_to="static/container_contracts/", null=True, blank=True)
-    f_license = models.FileField(upload_to="static/old_licenses/", null=True, blank=True)
-    f_plan = models.FileField(upload_to="static/palns/", null=True, blank=True)
-    f_load_bearing_certificate=models.FileField(upload_to="static/load_bearing_certificates/", null=True, blank=True)
-    f_location_certificate=models.FileField(upload_to="static/location_certificates/", null=True, blank=True)
-    f_land_survey = models.FileField(upload_to="static/land_surveys/", null=True, blank=True)
-    f_soil_test = models.FileField(upload_to="static/soil_tests/", null=True, blank=True)
-    f_coordinate_certificate=models.FileField(upload_to="static/coordinate_certificates/", null=True, blank=True)
-    f_technical_report=models.FileField(upload_to="static/technical_reports/", null=True, blank=True)
-    f_demolition_letters=models.FileField(upload_to="static/demolition_letters/", null=True, blank=True)
-    f_autocad=models.FileField(upload_to="static/autocads/", null=True, blank=True)
-    f_client_form = models.FileField(upload_to="static/client_forms/", null=True, blank=True)
-    f_old_license = models.FileField(upload_to="static/old_licenses/", null=True, blank=True)
-    f_civil_defense = models.FileField(upload_to="static/civil_defenses/", null=True, blank=True)
-    f_water_authority = models.FileField(upload_to="static/water_authorities/", null=True, blank=True)
+    # # attachments
+    # f_contract = models.FileField(upload_to="static/contracts/", null=True, blank=True)
+    # f_deed = models.FileField(upload_to="static/deeds/", null=True, blank=True)
+    # f_report = models.FileField(upload_to="static/reports/", null=True, blank=True)
+    # f_identity = models.FileField(upload_to="static/identities/", null=True, blank=True)
+    # f_container_contract = models.FileField(upload_to="static/container_contracts/", null=True, blank=True)
+    # f_license = models.FileField(upload_to="static/old_licenses/", null=True, blank=True)
+    # f_plan = models.FileField(upload_to="static/palns/", null=True, blank=True)
+    # f_load_bearing_certificate=models.FileField(upload_to="static/load_bearing_certificates/", null=True, blank=True)
+    # f_location_certificate=models.FileField(upload_to="static/location_certificates/", null=True, blank=True)
+    # f_land_survey = models.FileField(upload_to="static/land_surveys/", null=True, blank=True)
+    # f_soil_test = models.FileField(upload_to="static/soil_tests/", null=True, blank=True)
+    # f_coordinate_certificate=models.FileField(upload_to="static/coordinate_certificates/", null=True, blank=True)
+    # f_technical_report=models.FileField(upload_to="static/technical_reports/", null=True, blank=True)
+    # f_demolition_letters=models.FileField(upload_to="static/demolition_letters/", null=True, blank=True)
+    # f_autocad=models.FileField(upload_to="static/autocads/", null=True, blank=True)
+    # f_client_form = models.FileField(upload_to="static/client_forms/", null=True, blank=True)
+    # f_old_license = models.FileField(upload_to="static/old_licenses/", null=True, blank=True)
+    # f_civil_defense = models.FileField(upload_to="static/civil_defenses/", null=True, blank=True)
+    # f_water_authority = models.FileField(upload_to="static/water_authorities/", null=True, blank=True)
 
 
     design_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='designer', null=True, blank=True)
@@ -228,6 +229,46 @@ class Project(models.Model):
         if self.project_name == None:
             return ""
         return self.project_name
+    
+class AttachmenTypes(models.TextChoices):
+    Contract = 'contract'
+    Deed = 'deed'
+    Report = 'report'
+    Identity = 'identity'
+    ContainerContract = 'container_contract'
+    License = 'license'
+    Plan = 'plan'
+    LoadBearingCertificate = 'load_bearing_certificate'
+    LocationCertificate = 'location_certificate'
+    LandSurvey = 'land_survey'
+    SoilTest = 'soil_test'
+    CoordinateCertificate = 'coordinate_certificate'
+    TechnicalReport = 'technical_report'
+    DemolitionLetters = 'demolition_letters'
+    Autocad = 'autocad'
+    ClientForm = 'client_form'
+    OldLicense = 'old_license'
+    CivilDefense = 'civil_defense'
+    WaterAuthority = 'water_authority'
+    Other = 'other'
+
+@deconstructible
+class PathAndRename:
+    def __call__(self, instance, filename):
+        return f'static/attachments/{instance.type}s/{filename}'
+    
+class Attachment(models.Model):
+    title = models.CharField(max_length=100, null=True, blank=True)
+    type = models.CharField(max_length=100, choices=AttachmenTypes.choices, null=False, blank=False)
+    attachment = models.FileField(upload_to=PathAndRename(), null=True, blank=True)
+    uploaded_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    uploaded_for = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
+    uploaded_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        if self.title == None:
+            return ""
+        return self.title
 
 class Comment(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
