@@ -260,7 +260,7 @@ class PathAndRename:
 class Attachment(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
     type = models.CharField(max_length=100, choices=AttachmenTypes.choices, null=False, blank=False)
-    attachment = models.FileField(upload_to=PathAndRename(), null=True, blank=True)
+    attachment = models.FileField(upload_to=PathAndRename(), null=False, blank=False)
     uploaded_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
     uploaded_for = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
     uploaded_at = models.DateTimeField(null=True, blank=True)

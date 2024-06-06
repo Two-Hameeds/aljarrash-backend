@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from .models import Employee, Client, Project, Attachment, Comment, TableView
 from django.utils import timezone
+from pathlib import Path
+
+
 
 class EmployeeSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField(read_only=True)
@@ -120,6 +123,23 @@ class ProjectSerializer(serializers.ModelSerializer):
     electrical_reviewer_name = serializers.SerializerMethodField()
     corrector_name = serializers.SerializerMethodField()
     
+    def get_attachments(self, obj_id):
+        
+        attachments = {}
+        attachments_list = list(Attachment.objects.filter(uploaded_for=obj_id))
+
+        for attachment in attachments_list:
+            if(attachment.type == 'other'):
+                if(attachments.get(attachment.type) == None):
+                    attachments[attachment.type] = {}
+                attachments[attachment.type][attachment.title] = self.context['request'].build_absolute_uri(attachment.attachment.url)
+                continue
+            if(attachment.type not in attachments):
+                attachments[attachment.type] = []
+            
+            attachments[attachment.type].insert(0,self.context['request'].build_absolute_uri(attachment.attachment.url))
+        return attachments
+    
     def to_representation(self, instance):
         default = super().to_representation(instance)
         if('design_eng' in default):
@@ -144,6 +164,9 @@ class ProjectSerializer(serializers.ModelSerializer):
             default['electrical_reviewer_name'] = self.get_electrical_reviewer_name(instance)
         if('corrector' in default):
             default['corrector_name'] = self.get_corrector_name(instance)
+            
+        default['attachments'] = self.get_attachments(instance.id)
+        
             
             
         return default
