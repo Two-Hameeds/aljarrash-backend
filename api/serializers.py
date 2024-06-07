@@ -140,6 +140,9 @@ class ProjectSerializer(serializers.ModelSerializer):
             attachments[attachment.type].insert(0,self.context['request'].build_absolute_uri(attachment.attachment.url))
         return attachments
     
+    def get_comments_count(self, obj_id):
+        return Comment.objects.filter(written_for=obj_id).count()
+    
     def to_representation(self, instance):
         default = super().to_representation(instance)
         if('design_eng' in default):
@@ -166,6 +169,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             default['corrector_name'] = self.get_corrector_name(instance)
             
         default['attachments'] = self.get_attachments(instance.id)
+        default['comments_count'] = self.get_comments_count(instance.id)
         
             
             
