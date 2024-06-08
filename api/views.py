@@ -70,7 +70,8 @@ class ProjectsViewSet(ModelViewSet):
     
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
-        data._mutable = True
+        if(data._mutable):
+            data._mutable = True
 
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
