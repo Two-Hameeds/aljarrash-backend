@@ -2,7 +2,7 @@ from django.forms.models import model_to_dict
 from django.contrib.auth import login
 from django.utils import timezone
 
-from .models import Employee, Client, Project, Attachment, Comment, TableView
+from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes
 from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer
 from .permissions import HasGroupPermission
 
@@ -70,8 +70,6 @@ class ProjectsViewSet(ModelViewSet):
     
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
-        # if(data._mutable):
-        #     data._mutable = True
 
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -86,15 +84,9 @@ class ProjectsViewSet(ModelViewSet):
         if(data.get('client_phone') == None):
             data['client_phone'] = instance.client_phone.phone
         if(data.get('project_type') == None):
-            if(instance.project_type != ""):
-                data['project_type'] = instance.project_type
-            else:
-                data['project_type'] = 'new'
+            data['project_type'] = instance.project_type
         if(data.get('use_type') == None):
-            if(instance.use_type != ""):
-                data['use_type'] = instance.use_type
-            else:
-                data['use_type'] = 'residential'
+            data['use_type'] = instance.use_type
         
 
         serializer = self.get_serializer(instance, data=data, partial=partial)
