@@ -10,7 +10,7 @@ class Employee(AbstractUser):
     phone = models.CharField(max_length=13, null=True, blank=True)
 
 class Client(models.Model):
-    phone = models.CharField(max_length=13, primary_key=True)
+    phone = models.CharField(max_length=13, primary_key=True, blank=False)
     name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
 
@@ -58,20 +58,21 @@ class StructuralReviewStatus(models.TextChoices):
 
 
 class Stages(models.TextChoices):
-    Sketch = '1'
-    Sketch_Review = '2'
-    Awaiting_Client_Approval = '3'
-    Execution_Stage = '4'
-    AutoCAD_Review = '5'
-    Ready_to_Print = '6'
-    Validate_Sign_Review_Copy = '7'
-    Ready_to_Collect = '8'
-    Client_Received_Copy = '9'
-    Edit_Client_Notes = '10'
-    License_Issuance = '11'
-    Ready_for_Final_Receipt = '12'
-    Completed_Projects = '13'
-    Inactive_Projects = '14'
+    Sketch = 'sketch'
+    Sketch_Review = 'sketch_review'
+    Approval_Before_Columns = 'approval_before_columns'
+    Awaiting_Client_Approval = 'awaiting_client_approval'
+    Execution_Stage = 'execution_stage'
+    AutoCAD_Review = 'autocad_review'
+    Ready_to_Print = 'ready_to_print'
+    Validate_Sign_Review_Copy = 'validate_sign_review_copy'
+    Ready_to_Collect = 'ready_to_collect'
+    Client_Received_Copy = 'client_received_copy'
+    Edit_Client_Notes = 'edit_client_notes'
+    License_Issuance = 'license_issuance'
+    Ready_for_Final_Receipt = 'ready_for_final_receipt'
+    Completed_Projects = 'completed_projects'
+    Inactive_Projects = 'inactive_projects'
 
 
 
