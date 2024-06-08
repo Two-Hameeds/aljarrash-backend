@@ -85,12 +85,12 @@ class ProjectsViewSet(ModelViewSet):
         if(data.get('client_phone') == None):
             data['client_phone'] = instance.client_phone.phone
         if(data.get('project_type') == None):
-            if(instance.project_type != None):
+            if(instance.project_type != ""):
                 data['project_type'] = instance.project_type
             else:
                 data['project_type'] = 'new'
         if(data.get('use_type') == None):
-            if(instance.use_type != None):
+            if(instance.use_type != ""):
                 data['use_type'] = instance.use_type
             else:
                 data['use_type'] = 'residential'
