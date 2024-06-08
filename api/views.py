@@ -89,8 +89,8 @@ class ProjectsViewSet(ModelViewSet):
         if(data.get('client_phone') == None):
             data['client_phone'] = instance.client_phone.phone
         else:
-            client = Client.objects.get_or_create(phone=data.get('client_phone'))
-            data['client_phone'] = client.phone
+            Client.objects.get_or_create(phone=data.get('client_phone'))
+            # data['client_phone'] = client.phone
         
 
         serializer = self.get_serializer(instance, data=data, partial=partial)
