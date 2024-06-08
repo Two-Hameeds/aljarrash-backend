@@ -80,6 +80,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         return filtered_fields   
     
     def create(self, validated_data):
+        print(validated_data['client_phone'])
+        Client.objects.get_or_create(phone=validated_data['client_phone'])
         validated_data['created_at'] = timezone.now()
         validated_data['moved_at'] = timezone.now()
         return super().create(validated_data)
@@ -155,11 +157,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         if(obj.design_eng == None):
             return None
         return obj.design_eng.first_name
-    
-    # def get_client_phone(self, obj):
-    #     if(obj.client_number == None):
-    #         return None
-    #     return obj.client_number.phone
     
     def get_architect_name(self, obj):
         if(obj.architect == None):

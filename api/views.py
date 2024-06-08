@@ -199,7 +199,7 @@ class TableViewsViewSet(ModelViewSet):
     serializer_class = TableViewSerializer
     
     filter_backends = [DjangoFilterBackend, ]
-    filterset_fields = ['employee', 'stage']
+    filterset_fields = ['employee', 'stage', 'name']
     
 
 # Learn Authentication
