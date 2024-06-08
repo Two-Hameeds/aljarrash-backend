@@ -80,8 +80,8 @@ class ProjectsViewSet(ModelViewSet):
 
         if(data.get('current_stage') == None):
             data['current_stage'] = instance.current_stage
-        if(data.get('porject_name') == None):
-            data['porject_name'] = instance.porject_name
+        if(data.get('project_name') == None):
+            data['project_name'] = instance.project_name
         if(data.get('client_phone') == None):
             data['client_phone'] = instance.client_phone
         if(data.get('project_type') == None):
