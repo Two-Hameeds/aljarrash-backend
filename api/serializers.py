@@ -63,28 +63,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             table_view_data = TableView.objects.values_list().get(stage=stage, name='default')[4]
         elif table_view:
             table_view_data = TableView.objects.values_list().get(name=table_view)[4]
-        
-        
-        # if('attachments' in table_view_data):
-        #     table_view_data = table_view_data[:table_view_data.index('attachments')] + ['f_contract',
-        # 'f_deed',
-        # 'f_report',
-        # 'f_identity',
-        # 'f_container_contract',
-        # 'f_license',
-        # 'f_plan',
-        # 'f_load_bearing_certificate',
-        # 'f_location_certificate',
-        # 'f_land_survey',
-        # 'f_soil_test',
-        # 'f_coordinate_certificate',
-        # 'f_technical_report',
-        # 'f_demolition_letters',
-        # 'f_autocad',
-        # 'f_client_form',
-        # 'f_old_license',
-        # 'f_civil_defense',
-        # 'f_water_authority'] + table_view_data[table_view_data.index('attachments'):]            
+                  
             
         table_view_data.insert(0, 'id')
 
@@ -105,14 +84,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         validated_data['moved_at'] = timezone.now()
         return super().create(validated_data)
     
-    # def update(self, instance, validated_data):
-    #     print(instance)
-    #     print(validated_data)
-    #     # validated_data['updated_at'] = timezone.now()
-    #     return super().update(instance, validated_data)
-    
     design_eng_name = serializers.SerializerMethodField()  
-    client_phone = serializers.SerializerMethodField()
+    # client_phone = serializers.SerializerMethodField()
     architect_name = serializers.SerializerMethodField()
     construction_eng_name = serializers.SerializerMethodField()
     plumbing_eng_name = serializers.SerializerMethodField()
@@ -124,7 +97,6 @@ class ProjectSerializer(serializers.ModelSerializer):
     corrector_name = serializers.SerializerMethodField()
     
     def get_attachments(self, obj_id):
-        
         attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj_id))
 
@@ -179,16 +151,15 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = "__all__"
 
-
     def get_design_eng_name(self, obj):
         if(obj.design_eng == None):
             return None
         return obj.design_eng.first_name
     
-    def get_client_phone(self, obj):
-        if(obj.client_number == None):
-            return None
-        return obj.client_number.phone
+    # def get_client_phone(self, obj):
+    #     if(obj.client_number == None):
+    #         return None
+    #     return obj.client_number.phone
     
     def get_architect_name(self, obj):
         if(obj.architect == None):
@@ -235,12 +206,14 @@ class ProjectSerializer(serializers.ModelSerializer):
             return None
         return obj.corrector.first_name
     
-    # def get_structural_eng_name(self, obj):
-    #     if(obj.structural_eng == None):
-    #         return None
-    #     return obj.structural_eng.first_name
     
 class AttachmentSerializer(serializers.ModelSerializer):
+    uploaded_at = serializers.DateTimeField(read_only=True)
+    
+    def create(self, validated_data):
+        validated_data['uploaded_at'] = timezone.now()
+        return super().create(validated_data)
+    
     class Meta:
         model = Attachment
         fields = "__all__"

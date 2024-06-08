@@ -69,14 +69,28 @@ class ProjectsViewSet(ModelViewSet):
         return queryset
     
     def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data._mutable = True
+
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
 
         current_stage = instance.current_stage
-        new_stage = request.data.get('current_stage')
+        new_stage = data.get('current_stage')
+
+        if(data.get('current_stage') == None):
+            data['current_stage'] = instance.current_stage
+        if(data.get('porject_name') == None):
+            data['porject_name'] = instance.porject_name
+        if(data.get('client_phone') == None):
+            data['client_phone'] = instance.client_phone
+        if(data.get('project_type') == None):
+            data['project_type'] = instance.project_type
+        if(data.get('use_type') == None):
+            data['use_type'] = instance.use_type
       
 
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()

@@ -10,9 +10,9 @@ class Employee(AbstractUser):
     phone = models.CharField(max_length=13, null=True, blank=True)
 
 class Client(models.Model):
+    phone = models.CharField(max_length=13, primary_key=True)
     name = models.CharField(max_length=30, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
-    phone = models.CharField(max_length=13, null=True, blank=True)
 
     def __str__(self):
         if self.name == None:
@@ -76,9 +76,16 @@ class Stages(models.TextChoices):
 
 
 class Project(models.Model):
+    # essential info
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey(Client, to_field='phone', on_delete=models.CASCADE, related_name='projects', null=False, blank=False)
+    project_type = models.CharField(max_length=100, choices=ProjectTypes.choices, null=False, blank=False)
+    use_type = models.CharField(max_length=100, choices=UseTypes.choices, null=False, blank=False)
+
+    current_stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
+    
     # stages info
     previous_stage = models.CharField(max_length=100, choices=Stages.choices, null=True, blank=True)
-    current_stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
     
     sketch_start_time = models.DateTimeField(null=True, blank=True) # stage 1 entrance
     sketch_end_time = models.DateTimeField(null=True, blank=True) # stage 1 exit
@@ -125,35 +132,9 @@ class Project(models.Model):
     
     
     
-    project_name = models.CharField(max_length=100, null=True, blank=True)
-    
-    # # attachments
-    # f_contract = models.FileField(upload_to="static/contracts/", null=True, blank=True)
-    # f_deed = models.FileField(upload_to="static/deeds/", null=True, blank=True)
-    # f_report = models.FileField(upload_to="static/reports/", null=True, blank=True)
-    # f_identity = models.FileField(upload_to="static/identities/", null=True, blank=True)
-    # f_container_contract = models.FileField(upload_to="static/container_contracts/", null=True, blank=True)
-    # f_license = models.FileField(upload_to="static/old_licenses/", null=True, blank=True)
-    # f_plan = models.FileField(upload_to="static/palns/", null=True, blank=True)
-    # f_load_bearing_certificate=models.FileField(upload_to="static/load_bearing_certificates/", null=True, blank=True)
-    # f_location_certificate=models.FileField(upload_to="static/location_certificates/", null=True, blank=True)
-    # f_land_survey = models.FileField(upload_to="static/land_surveys/", null=True, blank=True)
-    # f_soil_test = models.FileField(upload_to="static/soil_tests/", null=True, blank=True)
-    # f_coordinate_certificate=models.FileField(upload_to="static/coordinate_certificates/", null=True, blank=True)
-    # f_technical_report=models.FileField(upload_to="static/technical_reports/", null=True, blank=True)
-    # f_demolition_letters=models.FileField(upload_to="static/demolition_letters/", null=True, blank=True)
-    # f_autocad=models.FileField(upload_to="static/autocads/", null=True, blank=True)
-    # f_client_form = models.FileField(upload_to="static/client_forms/", null=True, blank=True)
-    # f_old_license = models.FileField(upload_to="static/old_licenses/", null=True, blank=True)
-    # f_civil_defense = models.FileField(upload_to="static/civil_defenses/", null=True, blank=True)
-    # f_water_authority = models.FileField(upload_to="static/water_authorities/", null=True, blank=True)
-
 
     design_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='designer', null=True, blank=True)
-    client_number = models.ForeignKey(Client, on_delete=models.SET_NULL, related_name='client', null=True, blank=True)
     contract_sign_date = models.DateField(null=True, blank=True)
-    project_type = models.CharField(max_length=100, choices=ProjectTypes.choices, null=True, blank=True)
-    use_type = models.CharField(max_length=100, choices=UseTypes.choices, null=True, blank=True)
     land_number = models.CharField(max_length=100, null=True, blank=True)
     plan_number = models.CharField(max_length=100, null=True, blank=True)
     land_area = models.FloatField(null=True, blank=True)
@@ -214,7 +195,7 @@ class Project(models.Model):
     corrector_date = models.DateField(null=True, blank=True)
     receive_final_copy_date = models.DateField(null=True, blank=True)
 
-    typeof_follow_up = models.CharField(max_length=100, choices=FollowUpTypes.choices, null=True, blank=True)
+    # typeof_follow_up = models.CharField(max_length=100, choices=FollowUpTypes.choices, null=True, blank=True)
     investor_affiliation = models.BooleanField(null=True, blank=True)
     project_number = models.IntegerField(null=True, blank=True)
     sketch_design_progress_status = models.CharField(max_length=100, choices=DesignStatus.choices, null=True, blank=True)
