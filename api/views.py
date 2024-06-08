@@ -83,12 +83,18 @@ class ProjectsViewSet(ModelViewSet):
         if(data.get('project_name') == None):
             data['project_name'] = instance.project_name
         if(data.get('client_phone') == None):
-            data['client_phone'] = instance.client_phone
+            data['client_phone'] = instance.client_phone.phone
         if(data.get('project_type') == None):
-            data['project_type'] = instance.project_type
+            if(instance.project_type != None):
+                data['project_type'] = instance.project_type
+            else:
+                data['project_type'] = 'new'
         if(data.get('use_type') == None):
-            data['use_type'] = instance.use_type
-      
+            if(instance.use_type != None):
+                data['use_type'] = instance.use_type
+            else:
+                data['use_type'] = 'residential'
+        
 
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
