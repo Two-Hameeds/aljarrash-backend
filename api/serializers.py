@@ -69,10 +69,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         table_view_data.insert(0, 'id')
         
         if(not user.is_staff):
-            for field in table_view_data:
-                print(field, field.startswith('s_'))
-                if field.startswith('s_'):
-                    table_view_data.remove(field)
+            table_view_data = list(filter(lambda element: not element.startswith("s_"), table_view_data))
+            
 
         return {key: default[key] for key in table_view_data if key in default}
     
