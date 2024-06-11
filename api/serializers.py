@@ -51,7 +51,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     
     def get_filtered_fields(self, default):
-        # user = self.context['request'].user
+        user = self.context['request'].user
+        print(user.is_staff)
         stage = self.context['request'].query_params.get('current_stage')
         table_view = self.context['request'].query_params.get('table_view')
         
@@ -66,6 +67,12 @@ class ProjectSerializer(serializers.ModelSerializer):
                   
             
         table_view_data.insert(0, 'id')
+        
+        if(not user.is_staff):
+            for field in table_view_data:
+                print(field, field.startswith('s_'))
+                if field.startswith('s_'):
+                    table_view_data.remove(field)
 
         return {key: default[key] for key in table_view_data if key in default}
     
