@@ -86,13 +86,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         print(validated_data['client_phone'])
-        Client.objects.get_or_create(phone=validated_data['client_phone'])
+        client, created = Client.objects.get_or_create(phone=validated_data['client_phone'])
+        print(created)
         validated_data['created_at'] = timezone.now()
         validated_data['moved_at'] = timezone.now()
         return super().create(validated_data)
     
     design_eng_name = serializers.SerializerMethodField()  
-    # client_phone = serializers.SerializerMethodField()
     architect_name = serializers.SerializerMethodField()
     construction_eng_name = serializers.SerializerMethodField()
     plumbing_eng_name = serializers.SerializerMethodField()
