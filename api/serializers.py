@@ -52,7 +52,6 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     def get_filtered_fields(self, default):
         user = self.context['request'].user
-        print(user.is_staff)
         stage = self.context['request'].query_params.get('current_stage')
         table_view = self.context['request'].query_params.get('table_view')
         
@@ -76,18 +75,18 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     def get_fields(self):
         default = super().get_fields()
-        
         if not self.context:
             return default
+        
+        if(str(self.context["request"].method) == "POST"):
+            Client.objects.get_or_create(phone=self.context["request"].data["client_phone"])
         
         filtered_fields = self.get_filtered_fields(default)
         
         return filtered_fields   
     
     def create(self, validated_data):
-        print(validated_data['client_phone'])
-        client, created = Client.objects.get_or_create(phone=validated_data['client_phone'])
-        print(created)
+        print("You are trying to create me (create)")
         validated_data['created_at'] = timezone.now()
         validated_data['moved_at'] = timezone.now()
         return super().create(validated_data)

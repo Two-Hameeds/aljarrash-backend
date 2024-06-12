@@ -104,9 +104,6 @@ class ProjectsViewSet(ModelViewSet):
         instance.save()
         return Response(serializer.data)
 
-
-        
-        
     
     filter_backends = [DjangoFilterBackend, ]
     filterset_fields = ['current_stage']
