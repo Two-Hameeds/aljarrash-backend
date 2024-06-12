@@ -47,7 +47,12 @@ class LoginAPI(KnoxLoginView):
         serializer.is_valid(raise_exception=True)
         employee = serializer.validated_data['user']
         login(request, employee)
-        return super(LoginAPI, self).post(request, format=None)
+        response = super(LoginAPI, self).post(request, format=None)
+        print(response)
+        response.data["is_staff"] = True
+        print(response.data)
+        print("I am here")
+        return response
     
 
 class ClientsViewSet(ModelViewSet):
