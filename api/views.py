@@ -48,7 +48,7 @@ class LoginAPI(KnoxLoginView):
         employee = serializer.validated_data['user']
         login(request, employee)
         response = super(LoginAPI, self).post(request, format=None)
-        response.data["is_staff"] = True
+        response.data["is_staff"] = employee.is_staff
         return response
     
 
