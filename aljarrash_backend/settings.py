@@ -142,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# KNOX_TOKEN_MODEL = 'knox.AuthToken'
+KNOX_TOKEN_MODEL = 'knox.AuthToken'
 
 # REST_KNOX = {
 #   'SECURE_HASH_ALGORITHM': 'hashlib.sha512',
