@@ -253,17 +253,17 @@ class Attachment(models.Model):
         return self.title
 
 class Comment(models.Model):
-    title = models.CharField(max_length=100, null=True, blank=True)
+    # title = models.CharField(max_length=100, null=True, blank=True)
     content = models.TextField(max_length=255, null=True, blank=True)
     written_at = models.DateTimeField(null=True, blank=True)
     attachment = models.FileField(upload_to="static/attachments/", null=True, blank=True)
     written_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
     written_for = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def __str__(self):
-        if self.title == None:
-            return ""
-        return self.title
+    # def __str__(self):
+    #     if self.title == None:
+    #         return ""
+    #     return self.title
     
 class TableView(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
