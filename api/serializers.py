@@ -221,9 +221,14 @@ class AttachmentSerializer(serializers.ModelSerializer):
    
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)
+    written_by = serializers.CharField(read_only=True)
     
     def create(self, validated_data):
         validated_data['written_at'] = timezone.now()
+        if(str(self.context['request'].user) == "AnonymousUser"):
+            validated_data['written_by'] = None
+        else:
+            validated_data['written_by'] = self.context['request'].user
         return super().create(validated_data)
     
     class Meta:
