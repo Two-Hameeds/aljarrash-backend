@@ -144,18 +144,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 KNOX_TOKEN_MODEL = 'knox.AuthToken'
 
-# REST_KNOX = {
-#   'SECURE_HASH_ALGORITHM': 'hashlib.sha512',
-#   'AUTH_TOKEN_CHARACTER_LENGTH': 64,
-#   'TOKEN_TTL': timedelta(days=20),
-#   'USER_SERIALIZER': 'knox.serializers.UserSerializer',
-#   'TOKEN_LIMIT_PER_USER': 3,
-#   'AUTO_REFRESH': True,
-#   'MIN_REFRESH_INTERVAL': 60,
-#   'AUTH_HEADER_PREFIX': 'Token',
-#   'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
-#   'TOKEN_MODEL': 'knox.AuthToken',
-# }
+REST_KNOX = {
+#   'SECURE_HASH_ALGORITHM': 'hashlib.sha3_512',
+  'AUTH_TOKEN_CHARACTER_LENGTH': 64,
+  'TOKEN_TTL': timedelta(days=20),
+  'USER_SERIALIZER': 'knox.serializers.UserSerializer',
+  'TOKEN_LIMIT_PER_USER': 3,
+  'AUTO_REFRESH': True,
+  'MIN_REFRESH_INTERVAL': 60,
+  'AUTH_HEADER_PREFIX': 'Token',
+  'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
+  'TOKEN_MODEL': 'knox.AuthToken',
+}
 
 # CACHES = {
 #     "default": {
