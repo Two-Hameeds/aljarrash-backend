@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.utils import timezone
 
 from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes
-from .serializers import EmployeeSerializer, RegisterSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer
+from .serializers import EmployeeSerializer, RegisterSerializer, RemoveTokensSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer
 from .permissions import HasGroupPermission
 
 from rest_framework.viewsets import ModelViewSet
@@ -52,10 +52,13 @@ class LoginAPI(KnoxLoginView):
         return response
     
 class RemoveTokensAPI(GenericAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
+
+    serializer_class = RemoveTokensSerializer
 
     def post(self, request, format=None):
-        AuthToken.objects.filter(user=request.user).delete()
+        user = Employee.objects.get(username=request.data['username'])
+        AuthToken.objects.filter(user=user).delete()
         return Response({"message": "Tokens removed successfully"})
 
 

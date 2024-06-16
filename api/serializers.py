@@ -38,6 +38,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+class RemoveTokensSerializer(serializers.ModelSerializer):
+# Suggested code may be subject to a license. Learn more: ~LicenseLog:1636428712.
+    class Meta:
+        model = Employee
+        fields = ["username"]
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
