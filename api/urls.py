@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EmployeesViewSet, RegisterAPI, LoginAPI, ClientsViewSet, ProjectsViewSet, AttachmentsViewSet, CopyProjectsView, DashboardView, DelayedProjectsView, CommentsViewSet, TableViewsViewSet, HelloView
+from .views import EmployeesViewSet, RegisterAPI, LoginAPI, RemoveTokensAPI, ClientsViewSet, ProjectsViewSet, AttachmentsViewSet, CopyProjectsView, DashboardView, DelayedProjectsView, CommentsViewSet, TableViewsViewSet, HelloView
 
 from rest_framework.routers import DefaultRouter
 
@@ -25,4 +25,6 @@ urlpatterns = router.urls + [
     path('login/', LoginAPI.as_view(), name="login"),
     path('logout/', knox_views.LogoutView.as_view(), name="logout"),
     path('logoutall/', knox_views.LogoutAllView.as_view(), name="logoutall"),
+    path('remove_tokens/', RemoveTokensAPI.as_view(), name="remove_tokens"),
 ]
+

@@ -51,9 +51,9 @@ class LoginAPI(KnoxLoginView):
         response.data["is_staff"] = employee.is_staff
         return response
     
-class removeTokens(GenericAPIView):
+class RemoveTokensAPI(GenericAPIView):
     permission_classes = (IsAuthenticated, )
-    
+
     def post(self, request, format=None):
         AuthToken.objects.filter(user=request.user).delete()
         return Response({"message": "Tokens removed successfully"})
