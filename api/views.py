@@ -52,11 +52,13 @@ class LoginAPI(KnoxLoginView):
         return response
     
 class RemoveTokensAPI(GenericAPIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     serializer_class = RemoveTokensSerializer
 
     def post(self, request, format=None):
+        if(not request.user.is_staff):
+            return Response({"message": "You are not authorized to perform this action"}, status=403)
         user = Employee.objects.get(username=request.data['username'])
         AuthToken.objects.filter(user=user).delete()
         return Response({"message": "Tokens removed successfully"})
