@@ -43,12 +43,14 @@ class LoginAPI(KnoxLoginView):
     permission_classes = (AllowAny,)
     
     def post(self, request, format=None):
+        request.data['username'] = request.data['username'].lower().strip()
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.validated_data['user']
         login(request, employee)
         response = super(LoginAPI, self).post(request, format=None)
-        response.data["is_staff"] = employee.is_staff
+        if(response.status_code == 200):
+            response.data["is_staff"] = employee.is_staff
         return response
     
 class RemoveTokensAPI(GenericAPIView):
