@@ -136,6 +136,7 @@ class CopyProjectsView(APIView):
                 project.id = None
                 project.current_stage = stage
                 project.created_at = timezone.now()
+                project.moved_at = timezone.now()
                 project.save()
                 new_projects.append(project)
             
