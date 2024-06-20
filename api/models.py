@@ -271,8 +271,16 @@ class TableView(models.Model):
     stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
     view = models.JSONField(null=True, blank=True)
 
+class BaladyStages(models.TextChoices):
+    new_construction_license = 'new_construction_license'
+    working_on_it = 'working_on_it'
+    incomplete_or_requirements_are_unclear = 'incomplete_or_requirements_are_unclear'
+    temporarly_stopped_or_technical_issues = 'temporarly_stopped_or_technical_issues'
+    ready_for_pickup = 'ready_for_pickup'
 
 class BaladyProject(models.Model):
+    stage = models.CharField(max_length=100, choices=BaladyStages.choices, null=False, blank=False)
+
     project_name = models.CharField(max_length=100, null=False, blank=False)
     request_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
     client_phone = models.ForeignKey(Client, to_field='phone', on_delete=models.CASCADE, related_name='balady_projects', null=False, blank=False)
