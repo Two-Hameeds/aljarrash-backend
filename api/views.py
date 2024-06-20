@@ -2,8 +2,8 @@ from django.forms.models import model_to_dict
 from django.contrib.auth import login
 from django.utils import timezone
 
-from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes
-from .serializers import EmployeeSerializer, RegisterSerializer, RemoveTokensSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer
+from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes, BaladyProject
+from .serializers import EmployeeSerializer, RegisterSerializer, RemoveTokensSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer, BaladyProjectSerializer
 from .permissions import HasGroupPermission
 
 from rest_framework.viewsets import ModelViewSet
@@ -227,3 +227,13 @@ class HelloView(APIView):
     def get(self, request):
         content = {'message': 'Hello World!'}
         return Response(content)
+
+    
+class BaladyProjectsViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated, )
+    
+    queryset = BaladyProject.objects.all()
+    serializer_class = BaladyProjectSerializer
+    
+    filter_backends = [DjangoFilterBackend, ]
+    filterset_fields = ['request_status', 'project_type', 'architecture_status', 'construction_status', 'plumbing_status', 'electrical_status']
