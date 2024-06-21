@@ -312,4 +312,24 @@ class BaladyProject(models.Model):
     plumbing_end_date = models.DateField(null=True, blank=True)
     plan_delivery_date = models.DateField(null=True, blank=True)
  
+
+class LandSurveyStages(models.TextChoices):
+    land_survey = 'land_survey'
+    land_report = 'land_report'
+    completed_projects = 'completed_projects'
+    informal_transactions = 'informal_transactions'
+
+
+
     
+class LandSurveyProject(models.Model):
+    stage = models.CharField(max_length=100, choices=LandSurveyStages.choices, null=False, blank=False)
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey(Client, to_field='phone', on_delete=models.CASCADE, related_name='land_survey_projects', null=False, blank=False)
+    location_visit = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    location_visit_date = models.DateField(null=True, blank=True)
+    protocol_number = models.IntegerField(null=True, blank=True)
+    transaction_review = models.CharField(max_length=255, null=True, blank=True)
+    protocol_purpose = models.CharField(max_length=255, null=True, blank=True)
+    payment_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    survey_report_issuance = models.CharField(max_length=100, null=True, blank=True)
