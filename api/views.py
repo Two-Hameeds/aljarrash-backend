@@ -114,7 +114,7 @@ class ProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        if(current_stage != new_stage):
+        if(current_stage != data.get('current_stage')):
             instance.moved_at = timezone.now()
         instance.save()
         return Response(serializer.data)
