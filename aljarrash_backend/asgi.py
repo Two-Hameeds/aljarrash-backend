@@ -19,9 +19,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'aljarrash_backend.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
-        URLRouter(
-            api.routing.websocket_urlpatterns
-        )
-    ),
+    # "websocket": AuthMiddlewareStack(
+    #     URLRouter(
+    #         api.routing.websocket_urlpatterns
+    #     )
+    # ),
 })
