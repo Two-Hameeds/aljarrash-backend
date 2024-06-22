@@ -2,8 +2,8 @@ from django.forms.models import model_to_dict
 from django.contrib.auth import login
 from django.utils import timezone
 
-from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes, BaladyProject, LandSurveyProject
-from .serializers import EmployeeSerializer, RegisterSerializer, RemoveTokensSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer, BaladyProjectSerializer, LandSurveyProjectSerializer
+from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes, BaladyProject, LandSurveyProject, SortingDeedsProject
+from .serializers import EmployeeSerializer, RegisterSerializer, RemoveTokensSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer, BaladyProjectSerializer, LandSurveyProjectSerializer, SortingDeedsProjectSerializer
 from .permissions import HasGroupPermission
 
 from rest_framework.viewsets import ModelViewSet
@@ -245,4 +245,13 @@ class LandSurveyProjectsViewSet(ModelViewSet):
     serializer_class = LandSurveyProjectSerializer
     
     filter_backends = [DjangoFilterBackend, ]
-    filterset_fields = ['stage', 'location_visit', 'project_type', 'payment_status']
+    filterset_fields = ['stage']
+
+class SortingDeedsProjectsViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated, )
+    
+    queryset = SortingDeedsProject.objects.all()
+    serializer_class = SortingDeedsProjectSerializer
+    
+    filter_backends = [DjangoFilterBackend, ]
+    filterset_fields = ['stage']

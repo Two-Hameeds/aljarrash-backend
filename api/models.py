@@ -333,3 +333,24 @@ class LandSurveyProject(models.Model):
     protocol_purpose = models.CharField(max_length=255, null=True, blank=True)
     payment_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
     survey_report_issuance = models.CharField(max_length=100, null=True, blank=True)
+
+class SortingDeedsStages(models.TextChoices):
+    land_sorting = 'land_sorting'
+    land_merging = 'land_merging'
+    housing_sorting = 'housing_sorting'
+    land_sorting_completed = 'land_sorting_completed'
+    land_merging_completed = 'land_merging_completed'
+    housing_sorting_completed = 'housing_sorting_completed'
+
+class SortingDeedsProject(models.Model):
+    stage = models.CharField(max_length=100, choices=SortingDeedsStages.choices, null=False, blank=False)
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey(Client, to_field='phone', on_delete=models.CASCADE, related_name='sorting_deeds_projects', null=False, blank=False)
+    case_study = models.CharField(max_length=100, null=True, blank=True)
+    spatial_inspection = models.CharField(max_length=100, null=True, blank=True)
+    transaction_upload = models.CharField(max_length=100, null=True, blank=True)
+    urban_planning_review = models.CharField(max_length=100, null=True, blank=True)
+    issue_bill = models.CharField(max_length=100, null=True, blank=True)
+    source = models.CharField(max_length=100, null=True, blank=True)
+    accounting = models.CharField(max_length=100, null=True, blank=True)
+    notes = models.CharField(max_length=100, null=True, blank=True)

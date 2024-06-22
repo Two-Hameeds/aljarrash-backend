@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Employee, Client, Project, Attachment, Comment, TableView, BaladyProject, LandSurveyProject
+from .models import Employee, Client, Project, Attachment, Comment, TableView, BaladyProject, LandSurveyProject, SortingDeedsProject
 from django.utils import timezone
 from pathlib import Path
 
@@ -256,4 +256,9 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandSurveyProject
+        fields = "__all__"
+
+class SortingDeedsProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SortingDeedsProject
         fields = "__all__"
