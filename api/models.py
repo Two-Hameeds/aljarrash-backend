@@ -257,7 +257,7 @@ class Comment(models.Model):
     content = models.TextField(max_length=255, null=True, blank=True)
     written_at = models.DateTimeField(null=True, blank=True)
     attachment = models.FileField(upload_to="static/attachments/", null=True, blank=True)
-    written_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    written_by = models.ForeignKey(Employee, on_delete=models.CASCADE, null=False, blank=False)
     written_for = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
 
     # def __str__(self):
