@@ -108,6 +108,9 @@ class ProjectSerializer(serializers.ModelSerializer):
     corrector_name = serializers.SerializerMethodField()
     
     def get_attachments(self, obj_id):
+        if(not self.context):
+            return {}
+        
         attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj_id))
 

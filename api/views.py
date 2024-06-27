@@ -1,6 +1,7 @@
 from django.forms.models import model_to_dict
 from django.contrib.auth import login
 from django.utils import timezone
+from django.http import HttpResponse
 
 from .models import Employee, Client, Project, Attachment, Comment, TableView, UseTypes, BaladyProject, LandSurveyProject, SortingDeedsProject
 from .serializers import EmployeeSerializer, RegisterSerializer, RemoveTokensSerializer, ClientSerializer, ProjectSerializer, AttachmentSerializer, CommentSerializer, TableViewSerializer, BaladyProjectSerializer, LandSurveyProjectSerializer, SortingDeedsProjectSerializer
@@ -17,6 +18,8 @@ from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 
 from django_filters.rest_framework import DjangoFilterBackend
+
+from openpyxl import Workbook
 
 
 class EmployeesViewSet(ModelViewSet):
@@ -51,6 +54,7 @@ class LoginAPI(KnoxLoginView):
         login(request, employee)
         response = super(LoginAPI, self).post(request, format=None)
         if(response.status_code == 200):
+            response.data["id"] = employee.id
             response.data["is_staff"] = employee.is_staff
         return response
     
@@ -150,6 +154,44 @@ class CopyProjectsView(APIView):
             
         except Exception as e:
             return Response({'error': str(e)}, status=400)
+
+class ExportProjectsView(APIView):
+    def get(self, request):
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        if not start_date or not end_date:
+            return Response({'message': 'start_date and end_date are required'}, status=400)
+        
+        try:
+            start_date = timezone.datetime.strptime(start_date, '%Y-%m-%d').date()
+            end_date = timezone.datetime.strptime(end_date, '%Y-%m-%d').date()
+        except:
+            return Response({'message': 'Invalid date format'}, status=400)
+        
+        projects = Project.objects.filter(created_at__range=(start_date, end_date))
+        serializer = ProjectSerializer(projects, many=True)
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'Projects'
+
+        headers = ['id', 'project_name', 'project_type', 'use_type', 'current_stage']
+        ws.append(headers)
+
+        for project in projects:
+            ws.append([project.id, project.project_name, project.project_type, project.use_type, project.current_stage])
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="projects.xlsx"'
+        wb.save(response)
+
+        return response
+    
+
+        # return Response(serializer.data, status=200)
+        
+
 
 class AttachmentsViewSet(ModelViewSet):
     queryset = Attachment.objects.all()
