@@ -130,8 +130,8 @@ class Project(models.Model):
     inactive_projects_start_time = models.DateTimeField(null=True, blank=True) # stage 14 entrance
     inactive_projects_end_time = models.DateTimeField(null=True, blank=True) # stage 14 exit
     
-    
-    
+    # attachments
+    required_attachments = models.JSONField(null=True, blank=True)    
     
 
     design_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='designer', null=True, blank=True)
@@ -232,6 +232,11 @@ class AttachmenTypes(models.TextChoices):
     OldLicense = 'old_license'
     CivilDefense = 'civil_defense'
     WaterAuthority = 'water_authority'
+    ConstructionPlan = 'construction_plan'
+    ElectricalPlan = 'electrical_plan'
+    EnergyEfficiencyPlan = 'energy_efficiency_plan'
+    PlumbingPlan = 'plumbing_plan'
+    ArchitecturePlan = 'architecture_plan'
     Other = 'other'
 
 @deconstructible

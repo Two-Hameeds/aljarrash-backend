@@ -91,9 +91,64 @@ class ProjectSerializer(serializers.ModelSerializer):
         return filtered_fields   
     
     def create(self, validated_data):
-        print("You are trying to create me (create)")
         validated_data['created_at'] = timezone.now()
         validated_data['moved_at'] = timezone.now()
+
+        common_attachments = [
+        "contract",
+        "deed",
+        "identity",
+        "land_survey",
+        "client_form",
+        "architecture_plan",
+        "construction_plan",
+        "plumbing_plan",
+        "electrical_plan",
+        "energy_efficiency_plan",
+        ]
+
+        new_residential_commercial = ["soil_test", "civil_defense"]
+
+        new_other = ["soil_test"]
+        addition = ["old_license", "plan"]
+        add_floors = ["old_license", "load_bearing_certificate", "plan"]
+        restoration = [
+        "old_license",
+        "report",
+        "container_contract",
+        "plan",
+        ]
+        destruction = [
+        "old_license",
+        "coordinate_certificate",
+        "technical_report",
+        "demolition_letters",
+        "civil_defense",
+        "water_authority",
+        ]
+
+        required_attachments = common_attachments
+
+
+        project_type = validated_data['project_type']
+        use_type = validated_data['use_type']
+
+        if(project_type == "new"):
+            if(use_type == "residential_commercial"):
+                required_attachments.append(new_residential_commercial)
+            else:
+                required_attachments.append(new_other)
+        elif(project_type == "addition"):
+            required_attachments.append(addition)
+        elif(project_type == "add_floors"):
+            required_attachments.append(add_floors)
+        elif(project_type == "restoration"):
+            required_attachments.append(restoration)
+        elif(project_type == "destruction"):
+            required_attachments.append(destruction)
+
+        validated_data['required_attachments'] = required_attachments
+
         return super().create(validated_data)
     
     design_eng_name = serializers.SerializerMethodField()  
