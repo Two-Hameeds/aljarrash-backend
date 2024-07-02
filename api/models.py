@@ -237,6 +237,7 @@ class AttachmenTypes(models.TextChoices):
     EnergyEfficiencyPlan = 'energy_efficiency_plan'
     PlumbingPlan = 'plumbing_plan'
     ArchitecturePlan = 'architecture_plan'
+    BuildingPictures = 'building_pictures'
     Other = 'other'
 
 @deconstructible

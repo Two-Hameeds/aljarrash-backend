@@ -110,13 +110,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         new_residential_commercial = ["soil_test", "civil_defense"]
 
         new_other = ["soil_test"]
-        addition = ["old_license", "plan"]
-        add_floors = ["old_license", "load_bearing_certificate", "plan"]
+        addition = ["old_license", "plan", "building_pictures"]
+        add_floors = ["old_license", "load_bearing_certificate", "plan", "building_pictures"]
         restoration = [
         "old_license",
         "report",
         "container_contract",
         "plan",
+        "building_pictures"
         ]
         destruction = [
         "old_license",
@@ -135,17 +136,17 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         if(project_type == "new"):
             if(use_type == "residential_commercial"):
-                required_attachments.append(new_residential_commercial)
+                required_attachments.extend(new_residential_commercial)
             else:
-                required_attachments.append(new_other)
+                required_attachments.extend(new_other)
         elif(project_type == "addition"):
-            required_attachments.append(addition)
+            required_attachments.extend(addition)
         elif(project_type == "add_floors"):
-            required_attachments.append(add_floors)
+            required_attachments.extend(add_floors)
         elif(project_type == "restoration"):
-            required_attachments.append(restoration)
+            required_attachments.extend(restoration)
         elif(project_type == "destruction"):
-            required_attachments.append(destruction)
+            required_attachments.extend(destruction)
 
         validated_data['required_attachments'] = required_attachments
 
