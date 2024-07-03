@@ -278,7 +278,7 @@ class BaladyProjectsViewSet(ModelViewSet):
     serializer_class = BaladyProjectSerializer
     
     filter_backends = [DjangoFilterBackend, ]
-    filterset_fields = ['stage', 'request_status', 'project_type', 'architecture_status', 'construction_status', 'plumbing_status', 'electrical_status']
+    filterset_fields = ['path', 'project_name', 'client_phone']
 
 class LandSurveyProjectsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )

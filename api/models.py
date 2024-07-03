@@ -39,6 +39,8 @@ class Status(models.TextChoices):
     Done = 'Done'
     Hold = 'Hold'
     Not_required = "Not required"
+    Ready = "Ready"
+    No = 'No'
 
 class DesignStatus(models.TextChoices):
     Ground = "Ground floor"
@@ -277,46 +279,76 @@ class TableView(models.Model):
     stage = models.CharField(max_length=100, choices=Stages.choices, null=False, blank=False)
     view = models.JSONField(null=True, blank=True)
 
-class BaladyStages(models.TextChoices):
-    new_construction_license = 'new_construction_license'
-    working_on_it = 'working_on_it'
-    incomplete_or_requirements_are_unclear = 'incomplete_or_requirements_are_unclear'
-    temporarly_stopped_or_technical_issues = 'temporarly_stopped_or_technical_issues'
-    ready_for_pickup = 'ready_for_pickup'
+class BaladyPaths(models.TextChoices):
+    Balady = "balady"
+    Service_Card = "service_card"
+    Quantity_Sorting = "Quantity_Sorting"
+
+class BaladyRequestTypes(models.TextChoices):
+    Issue_License = "issue_license"
+    Convert_License_to_Electronic = "convert_license_to_electronic"
+    Restoration_License = "restoration_license"
+    Add_Modify_Components_License = "add_modify_components_license"
+    Construction_Completion_Certificate = "construction_completion_certificate"
+    
+    license_separation = "license_separation"
+    license_renewal = "license_renewal"
+    demolition_license = "demolition_license"
+    ownership_license_transfer = "ownership_license_transfer"
+    survey_decision = "survey_decision"
+    service_card = "service_card"
+    loading_certificate = "loading_certificate"
+    components_form = "components_form"
+    quantity_sorting = "quantity_sorting"
+
 
 class BaladyProject(models.Model):
-    stage = models.CharField(max_length=100, choices=BaladyStages.choices, null=False, blank=False)
+    design_proj = models.ForeignKey(Project, to_field='id', on_delete=models.SET_NULL, related_name='balady_project', null=True, blank=True)
+
+    path = models.CharField(max_length=100, choices=BaladyPaths.choices, null=False, blank=False)
 
     project_name = models.CharField(max_length=100, null=False, blank=False)
-    request_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
     client_phone = models.ForeignKey(Client, to_field='phone', on_delete=models.CASCADE, related_name='balady_projects', null=False, blank=False)
-    architecture_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    construction_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    plumbing_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    electrical_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    design_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='designer_balady', null=True, blank=True)
-    columns_approval_date = models.DateField(null=True, blank=True)
-    sketch_approval_date = models.DateField(null=True, blank=True)
-    investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
-    project_receipt_date = models.DateField(null=True, blank=True)
-    project_type = models.CharField(max_length=100, choices=ProjectTypes.choices, null=True, blank=True)
-    land_number = models.CharField(max_length=100, null=True, blank=True)
-    land_area = models.FloatField(null=True, blank=True)
-    project_location = models.CharField(max_length=100, null=True, blank=True)
-    project_number = models.CharField(max_length=100, null=True, blank=True)
-    sketch_progress = models.CharField(max_length=100, null=True, blank=True)
-    construction_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL,related_name='contruction_engineer_balady', null=True, blank=True)
-    construction_start_date = models.DateField(null=True, blank=True)
-    construction_review = models.CharField(max_length=255, null=True, blank=True)
-    construction_end_date = models.DateField(null=True, blank=True)
-    electrical_start_date = models.DateField(null=True, blank=True)
-    electrical_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='electrical_engineer_balady', null=True, blank=True)
-    electrical_end_date = models.DateField(null=True, blank=True)
-    architect_start_date = models.DateField(null=True, blank=True)
-    architect_end_date = models.DateField(null=True, blank=True)
-    plumbing_start_date = models.DateField(null=True, blank=True)
-    plumbing_end_date = models.DateField(null=True, blank=True)
-    plan_delivery_date = models.DateField(null=True, blank=True)
+    request_type = models.CharField(max_length=100, choices=BaladyRequestTypes.choices, null=False, blank=False)
+    request_review = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    transaction_stop_reason = models.CharField(max_length=255, null=True, blank=True)
+    technical_report = models.CharField(max_length=255, choices=Status.choices,null=True, blank=True)
+    building_inspection_date = models.DateField(null=True, blank=True)
+    request_ready_date = models.DateField(null=True, blank=True)
+    approval_date = models.DateField(null=True, blank=True)
+    is_eng_needed = models.BooleanField(null=True, blank=True)
+    sorting_purpose = models.CharField(max_length=255, null=True, blank=True)
+    request_submission = models.JSONField(null=True, blank=True)
+    municipality_visit = models.JSONField(null=True, blank=True)
+
+
+    # architecture_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    # construction_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    # plumbing_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    # electrical_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    # design_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='designer_balady', null=True, blank=True)
+    # columns_approval_date = models.DateField(null=True, blank=True)
+    # sketch_approval_date = models.DateField(null=True, blank=True)
+    # investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
+    # project_receipt_date = models.DateField(null=True, blank=True)
+    # project_type = models.CharField(max_length=100, choices=ProjectTypes.choices, null=True, blank=True)
+    # land_number = models.CharField(max_length=100, null=True, blank=True)
+    # land_area = models.FloatField(null=True, blank=True)
+    # project_location = models.CharField(max_length=100, null=True, blank=True)
+    # project_number = models.CharField(max_length=100, null=True, blank=True)
+    # sketch_progress = models.CharField(max_length=100, null=True, blank=True)
+    # construction_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL,related_name='contruction_engineer_balady', null=True, blank=True)
+    # construction_start_date = models.DateField(null=True, blank=True)
+    # construction_review = models.CharField(max_length=255, null=True, blank=True)
+    # construction_end_date = models.DateField(null=True, blank=True)
+    # electrical_start_date = models.DateField(null=True, blank=True)
+    # electrical_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='electrical_engineer_balady', null=True, blank=True)
+    # electrical_end_date = models.DateField(null=True, blank=True)
+    # architect_start_date = models.DateField(null=True, blank=True)
+    # architect_end_date = models.DateField(null=True, blank=True)
+    # plumbing_start_date = models.DateField(null=True, blank=True)
+    # plumbing_end_date = models.DateField(null=True, blank=True)
+    # plan_delivery_date = models.DateField(null=True, blank=True)
  
 
 class LandSurveyStages(models.TextChoices):
