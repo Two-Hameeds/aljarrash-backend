@@ -92,7 +92,16 @@ REST_FRAMEWORK = {
 
 WSGI_APPLICATION = 'aljarrash_backend.wsgi.application'
 
-# ASGI_APPLICATION = 'aljarrash_backend.asgi.application'
+ASGI_APPLICATION = 'aljarrash_backend.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [],
+        }
+    }
+}
 
 
 # Database
