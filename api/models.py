@@ -282,7 +282,7 @@ class TableView(models.Model):
 class BaladyPaths(models.TextChoices):
     Balady = "balady"
     Service_Card = "service_card"
-    Quantity_Sorting = "Quantity_Sorting"
+    Quantity_Sorting = "quantity_sorting"
 
 class BaladyRequestTypes(models.TextChoices):
     Issue_License = "issue_license"
