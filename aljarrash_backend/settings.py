@@ -188,7 +188,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AWS_ACCESS_KEY_ID = 'DO00HHK4GK2CLX8VE2Q9'
 AWS_SECRET_ACCESS_KEY = 'F5PGI3p8lMqK4J0OQ3xZSMvppqSf1l3I+EFGEzeRRFw'
-AWS_STORAGE_BUCKET_NAME = 'aljarrash'
+AWS_STORAGE_BUCKET_NAME = 'static'
 AWS_S3_ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400'
