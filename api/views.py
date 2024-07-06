@@ -111,7 +111,6 @@ class ProjectsViewSet(ModelViewSet):
             data['client_phone'] = instance.client_phone.phone
         else:
             Client.objects.get_or_create(phone=data.get('client_phone'))
-            # data['client_phone'] = client.phone
         
 
         serializer = self.get_serializer(instance, data=data, partial=partial)
@@ -276,6 +275,37 @@ class BaladyProjectsViewSet(ModelViewSet):
     
     queryset = BaladyProject.objects.all()
     serializer_class = BaladyProjectSerializer
+
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        path = instance.path
+        new_path = data.get('path')
+
+        if(data.get('path') == None):
+            data['path'] = instance.path
+        if(data.get('project_name') == None):
+            data['project_name'] = instance.project_name
+        if(data.get('request_type') == None):
+            data['request_type'] = instance.request_type
+            
+        if(data.get('client_phone') == None):
+            data['client_phone'] = instance.client_phone.phone
+        else:
+            Client.objects.get_or_create(phone=data.get('client_phone'))
+        
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        # if(path != data.get('path')):
+        #     instance.moved_at = timezone.now()
+        instance.save()
+        return Response(serializer.data)
     
     filter_backends = [DjangoFilterBackend, ]
     filterset_fields = ['path', 'project_name', 'client_phone']

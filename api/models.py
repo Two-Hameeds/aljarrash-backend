@@ -39,8 +39,8 @@ class Status(models.TextChoices):
     Done = 'Done'
     Hold = 'Hold'
     Not_required = "Not required"
-    Ready = "Ready"
-    No = 'No'
+    Ready = "ready"
+    No = 'no'
 
 class DesignStatus(models.TextChoices):
     Ground = "Ground floor"
