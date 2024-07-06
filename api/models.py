@@ -245,7 +245,7 @@ class AttachmenTypes(models.TextChoices):
 @deconstructible
 class PathAndRename:
     def __call__(self, instance, filename):
-        return f'static/attachments/{instance.type}s/{filename}'
+        return f'attachments/{instance.type}s/{filename}'
     
 class Attachment(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
