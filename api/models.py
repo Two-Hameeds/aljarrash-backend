@@ -322,9 +322,10 @@ class BaladyProject(models.Model):
     municipality_visit = models.JSONField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    moved_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["created_at"]
+        ordering = ["moved_at"]
 
 
 
