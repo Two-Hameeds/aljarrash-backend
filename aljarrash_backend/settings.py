@@ -191,15 +191,12 @@ AWS_SECRET_ACCESS_KEY = 'F5PGI3p8lMqK4J0OQ3xZSMvppqSf1l3I+EFGEzeRRFw'
 AWS_STORAGE_BUCKET_NAME = 'aljarrash'
 AWS_S3_ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
 AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400'
+    'CacheControl': 'max-age=86400',
 }
 AWS_LOCATION = 'static'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
-# TEMP = os.path.join(BASE_DIR, 'temp')
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
