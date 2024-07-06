@@ -157,10 +157,10 @@ class CopyProjectsView(APIView):
 class CopyBaladyProjectsView(APIView):
     def post(self, request):
         ids = request.data.get('ids')
-        stage = request.data.get('stage')
+        path = request.data.get('path')
         
-        if not ids or not stage:
-            return Response({'message': 'ids and stage are required'}, status=400)
+        if not ids or not path:
+            return Response({'message': 'ids and path are required'}, status=400)
         
         try:
             projects = BaladyProject.objects.filter(id__in=ids)
