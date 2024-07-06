@@ -321,35 +321,13 @@ class BaladyProject(models.Model):
     request_submission = models.JSONField(null=True, blank=True)
     municipality_visit = models.JSONField(null=True, blank=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    # architecture_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    # construction_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    # plumbing_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    # electrical_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
-    # design_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='designer_balady', null=True, blank=True)
-    # columns_approval_date = models.DateField(null=True, blank=True)
-    # sketch_approval_date = models.DateField(null=True, blank=True)
-    # investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
-    # project_receipt_date = models.DateField(null=True, blank=True)
-    # project_type = models.CharField(max_length=100, choices=ProjectTypes.choices, null=True, blank=True)
-    # land_number = models.CharField(max_length=100, null=True, blank=True)
-    # land_area = models.FloatField(null=True, blank=True)
-    # project_location = models.CharField(max_length=100, null=True, blank=True)
-    # project_number = models.CharField(max_length=100, null=True, blank=True)
-    # sketch_progress = models.CharField(max_length=100, null=True, blank=True)
-    # construction_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL,related_name='contruction_engineer_balady', null=True, blank=True)
-    # construction_start_date = models.DateField(null=True, blank=True)
-    # construction_review = models.CharField(max_length=255, null=True, blank=True)
-    # construction_end_date = models.DateField(null=True, blank=True)
-    # electrical_start_date = models.DateField(null=True, blank=True)
-    # electrical_eng = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name='electrical_engineer_balady', null=True, blank=True)
-    # electrical_end_date = models.DateField(null=True, blank=True)
-    # architect_start_date = models.DateField(null=True, blank=True)
-    # architect_end_date = models.DateField(null=True, blank=True)
-    # plumbing_start_date = models.DateField(null=True, blank=True)
-    # plumbing_end_date = models.DateField(null=True, blank=True)
-    # plan_delivery_date = models.DateField(null=True, blank=True)
- 
+    class Meta:
+        ordering = ["created_at"]
+
+
+
 
 class LandSurveyStages(models.TextChoices):
     land_survey = 'land_survey'
