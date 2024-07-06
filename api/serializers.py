@@ -170,11 +170,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj_id))
 
         for attachment in attachments_list:
-            if(attachment.type == 'other'):
-                if(attachments.get(attachment.type) == None):
-                    attachments[attachment.type] = {}
-                attachments[attachment.type][attachment.title] = self.context['request'].build_absolute_uri(attachment.attachment.url)
-                continue
+            # if(attachment.type == 'other'):
+            #     if(attachments.get(attachment.type) == None):
+            #         attachments[attachment.type] = {}
+            #     attachments[attachment.type][attachment.title] = self.context['request'].build_absolute_uri(attachment.attachment.url)
+            #     continue
             if(attachment.type not in attachments):
                 attachments[attachment.type] = []
             
