@@ -4,9 +4,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 class AllConsumers(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept()
-        await self.send(text_data=json.dumps({
-            'message': 'Hello there'
-        }))
+        # await self.send(text_data=json.dumps({
+        #     'message': 'Hello there'
+        # }))
     
     async def disconnect(self, close_code):
         pass
