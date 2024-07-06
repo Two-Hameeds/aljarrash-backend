@@ -154,6 +154,33 @@ class CopyProjectsView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=400)
 
+class CopyBaladyProjectsView(APIView):
+    def post(self, request):
+        ids = request.data.get('ids')
+        stage = request.data.get('stage')
+        
+        if not ids or not stage:
+            return Response({'message': 'ids and stage are required'}, status=400)
+        
+        try:
+            projects = BaladyProject.objects.filter(id__in=ids)
+            new_projects = []
+            for project in projects:
+                project.id = None
+                project.path = path
+                project.created_at = timezone.now()
+                project.moved_at = timezone.now()
+                project.save()
+                new_projects.append(project)
+            
+            serializer = BaladyProjectSerializer(new_projects, many=True)
+
+            return Response(serializer.data, status=201)
+            
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
+
 class ExportProjectsView(APIView):
     def get(self, request):
         start_date = request.query_params.get('start_date')
@@ -302,8 +329,8 @@ class BaladyProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        # if(path != data.get('path')):
-        #     instance.moved_at = timezone.now()
+        if(path != data.get('path')):
+            instance.moved_at = timezone.now()
         instance.save()
         return Response(serializer.data)
     

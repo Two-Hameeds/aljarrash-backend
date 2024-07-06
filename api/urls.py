@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import EmployeesViewSet, RegisterAPI, LoginAPI, RemoveTokensAPI, ClientsViewSet, ProjectsViewSet, ExportProjectsView, AttachmentsViewSet, CopyProjectsView, DashboardView, DelayedProjectsView, CommentsViewSet, TableViewsViewSet, BaladyProjectsViewSet, LandSurveyProjectsViewSet, SortingDeedsProjectsViewSet, HelloView
+from .views import EmployeesViewSet, RegisterAPI, LoginAPI, RemoveTokensAPI, ClientsViewSet, ProjectsViewSet, ExportProjectsView, AttachmentsViewSet, CopyProjectsView, DashboardView, DelayedProjectsView, CommentsViewSet, TableViewsViewSet, BaladyProjectsViewSet, LandSurveyProjectsViewSet, SortingDeedsProjectsViewSet, CopyBaladyProjectsView, HelloView
 
 from rest_framework.routers import DefaultRouter
 
@@ -30,5 +30,6 @@ urlpatterns = router.urls + [
     path('logout/', knox_views.LogoutView.as_view(), name="logout"),
     path('logoutall/', knox_views.LogoutAllView.as_view(), name="logoutall"),
     path('remove_tokens/', RemoveTokensAPI.as_view(), name="remove_tokens"),
+    path("balady_projects/copy", CopyBaladyProjectsView.as_view(), name="copy_balady_projects")
 ]
 

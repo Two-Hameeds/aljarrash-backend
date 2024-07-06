@@ -39,7 +39,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return instance
 
 class RemoveTokensSerializer(serializers.ModelSerializer):
-# Suggested code may be subject to a license. Learn more: ~LicenseLog:1636428712.
     class Meta:
         model = Employee
         fields = ["username"]
@@ -306,11 +305,18 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(read_only=True)
+
+
 
     def get_fields(self):
         if(str(self.context["request"].method) == "POST" and self.context["request"].data):
             Client.objects.get_or_create(phone=self.context["request"].data["client_phone"])
         return super().get_fields()
+
+
+    
+    
 
     class Meta:
         model = BaladyProject
