@@ -306,17 +306,36 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
+
+    def get_fields(self):
+        if(str(self.context["request"].method) == "POST" and self.context["request"].data):
+            Client.objects.get_or_create(phone=self.context["request"].data["client_phone"])
+        return super().get_fields()
+
     class Meta:
         model = BaladyProject
         fields = "__all__"
 
 
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
+
+    def get_fields(self):
+        if(str(self.context["request"].method) == "POST" and self.context["request"].data):
+            Client.objects.get_or_create(phone=self.context["request"].data["client_phone"])
+        return super().get_fields()
+
     class Meta:
         model = LandSurveyProject
         fields = "__all__"
 
 class SortingDeedsProjectSerializer(serializers.ModelSerializer):
+
+    def get_fields(self):
+        if(str(self.context["request"].method) == "POST" and self.context["request"].data):
+            Client.objects.get_or_create(phone=self.context["request"].data["client_phone"])
+        return super().get_fields()
+
+        
     class Meta:
         model = SortingDeedsProject
         fields = "__all__"
