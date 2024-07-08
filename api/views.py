@@ -54,7 +54,7 @@ class LoginAPI(KnoxLoginView):
         login(request, employee)
         response = super(LoginAPI, self).post(request, format=None)
         if(response.status_code == 200):
-            response.data["id"] = employee.id
+            response.data["is_superuser"] = employee.is_superuser
             response.data["is_staff"] = employee.is_staff
         return response
     
