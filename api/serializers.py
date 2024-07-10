@@ -324,16 +324,15 @@ class TableViewSerializer(serializers.ModelSerializer):
 class BaladyProjectSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
 
-
-
     def get_fields(self):
+        default = super().get_fields()
+        if not self.context:
+            return default
+
         if(str(self.context["request"].method) == "POST" and self.context["request"].data):
             Client.objects.get_or_create(phone=self.context["request"].data["client_phone"])
-        return super().get_fields()
+        return default
 
-
-    
-    
 
     class Meta:
         model = BaladyProject
