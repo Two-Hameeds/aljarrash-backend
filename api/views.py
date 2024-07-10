@@ -30,6 +30,22 @@ class EmployeesViewSet(ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['username', 'email']
+
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        if(data.get('password') == None):
+            data['password'] = instance.password
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        instance.save()
+
+        return Response(serializer.data)
     
 
 class RegisterAPI(GenericAPIView):

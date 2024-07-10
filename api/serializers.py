@@ -22,7 +22,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         user_permissions = validated_data.pop("user_permissions", None)
         groups = validated_data.pop("groups", None)
         
-        if(password is not None):
+        if(password is not None and not password == instance.password):
             instance.set_password(password)
 
         for attr, value in validated_data.items():
