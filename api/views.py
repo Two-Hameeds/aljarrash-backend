@@ -27,6 +27,9 @@ class EmployeesViewSet(ModelViewSet):
     
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['username', 'email']
     
 
 class RegisterAPI(GenericAPIView):

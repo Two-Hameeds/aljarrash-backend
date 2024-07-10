@@ -14,6 +14,23 @@ class EmployeeSerializer(serializers.ModelSerializer):
         default["name"] = self.get_name(instance)
         
         return super().to_representation(instance)
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+
+        # TODO user_permissions and groups update should be handled individually
+        user_permissions = validated_data.pop("user_permissions", None)
+        groups = validated_data.pop("groups", None)
+        
+        if(password is not None):
+            instance.set_password(password)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        instance.save()
+
+        return instance
     
     class Meta:
         model = Employee
