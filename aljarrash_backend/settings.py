@@ -22,8 +22,7 @@ ALLOWED_HOSTS = ['*']
 
 # CSFR_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
-if 'CODESPACE_NAME' in os.environ:
-    CSRF_TRUSTED_ORIGINS = [f'https://{os.getenv("CODESPACE_NAME")}-8000.{os.getenv("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN")}']
+CSRF_TRUSTED_ORIGINS = ['https://*.cloudworkstations.dev', 'https://*.ondigitalocean.app']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
