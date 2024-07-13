@@ -1,6 +1,7 @@
 import json
-from channels.generic.websocket import WebsocketConsumer
+
 from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
 
 
 class StageConsumer(WebsocketConsumer):
@@ -11,7 +12,7 @@ class StageConsumer(WebsocketConsumer):
         # self.stage = None
 
     def connect(self):
-        self.stage_name = self.scope["url_route"]["kwargs"]["stage_name"]
+        self.stage_name = self.scope['url_route']['kwargs']['stage_name']
         self.stage_group_name = f"stage_{self.stage_name}"
         # self.stage =
 
@@ -24,7 +25,7 @@ class StageConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
-            self.stage_group_name, self.channel_name
+            self.stage_group_name, self.channel_name,
         )
 
     def receive(self, text_data=None, bytes_data=None):
@@ -32,7 +33,7 @@ class StageConsumer(WebsocketConsumer):
         message = text_data_json["message"]
 
         async_to_sync(self.channel_layer.group_send)(
-            self.stage_group_name, {"type": "send_stage_message", "message": message}
+            self.stage_group_name, {'type': 'send_stage_message', 'message': message}
         )
 
     def send_stage_message(self, event):
