@@ -1,36 +1,39 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer
+from asgiref.sync import async_to_sync
 
-class StageConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        self.stage_name = self.scope['url_route']['kwargs']['stage_name']
-        self.stage_group_name = f'stage_{self.stage_name}'
 
-        await self.channel_layer.group_add(
+class StageConsumer(WebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stage_name = None
+        self.stage_group_name = None
+        # self.stage = None
+
+    def connect(self):
+        self.stage_name = self.scope["url_route"]["kwargs"]["stage_name"]
+        self.stage_group_name = f"stage_{self.stage_name}"
+        # self.stage =
+
+        self.accept()
+
+        async_to_sync(self.channel_layer.group_add)(
             self.stage_group_name,
-            self.channel_name
+            self.channel_name,
         )
 
-        await self.accept()
-    
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.stage_group_name,
-            self.channel_name
+    def disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.stage_group_name, self.channel_name
         )
 
-    async def receive(self, text_data):
+    def receive(self, text_data=None, bytes_data=None):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        message = text_data_json["message"]
 
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+        async_to_sync(self.channel_layer.group_send)(
+            self.stage_group_name, {"type": "send_stage_message", "message": message}
+        )
 
-
-    async def send_stage_message(self, event):
-        message = event['message']
-
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+    def send_stage_message(self, event):
+        self.send(text_data=json.dumps(event))

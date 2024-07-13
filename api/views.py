@@ -106,7 +106,6 @@ class ProjectsViewSet(ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.order_by('moved_at')
-        print("triggered")
         return queryset
     
     def update(self, request, *args, **kwargs):
