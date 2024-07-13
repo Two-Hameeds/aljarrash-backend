@@ -24,7 +24,7 @@ class StageConsumer(AsyncWebsocketConsumer):
         message = text_data_json['message']
 
         await self.send(text_data=json.dumps({
-            'message': messgae
+            'message': message
         }))
 
 
@@ -32,5 +32,5 @@ class StageConsumer(AsyncWebsocketConsumer):
         message = event['message']
 
         await self.send(text_data=json.dumps({
-            'message': messgae
+            'message': message
         }))
