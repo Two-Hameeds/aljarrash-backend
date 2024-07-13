@@ -214,7 +214,7 @@ class Project(models.Model):
             return ""
         return self.project_name
     
-class AttachmenTypes(models.TextChoices):
+class AttachmentTypes(models.TextChoices):
     Contract = 'contract'
     Deed = 'deed'
     Report = 'report'
@@ -222,6 +222,7 @@ class AttachmenTypes(models.TextChoices):
     ContainerContract = 'container_contract'
     License = 'license'
     Plan = 'plan'
+    OldPlan = 'old_plan'
     LoadBearingCertificate = 'load_bearing_certificate'
     LocationCertificate = 'location_certificate'
     LandSurvey = 'land_survey'
@@ -249,7 +250,7 @@ class PathAndRename:
     
 class Attachment(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
-    type = models.CharField(max_length=100, choices=AttachmenTypes.choices, null=False, blank=False)
+    type = models.CharField(max_length=100, choices=AttachmentTypes.choices, null=False, blank=False)
     attachment = models.FileField(upload_to=PathAndRename(), null=False, blank=False)
     uploaded_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
     uploaded_for = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
