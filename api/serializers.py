@@ -244,22 +244,67 @@ class ProjectSerializer(serializers.ModelSerializer):
         if not self.context:
             return {}
 
+        all_primary = [
+            "contract",
+            "deed",
+            "report",
+            "identity",
+            "container_contract",
+            "plan",
+            "load_bearing_certificate",
+            "location_certificate",
+            "land_survey",
+            "soil_test",
+            "coordinate_certificate",
+            "demolition_letters",
+            "client_form",
+            "old_license",
+            "civil_defense",
+            "water_authority",
+        ]
+
+        all_secondary = {
+            "technical_report",
+        }
+
+        all_final = [
+            "architecture_plan",
+            "construction_plan",
+            "plumbing_plan",
+            "electrical_plan",
+            "energy_efficiency_plan",
+            "civil_defense",
+        ]
+
         attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj_id))
+        primary = []
+        secondary = []
+        final = []
 
         for attachment in attachments_list:
-            # if(attachment.type == 'other'):
-            #     if(attachments.get(attachment.type) == None):
-            #         attachments[attachment.type] = {}
-            #     attachments[attachment.type][attachment.title] = self.context['request'].build_absolute_uri(attachment.attachment.url)
-            #     continue
+            if(attachment.type in all_primary):
+                primary.append(attachment.type)
+            elif(attachment.type in all_secondary):
+                secondary.append(attachment.type)
+            elif(attachment.type in all_final):
+                final.append(attachment.type)
+
             if attachment.type not in attachments:
                 attachments[attachment.type] = []
 
             attachments[attachment.type].insert(
                 0, self.context["request"].build_absolute_uri(attachment.attachment.url)
             )
-        return attachments
+        # required_primary = [primary_instance for primary_instance in all_primary if primary_instance in instance.required_attachments]
+        primary_status = len(all_primary) == len(primary)
+        secondary_status = len(all_secondary) == len(secondary)
+        final_status = len(all_final) == len(final)
+
+        print(f"{primary=}")
+        print(f"{all_primary=}")
+
+        return [attachments, primary_status, secondary_status, final_status]
 
     def get_comments_count(self, obj_id):
         return Comment.objects.filter(written_for=obj_id).count()
@@ -297,7 +342,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         if "corrector" in default:
             default["corrector_name"] = self.get_corrector_name(instance)
 
-        default["attachments"] = self.get_attachments(instance.id)
+        default["attachments"] = self.get_attachments(instance.id)[0]
+        default["primary_status"] = self.get_attachments(instance.id)[1]
+        default["secondary_status"] = self.get_attachments(instance.id)[2]
+        default["final_status"] = self.get_attachments(instance.id)[3]
         default["comments_count"] = self.get_comments_count(instance.id)
 
         return default
