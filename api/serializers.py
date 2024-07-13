@@ -240,7 +240,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     electrical_reviewer_name = serializers.SerializerMethodField()
     corrector_name = serializers.SerializerMethodField()
 
-    def get_attachments(self, obj_id):
+    def get_attachments(self, obj):
         if not self.context:
             return {}
 
@@ -277,18 +277,21 @@ class ProjectSerializer(serializers.ModelSerializer):
         ]
 
         attachments = {}
-        attachments_list = list(Attachment.objects.filter(uploaded_for=obj_id))
+        attachments_list = list(Attachment.objects.filter(uploaded_for=obj.id))
         primary = []
         secondary = []
         final = []
 
         for attachment in attachments_list:
             if(attachment.type in all_primary):
-                primary.append(attachment.type)
+                if attachment.type not in primary:
+                    primary.append(attachment.type)
             elif(attachment.type in all_secondary):
-                secondary.append(attachment.type)
+                if attachment.type not in secondary:
+                    secondary.append(attachment.type)
             elif(attachment.type in all_final):
-                final.append(attachment.type)
+                if attachment.type not in final:
+                    final.append(attachment.type)
 
             if attachment.type not in attachments:
                 attachments[attachment.type] = []
@@ -296,13 +299,15 @@ class ProjectSerializer(serializers.ModelSerializer):
             attachments[attachment.type].insert(
                 0, self.context["request"].build_absolute_uri(attachment.attachment.url)
             )
-        # required_primary = [primary_instance for primary_instance in all_primary if primary_instance in instance.required_attachments]
-        primary_status = len(all_primary) == len(primary)
-        secondary_status = len(all_secondary) == len(secondary)
-        final_status = len(all_final) == len(final)
+        required_primary = [primary_instance for primary_instance in all_primary if primary_instance in obj.required_attachments]
+        required_secondary = [secondary_instance for secondary_instance in all_secondary if secondary_instance in obj.required_attachments]
+        required_final = [final_instance for final_instance in all_final if final_instance in obj.required_attachments]
+        primary_status = len(required_primary) == len(primary)
+        secondary_status = len(required_secondary) == len(secondary)
+        final_status = len(required_final) == len(final)
 
-        print(f"{primary=}")
-        print(f"{all_primary=}")
+        print(f"{required_final=}")
+        print(f"{final=}")
 
         return [attachments, primary_status, secondary_status, final_status]
 
@@ -342,10 +347,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         if "corrector" in default:
             default["corrector_name"] = self.get_corrector_name(instance)
 
-        default["attachments"] = self.get_attachments(instance.id)[0]
-        default["primary_status"] = self.get_attachments(instance.id)[1]
-        default["secondary_status"] = self.get_attachments(instance.id)[2]
-        default["final_status"] = self.get_attachments(instance.id)[3]
+        default["attachments"] = self.get_attachments(instance)[0]
+        default["primary_status"] = self.get_attachments(instance)[1]
+        default["secondary_status"] = self.get_attachments(instance)[2]
+        default["final_status"] = self.get_attachments(instance)[3]
         default["comments_count"] = self.get_comments_count(instance.id)
 
         return default
