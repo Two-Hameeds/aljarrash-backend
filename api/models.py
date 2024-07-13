@@ -1,11 +1,22 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
 from django.utils.deconstruct import deconstructible
 from django.contrib.auth.models import AbstractUser
 
-from .choices import ProjectTypes, UseTypes, Status, DesignStatus, FollowUpTypes, StructuralReviewStatus, Stages, AttachmentTypes, BaladyPaths, BaladyRequestTypes, LandSurveyStages, SortingDeedsStages
+from .choices import (
+    ProjectTypes,
+    UseTypes,
+    Status,
+    DesignStatus,
+    FollowUpTypes,
+    StructuralReviewStatus,
+    Stages,
+    AttachmentTypes,
+    BaladyPaths,
+    BaladyRequestTypes,
+    LandSurveyStages,
+    SortingDeedsStages,
+)
 
 
 class Employee(AbstractUser):

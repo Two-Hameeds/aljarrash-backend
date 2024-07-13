@@ -1,6 +1,6 @@
 from django.urls import re_path
-from . import consumers
+from . import StageConsumer
 
 websocket_urlpatterns = [
-    re_path(r'ws/notifications', consumers.AllConsumers.as_asgi()),
+    re_path(r'ws/stage/(?P<stage_name>\w+)/$', consumers.StageConsumer.as_asgi()),
 ]
