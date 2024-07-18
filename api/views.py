@@ -300,6 +300,21 @@ class AttachmentsViewSet(ModelViewSet):
     ]
     filterset_fields = ["uploaded_for", "uploaded_by"]
 
+class RequiredAttachmentsViewSet(GenericAPIView):
+    
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+        required_attachments = project.required_attachments
+        current_attachments = Attachment.objects.filter(uploaded_for=project)
+        
+        return Response({"required_attachments": required_attachments, "current_attachments": current_attachments.values('type', 'attachment')}, status=200)
+    
+    def update(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+        required_attachments = request.data.get('required_attachments')
+        project.required_attachments = required_attachments
+        project.save()
+        return Response({"message": "Required attachments updated successfully"}, status=200)
 
 class DashboardView(APIView):
     def get(self, request):
