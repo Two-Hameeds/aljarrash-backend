@@ -23,8 +23,15 @@ ALLOWED_HOSTS = ['*']
 # CSFR_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
 CSRF_TRUSTED_ORIGINS = ['jellyfish-app-ebfd5.ondigitalocean.app', 'https://*.cloudworkstations.dev', 'https://*.ondigitalocean.app']
+
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_HTTPONLY = True
+
 SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_HTTPONLY = True
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -65,7 +72,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 ROOT_URLCONF = 'aljarrash_backend.urls'
 
 TEMPLATES = [
