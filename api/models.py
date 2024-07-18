@@ -35,6 +35,7 @@ class Client(models.Model):
 
 
 class Project(models.Model):
+    global_id = models.IntegerField(null=True, blank=True)
     # essential info
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
@@ -267,6 +268,7 @@ class TableView(models.Model):
 
 
 class BaladyProject(models.Model):
+    global_id = models.IntegerField(null=True, blank=True)
     design_proj = models.ForeignKey(
         Project,
         to_field="id",
@@ -315,6 +317,7 @@ class BaladyProject(models.Model):
 
 
 class LandSurveyProject(models.Model):
+    global_id = models.IntegerField(null=True, blank=True)
     stage = models.CharField(
         max_length=100, choices=LandSurveyStages.choices, null=False, blank=False
     )
@@ -341,6 +344,7 @@ class LandSurveyProject(models.Model):
 
 
 class SortingDeedsProject(models.Model):
+    global_id = models.IntegerField(null=True, blank=True)
     stage = models.CharField(
         max_length=100, choices=SortingDeedsStages.choices, null=False, blank=False
     )

@@ -182,6 +182,11 @@ class ProjectsViewSet(ModelViewSet):
         instance = serializer.save()
         if current_stage != data.get("current_stage"):
             instance.moved_at = timezone.now()
+            if instance.history == None:
+                instance.history = []
+            instance.history.append(
+                {"moved_by": str(self.request.user), "moved_at": str(timezone.now()), "from": current_stage, "to": new_stage}
+            )
         instance.save()
         return Response(serializer.data)
 

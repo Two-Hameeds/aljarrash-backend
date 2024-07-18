@@ -141,30 +141,30 @@ class ProjectSerializer(serializers.ModelSerializer):
         validated_data["created_at"] = timezone.now()
         validated_data["moved_at"] = timezone.now()
 
-        allFilesTypes = [
-            "contract",
-            "deed",
-            "identity",
-            "land_survey",
-            "client_form",
-            "architecture_plan",
-            "construction_plan",
-            "plumbing_plan",
-            "electrical_plan",
-            "energy_efficiency_plan",
-            "soil_test",
-            "civil_defense",
-            "old_license",
-            "plan",
-            "building_pictures",
-            "load_bearing_certificate",
-            "report",
-            "container_contract",
-            "coordinate_certificate",
-            "technical_report",
-            "demolition_letters",
-            "water_authority",
-        ]
+        # allFilesTypes = [
+        #     "contract",
+        #     "deed",
+        #     "identity",
+        #     "land_survey",
+        #     "client_form",
+        #     "architecture_plan",
+        #     "construction_plan",
+        #     "plumbing_plan",
+        #     "electrical_plan",
+        #     "energy_efficiency_plan",
+        #     "soil_test",
+        #     "civil_defense",
+        #     "old_license",
+        #     "plan",
+        #     "building_pictures",
+        #     "load_bearing_certificate",
+        #     "report",
+        #     "container_contract",
+        #     "coordinate_certificate",
+        #     "technical_report",
+        #     "demolition_letters",
+        #     "water_authority",
+        # ]
 
         
 
