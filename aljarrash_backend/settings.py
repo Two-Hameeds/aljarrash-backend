@@ -22,11 +22,13 @@ ALLOWED_HOSTS = ['*']
 
 # CSFR_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
-CSRF_TRUSTED_ORIGINS = ['https://*.cloudworkstations.dev', 'https://*.ondigitalocean.app']
+CSRF_TRUSTED_ORIGINS = ['jellyfish-app-ebfd5.ondigitalocean.app', 'https://*.cloudworkstations.dev', 'https://*.ondigitalocean.app']
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_ALL_ORIGINS = True
+
 
 # Application definition
 
