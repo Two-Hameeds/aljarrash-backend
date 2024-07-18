@@ -19,6 +19,7 @@ from .views import (
     BaladyProjectsViewSet,
     LandSurveyProjectsViewSet,
     SortingDeedsProjectsViewSet,
+    GlobalIDsViewSet,
     CopyBaladyProjectsView,
     HelloView,
 )
@@ -39,6 +40,7 @@ router.register("attachments", AttachmentsViewSet)
 router.register("balady_projects", BaladyProjectsViewSet)
 router.register("land_survey_projects", LandSurveyProjectsViewSet)
 router.register("sorting_deeds_projects", SortingDeedsProjectsViewSet)
+router.register("global_ids", GlobalIDsViewSet)
 
 urlpatterns = router.urls + [
     path("projects/copy", CopyProjectsView.as_view(), name="copy_projects"),

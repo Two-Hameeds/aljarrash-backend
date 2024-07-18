@@ -9,6 +9,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
+    GlobalID,
 )
 from django.utils import timezone
 from pathlib import Path
@@ -498,4 +499,9 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SortingDeedsProject
+        fields = "__all__"
+
+class GlobalIDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GlobalID
         fields = "__all__"

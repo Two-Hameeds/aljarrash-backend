@@ -15,6 +15,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
+    GlobalID,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -28,6 +29,7 @@ from .serializers import (
     BaladyProjectSerializer,
     LandSurveyProjectSerializer,
     SortingDeedsProjectSerializer,
+    GlobalIDSerializer
 )
 from .permissions import HasGroupPermission
 
@@ -482,3 +484,7 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
         DjangoFilterBackend,
     ]
     filterset_fields = ["stage"]
+
+class GlobalIDsViewSet(ModelViewSet):
+    queryset = GlobalID.objects.all()
+    serializer_class = GlobalIDSerializer
