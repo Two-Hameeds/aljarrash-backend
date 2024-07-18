@@ -23,6 +23,8 @@ ALLOWED_HOSTS = ['*']
 # CSFR_TRUSTED_ORIGINS = ['https://*.azurewebsites.net']
 
 CSRF_TRUSTED_ORIGINS = ['https://*.cloudworkstations.dev', 'https://*.ondigitalocean.app']
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
