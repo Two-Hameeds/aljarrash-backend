@@ -323,9 +323,9 @@ class RequiredAttachmentsViewSet(GenericAPIView):
                 0, (attachment.attachment.url)
             )
         
-        return Response({"required_attachments": required_attachments, "current_attachments": attachments}, status=200)
+        return Response({"required_attachments": required_attachments, "current_attachments": attachments}, status=200)        
     
-    def update(self, request, project_id):
+    def put(self, request, project_id):
         project = Project.objects.get(id=project_id)
         required_attachments = request.data.get('required_attachments')
         project.required_attachments = required_attachments
