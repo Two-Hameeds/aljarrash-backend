@@ -91,6 +91,7 @@ class ClientSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(read_only=True)
+    history = serializers.JSONField(read_only=True)
 
     def get_filtered_fields(self, default):
         user = self.context["request"].user
@@ -165,8 +166,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         #     "demolition_letters",
         #     "water_authority",
         # ]
-
-        
 
         common_attachments = [
             "contract",
@@ -306,9 +305,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         primary_status = len(required_primary) == len(primary)
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
-
-        print(f"{required_final=}")
-        print(f"{final=}")
 
         return [attachments, primary_status, secondary_status, final_status]
 

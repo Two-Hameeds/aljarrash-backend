@@ -312,9 +312,18 @@ class RequiredAttachmentsViewSet(GenericAPIView):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         required_attachments = project.required_attachments
-        current_attachments = Attachment.objects.filter(uploaded_for=project)
         
-        return Response({"required_attachments": required_attachments, "current_attachments": current_attachments.values('type', 'attachment')}, status=200)
+        attachments = {}
+        attachments_list = list(Attachment.objects.filter(uploaded_for=project))
+        
+        for attachment in attachments_list:
+            if attachment.type not in attachments:
+                attachments[attachment.type] = []
+            attachments[attachment.type].insert(
+                0, (attachment.attachment.url)
+            )
+        
+        return Response({"required_attachments": required_attachments, "current_attachments": attachments}, status=200)
     
     def update(self, request, project_id):
         project = Project.objects.get(id=project_id)
