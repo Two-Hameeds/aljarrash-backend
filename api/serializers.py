@@ -418,6 +418,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = "__all__"
         
+class RequiredAttachmentSerializer(serializers.Serializer):
+    required_attachments = serializers.ListField()
 
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)

@@ -24,6 +24,7 @@ from .serializers import (
     ClientSerializer,
     ProjectSerializer,
     AttachmentSerializer,
+    RequiredAttachmentSerializer,
     CommentSerializer,
     TableViewSerializer,
     BaladyProjectSerializer,
@@ -308,6 +309,7 @@ class AttachmentsViewSet(ModelViewSet):
     filterset_fields = ["uploaded_for", "uploaded_by"]
 
 class RequiredAttachmentsViewSet(GenericAPIView):
+    serializer_class = RequiredAttachmentSerializer
     
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
@@ -330,7 +332,19 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         required_attachments = request.data.get('required_attachments')
         project.required_attachments = required_attachments
         project.save()
-        return Response({"message": "Required attachments updated successfully"}, status=200)
+        
+        attachments = {}
+        attachments_list = list(Attachment.objects.filter(uploaded_for=project))
+        
+        for attachment in attachments_list:
+            if attachment.type not in attachments:
+                attachments[attachment.type] = []
+            attachments[attachment.type].insert(
+                0, (attachment.attachment.url)
+            )
+        
+        
+        return Response({"required_attachments": required_attachments, "current_attachments": attachments}, status=200)
 
 class DashboardView(APIView):
     def get(self, request):
