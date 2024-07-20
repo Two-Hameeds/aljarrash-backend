@@ -469,6 +469,16 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
                 phone=self.context["request"].data["client_phone"]
             )
         return default
+    
+    def create(self, validated_data):
+        result = super().create(validated_data)
+        if(validated_data.get("global_id") == None):
+            global_id, created  = GlobalID.objects.get_or_create(
+                balady_id = result
+            )
+            result.global_id = global_id.id
+            result.save()
+        return result
 
     class Meta:
         model = BaladyProject
@@ -486,6 +496,16 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
                 phone=self.context["request"].data["client_phone"]
             )
         return super().get_fields()
+    
+    def create(self, validated_data):
+        result = super().create(validated_data)
+        if(validated_data.get("global_id") == None):
+            global_id, created  = GlobalID.objects.get_or_create(
+                land_id = result
+            )
+            result.global_id = global_id.id
+            result.save()
+        return result
 
     class Meta:
         model = LandSurveyProject
@@ -503,6 +523,16 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
                 phone=self.context["request"].data["client_phone"]
             )
         return super().get_fields()
+    
+    def create(self, validated_data):
+        result = super().create(validated_data)
+        if(validated_data.get("global_id") == None):
+            global_id, created  = GlobalID.objects.get_or_create(
+                sorting_id = result
+            )
+            result.global_id = global_id.id
+            result.save()
+        return result
 
     class Meta:
         model = SortingDeedsProject
