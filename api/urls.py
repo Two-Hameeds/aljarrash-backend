@@ -21,6 +21,7 @@ from .views import (
     SortingDeedsProjectsViewSet,
     GlobalIDsViewSet,
     CopyBaladyProjectsView,
+    MoveProjectsViewSet,
     HelloView,
 )
 
@@ -44,6 +45,7 @@ router.register("global_ids", GlobalIDsViewSet)
 
 urlpatterns = router.urls + [
     path("projects/copy", CopyProjectsView.as_view(), name="copy_projects"),
+    path("move_projects/", MoveProjectsViewSet.as_view(), name="move_projects"),
     path("projects/export", ExportProjectsView.as_view(), name="export_projects"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("delayed_projects/", DelayedProjectsView.as_view(), name="delayed_projects"),

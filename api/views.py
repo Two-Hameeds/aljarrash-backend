@@ -516,3 +516,17 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 class GlobalIDsViewSet(ModelViewSet):
     queryset = GlobalID.objects.all()
     serializer_class = GlobalIDSerializer
+    
+class MoveProjectsViewSet(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        
+        name_to_model = {"design": Project, "balady": BaladyProject, "sorting": SortingDeedsProject, "land": LandSurveyProject}
+        
+        from_model = name_to_model.get(data.get("from"))
+        to_model = name_to_model.get(data.get("to"))
+        
+        origin_instance = from_model.objects.filter(id=data.get("id"))[0]
+        to_model.objects.create(project_name=origin_instance.project_name, current_stage="sketch", client_phone=origin_instance.client_phone, project_type="new", use_type="residential")
+        
+        return Response({"status": "Moved"}, status=200)
