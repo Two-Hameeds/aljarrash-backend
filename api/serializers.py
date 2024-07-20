@@ -88,6 +88,42 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class AttachmentSerializer(serializers.ModelSerializer):
+    uploaded_at = serializers.DateTimeField(read_only=True)
+
+    def create(self, validated_data):
+        validated_data["uploaded_at"] = timezone.now()
+        return super().create(validated_data)
+
+    class Meta:
+        model = Attachment
+        fields = "__all__"
+        
+class RequiredAttachmentSerializer(serializers.Serializer):
+    required_attachments = serializers.ListField()
+
+class CommentSerializer(serializers.ModelSerializer):
+    written_at = serializers.DateTimeField(read_only=True)
+    written_by = serializers.CharField(read_only=True)
+
+    def create(self, validated_data):
+        validated_data["written_at"] = timezone.now()
+        if str(self.context["request"].user) == "AnonymousUser":
+            validated_data["written_by"] = None
+        else:
+            validated_data["written_by"] = self.context["request"].user
+        return super().create(validated_data)
+
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+
+class TableViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TableView
+        fields = "__all__"
+
 class ProjectSerializer(serializers.ModelSerializer):
 
     created_at = serializers.DateTimeField(read_only=True)
@@ -141,7 +177,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["created_at"] = timezone.now()
         validated_data["moved_at"] = timezone.now()
-
+        
         # allFilesTypes = [
         #     "contract",
         #     "deed",
@@ -226,8 +262,16 @@ class ProjectSerializer(serializers.ModelSerializer):
             required_attachments.extend(destruction)
 
         validated_data["required_attachments"] = required_attachments
+        
+        result = super().create(validated_data)
+        if(validated_data.get("global_id") == None):
+            global_id, created  = GlobalID.objects.get_or_create(
+                design_id = result
+            )
+            result.global_id = global_id.id
+            result.save()
 
-        return super().create(validated_data)
+        return result
 
     design_eng_name = serializers.SerializerMethodField()
     architect_name = serializers.SerializerMethodField()
@@ -407,41 +451,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         return obj.corrector.first_name
 
 
-class AttachmentSerializer(serializers.ModelSerializer):
-    uploaded_at = serializers.DateTimeField(read_only=True)
-
-    def create(self, validated_data):
-        validated_data["uploaded_at"] = timezone.now()
-        return super().create(validated_data)
-
-    class Meta:
-        model = Attachment
-        fields = "__all__"
-        
-class RequiredAttachmentSerializer(serializers.Serializer):
-    required_attachments = serializers.ListField()
-
-class CommentSerializer(serializers.ModelSerializer):
-    written_at = serializers.DateTimeField(read_only=True)
-    written_by = serializers.CharField(read_only=True)
-
-    def create(self, validated_data):
-        validated_data["written_at"] = timezone.now()
-        if str(self.context["request"].user) == "AnonymousUser":
-            validated_data["written_by"] = None
-        else:
-            validated_data["written_by"] = self.context["request"].user
-        return super().create(validated_data)
-
-    class Meta:
-        model = Comment
-        fields = "__all__"
-
-
-class TableViewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TableView
-        fields = "__all__"
 
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
