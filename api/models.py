@@ -137,7 +137,7 @@ class Project(models.Model):
     )
     plumbing_start_date = models.DateField(null=True, blank=True)
     plumbing_end_date = models.DateField(null=True, blank=True)
-    plumbin_stop_reason = models.CharField(max_length=255, null=True, blank=True)
+    plumbing_stop_reason = models.CharField(max_length=255, null=True, blank=True)
     electrical_status = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
