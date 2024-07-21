@@ -30,7 +30,7 @@ from .serializers import (
     BaladyProjectSerializer,
     LandSurveyProjectSerializer,
     SortingDeedsProjectSerializer,
-    GlobalIDSerializer
+    GlobalIDSerializer,
 )
 from .permissions import HasGroupPermission
 
@@ -73,16 +73,17 @@ class EmployeesViewSet(ModelViewSet):
         instance.save()
 
         return Response(serializer.data)
-    
+
+
 class EngineersView(APIView):
     def get(self, request):
         groups = Group.objects.all()
-        response = { }
+        response = {}
         for group in groups:
             Employee.objects.filter(groups=group)
-            serializer = Employee.objects.filter(groups=group).values('id', 'username')
+            serializer = Employee.objects.filter(groups=group).values("id", "username")
             response[group.name] = serializer
-            
+
         return Response(response)
 
 
@@ -186,7 +187,12 @@ class ProjectsViewSet(ModelViewSet):
             if instance.history == None:
                 instance.history = []
             instance.history.append(
-                {"moved_by": str(self.request.user), "moved_at": str(timezone.now()), "from": current_stage, "to": new_stage}
+                {
+                    "moved_by": str(self.request.user),
+                    "moved_at": str(timezone.now()),
+                    "from": current_stage,
+                    "to": new_stage,
+                }
             )
         instance.save()
         return Response(serializer.data)
@@ -308,43 +314,52 @@ class AttachmentsViewSet(ModelViewSet):
     ]
     filterset_fields = ["uploaded_for", "uploaded_by"]
 
+
 class RequiredAttachmentsViewSet(GenericAPIView):
     serializer_class = RequiredAttachmentSerializer
-    
+
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         required_attachments = project.required_attachments
-        
+
         attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=project))
-        
+
         for attachment in attachments_list:
             if attachment.type not in attachments:
                 attachments[attachment.type] = []
-            attachments[attachment.type].insert(
-                0, (attachment.attachment.url)
-            )
-        
-        return Response({"required_attachments": required_attachments, "current_attachments": attachments}, status=200)        
-    
+            attachments[attachment.type].insert(0, (attachment.attachment.url))
+
+        return Response(
+            {
+                "required_attachments": required_attachments,
+                "current_attachments": attachments,
+            },
+            status=200,
+        )
+
     def put(self, request, project_id):
         project = Project.objects.get(id=project_id)
-        required_attachments = request.data.get('required_attachments')
+        required_attachments = request.data.get("required_attachments")
         project.required_attachments = required_attachments
         project.save()
-        
+
         attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=project))
-        
+
         for attachment in attachments_list:
             if attachment.type not in attachments:
                 attachments[attachment.type] = []
-            attachments[attachment.type].insert(
-                0, (attachment.attachment.url)
-            )
-        
-        
-        return Response({"required_attachments": required_attachments, "current_attachments": attachments}, status=200)
+            attachments[attachment.type].insert(0, (attachment.attachment.url))
+
+        return Response(
+            {
+                "required_attachments": required_attachments,
+                "current_attachments": attachments,
+            },
+            status=200,
+        )
+
 
 class DashboardView(APIView):
     def get(self, request):
@@ -513,20 +528,43 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
+
 class GlobalIDsViewSet(ModelViewSet):
     queryset = GlobalID.objects.all()
     serializer_class = GlobalIDSerializer
-    
+
+
 class MoveProjectsViewSet(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
-        
-        name_to_model = {"design": Project, "balady": BaladyProject, "sorting": SortingDeedsProject, "land": LandSurveyProject}
-        
-        from_model = name_to_model.get(data.get("from"))
-        to_model = name_to_model.get(data.get("to"))
-        
+
+        get_model_serializer = {
+            "design": {"model": Project, "serializer": ProjectSerializer},
+            "balady": {"model": BaladyProject, "serializer": BaladyProjectSerializer},
+            "sorting": {
+                "model": SortingDeedsProject,
+                "serializer": SortingDeedsProjectSerializer,
+            },
+            "land": {
+                "model": LandSurveyProject,
+                "serializer": LandSurveyProjectSerializer,
+            },
+        }
+
+        from_model = get_model_serializer[data.get("from")]["model"]
+        to_serializer = get_model_serializer[data.get("to")]["serializer"]
+
         origin_instance = from_model.objects.filter(id=data.get("id"))[0]
-        to_model.objects.create(project_name=origin_instance.project_name, current_stage="sketch", client_phone=origin_instance.client_phone, project_type="new", use_type="residential")
-        
+        params = {
+            "project_name": origin_instance.project_name,
+            "current_stage": "sketch",
+            "client_phone": origin_instance.client_phone.phone,
+            "project_type": "new",
+            "use_type": "residential",
+        }
+
+        serializer = to_serializer(data=params, many=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response({"status": "Moved"}, status=200)
