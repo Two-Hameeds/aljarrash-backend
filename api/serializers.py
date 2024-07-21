@@ -273,17 +273,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         return result
 
-    design_eng_name = serializers.SerializerMethodField()
-    architect_name = serializers.SerializerMethodField()
-    construction_eng_name = serializers.SerializerMethodField()
-    plumbing_eng_name = serializers.SerializerMethodField()
-    electrical_eng_name = serializers.SerializerMethodField()
-    architecture_reviewer_name = serializers.SerializerMethodField()
-    construction_reviewer_name = serializers.SerializerMethodField()
-    plumbing_reviewer_name = serializers.SerializerMethodField()
-    electrical_reviewer_name = serializers.SerializerMethodField()
-    corrector_name = serializers.SerializerMethodField()
-
     def get_attachments(self, obj):
         if not self.context:
             return {}
