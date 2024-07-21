@@ -152,7 +152,7 @@ class Project(models.Model):
     electrical_end_date = models.DateField(null=True, blank=True)
     electrical_stop_reason = models.CharField(max_length=255, null=True, blank=True)
     architecture_review = models.CharField(max_length=255, null=True, blank=True)
-    architecture_reviewer = models.ForeignKey(
+    architect_reviewer = models.ForeignKey(
         Employee,
         on_delete=models.SET_NULL,
         related_name="architecture_reviewer",

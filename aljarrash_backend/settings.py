@@ -116,10 +116,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': "db",
-        'HOST': "app-146b4b6c-518c-42c0-85bd-29ec9855e5ef-do-user-16378565-0.c.db.ondigitalocean.com",
+        'HOST': "app-91f8f4e8-ca94-4de0-b669-aa183dba8756-do-user-17044419-0.b.db.ondigitalocean.com",
         'PORT': '25060',
         'USER': "db",
-        'PASSWORD': "AVNS_23b4EChwei2H0TJwEb4",
+        'PASSWORD': "AVNS_r_YqP2naO58Dd_v5bgu",
+        'SSLMODE': 'require'
     }
 }
 
