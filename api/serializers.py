@@ -309,7 +309,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             "civil_defense",
         ]
 
-        attachments = {}
+        # attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj.id))
         primary = []
         secondary = []
@@ -326,12 +326,12 @@ class ProjectSerializer(serializers.ModelSerializer):
                 if attachment.type not in final:
                     final.append(attachment.type)
 
-            if attachment.type not in attachments:
-                attachments[attachment.type] = []
+            # if attachment.type not in attachments:
+            #     attachments[attachment.type] = []
 
-            attachments[attachment.type].insert(
-                0, self.context["request"].build_absolute_uri(attachment.attachment.url)
-            )
+            # attachments[attachment.type].insert(
+            #     0, self.context["request"].build_absolute_uri(attachment.attachment.url)
+            # )
         required_primary = [primary_instance for primary_instance in all_primary if primary_instance in obj.required_attachments]
         required_secondary = [secondary_instance for secondary_instance in all_secondary if secondary_instance in obj.required_attachments]
         required_final = [final_instance for final_instance in all_final if final_instance in obj.required_attachments]
@@ -339,7 +339,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
 
-        return [attachments, primary_status, secondary_status, final_status]
+        return [None, primary_status, secondary_status, final_status]
 
     def get_comments_count(self, obj_id):
         return Comment.objects.filter(written_for=obj_id).count()
@@ -347,7 +347,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         default = super().to_representation(instance)
 
-        default["attachments"] = self.get_attachments(instance)[0]
+        # default["attachments"] = self.get_attachments(instance)[0]
         default["primary_status"] = self.get_attachments(instance)[1]
         default["secondary_status"] = self.get_attachments(instance)[2]
         default["final_status"] = self.get_attachments(instance)[3]
