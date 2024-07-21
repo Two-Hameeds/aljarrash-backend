@@ -81,8 +81,9 @@ class EngineersView(APIView):
         response = {}
         for group in groups:
             Employee.objects.filter(groups=group)
-            serializer = Employee.objects.filter(groups=group).values("id", "username")
-            response[group.name] = serializer
+            array = Employee.objects.filter(groups=group).values("id", "username")
+            employee_dict = {employee['id']: employee['username'] for employee in array}            
+            response[group.name] = employee_dict
 
         return Response(response)
 
