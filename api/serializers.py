@@ -357,36 +357,6 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         default = super().to_representation(instance)
-        if "design_eng" in default:
-            default["design_eng_name"] = self.get_design_eng_name(instance)
-        if "client_number" in default:
-            default["client_phone"] = self.get_client_phone(instance)
-        if "architect" in default:
-            default["architect_name"] = self.get_architect_name(instance)
-        if "construction_eng" in default:
-            default["construction_eng_name"] = self.get_construction_eng_name(instance)
-        if "plumbing_eng" in default:
-            default["plumbing_eng_name"] = self.get_plumbing_eng_name(instance)
-        if "electrical_eng" in default:
-            default["electrical_eng_name"] = self.get_electrical_eng_name(instance)
-        if "architecture_reviewer" in default:
-            default["architecture_reviewer_name"] = self.get_architecture_reviewer_name(
-                instance
-            )
-        if "construction_reviewer" in default:
-            default["construction_reviewer_name"] = self.get_construction_reviewer_name(
-                instance
-            )
-        if "plumbing_reviewer" in default:
-            default["plumbing_reviewer_name"] = self.get_plumbing_reviewer_name(
-                instance
-            )
-        if "electrical_reviewer" in default:
-            default["electrical_reviewer_name"] = self.get_electrical_reviewer_name(
-                instance
-            )
-        if "corrector" in default:
-            default["corrector_name"] = self.get_corrector_name(instance)
 
         default["attachments"] = self.get_attachments(instance)[0]
         default["primary_status"] = self.get_attachments(instance)[1]
@@ -399,56 +369,6 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
-
-    def get_design_eng_name(self, obj):
-        if obj.design_eng == None:
-            return None
-        return obj.design_eng.first_name
-
-    def get_architect_name(self, obj):
-        if obj.architect == None:
-            return None
-        return obj.architect.first_name
-
-    def get_construction_eng_name(self, obj):
-        if obj.construction_eng == None:
-            return None
-        return obj.construction_eng.first_name
-
-    def get_plumbing_eng_name(self, obj):
-        if obj.plumbing_eng == None:
-            return None
-        return obj.plumbing_eng.first_name
-
-    def get_electrical_eng_name(self, obj):
-        if obj.electrical_eng == None:
-            return None
-        return obj.electrical_eng.first_name
-
-    def get_architecture_reviewer_name(self, obj):
-        if obj.architecture_reviewer == None:
-            return None
-        return obj.architecture_reviewer.first_name
-
-    def get_construction_reviewer_name(self, obj):
-        if obj.construction_reviewer == None:
-            return None
-        return obj.construction_reviewer.first_name
-
-    def get_plumbing_reviewer_name(self, obj):
-        if obj.plumbing_reviewer == None:
-            return None
-        return obj.plumbing_reviewer.first_name
-
-    def get_electrical_reviewer_name(self, obj):
-        if obj.electrical_reviewer == None:
-            return None
-        return obj.electrical_reviewer.first_name
-
-    def get_corrector_name(self, obj):
-        if obj.corrector == None:
-            return None
-        return obj.corrector.first_name
 
 
 

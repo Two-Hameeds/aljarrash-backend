@@ -91,8 +91,9 @@ class RegisterAPI(GenericAPIView):
     serializer_class = RegisterSerializer
 
     def post(self, request, *args, **kwargs):
-        request.data["username"] = request.data["username"].lower().strip()
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy()
+        data["username"] = data["username"].lower().strip()
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         employee = serializer.save()
 
