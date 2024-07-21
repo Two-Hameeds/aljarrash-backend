@@ -78,13 +78,16 @@ class EmployeesViewSet(ModelViewSet):
 class EngineersView(APIView):
     def get(self, request):
         groups = Group.objects.all()
+        ids = {}
         response = {}
         for group in groups:
             Employee.objects.filter(groups=group)
             array = Employee.objects.filter(groups=group).values("id", "username")
-            employee_dict = {employee['id']: employee['username'] for employee in array}            
-            response[group.name] = employee_dict
-
+            employee_dict = {employee['id']: employee['username'] for employee in array} 
+            ids = {**ids, **employee_dict}           
+            response[group.name] = array
+        
+        response["ids"] = ids
         return Response(response)
 
 
