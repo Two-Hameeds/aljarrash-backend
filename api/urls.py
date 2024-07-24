@@ -3,7 +3,6 @@ from django.urls import path
 from .views import (
     EmployeesViewSet,
     EngineersView,
-    RegisterAPI,
     LoginAPI,
     RemoveTokensAPI,
     ClientsViewSet,
@@ -52,7 +51,6 @@ urlpatterns = router.urls + [
     path("hello/", HelloView.as_view(), name="hello"),
     path("engineers/", EngineersView.as_view(), name="engineers"),
     path("required_attachments/<int:project_id>/", RequiredAttachmentsViewSet.as_view(), name="required_attachments"),
-    path("register/", RegisterAPI.as_view(), name="register"),
     path("login/", LoginAPI.as_view(), name="login"),
     path("logout/", knox_views.LogoutView.as_view(), name="logout"),
     path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),

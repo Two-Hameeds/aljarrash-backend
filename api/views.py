@@ -19,7 +19,6 @@ from .models import (
 )
 from .serializers import (
     EmployeeSerializer,
-    RegisterSerializer,
     RemoveTokensSerializer,
     ClientSerializer,
     ProjectSerializer,
@@ -66,6 +65,9 @@ class EmployeesViewSet(ModelViewSet):
 
         if data.get("password") == None:
             data["password"] = instance.password
+            
+        if data.get("username") == None:
+            data["username"] = instance.username
 
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -91,24 +93,24 @@ class EngineersView(APIView):
         return Response(response)
 
 
-class RegisterAPI(GenericAPIView):
-    serializer_class = RegisterSerializer
+# class RegisterAPI(GenericAPIView):
+#     serializer_class = RegisterSerializer
 
-    def post(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data["username"] = data["username"].lower().strip()
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        employee = serializer.save()
+#     def post(self, request, *args, **kwargs):
+#         data = request.data.copy()
+#         data["username"] = data["username"].lower().strip()
+#         serializer = self.get_serializer(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         employee = serializer.save()
 
-        return Response(
-            {
-                "employee": EmployeeSerializer(
-                    employee, context=self.get_serializer_context()
-                ).data,
-                "token": AuthToken.objects.create(employee)[1],
-            }
-        )
+#         return Response(
+#             {
+#                 "employee": EmployeeSerializer(
+#                     employee, context=self.get_serializer_context()
+#                 ).data,
+#                 "token": AuthToken.objects.create(employee)[1],
+#             }
+#         )
 
 
 class LoginAPI(KnoxLoginView):

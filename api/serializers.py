@@ -26,20 +26,17 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return super().to_representation(instance)
 
     def update(self, instance, validated_data):
-        password = validated_data.pop("password", None)
+        password_changed = not validated_data.get("password") == instance.password
+        updated_instance = super().update(instance, validated_data)
+        if password_changed:
+            updated_instance.set_password(updated_instance.password)
+            updated_instance.save()
+        return updated_instance
 
-        # TODO user_permissions and groups update should be handled individually
-        user_permissions = validated_data.pop("user_permissions", None)
-        groups = validated_data.pop("groups", None)
-
-        if password is not None and not password == instance.password:
-            instance.set_password(password)
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
+    def create(self, validated_data):
+        instance = super().create(validated_data=validated_data)
+        instance.set_password(validated_data["password"])
         instance.save()
-
         return instance
 
     class Meta:
@@ -50,30 +47,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         if obj.first_name == "" and obj.last_name == "":
             return None
         return obj.first_name + " " + obj.last_name
-
-
-class RegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Employee
-        fields = [
-            "username",
-            "password",
-            "email",
-            "first_name",
-            "last_name",
-            "is_staff",
-            "is_superuser",
-            "is_active",
-        ]
-        extra_kwargs = {"password": {"write_only": True}}
-
-    def create(self, validated_data):
-        password = validated_data.pop("password", None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
 
 
 class RemoveTokensSerializer(serializers.ModelSerializer):
@@ -98,9 +71,11 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
         fields = "__all__"
-        
+
+
 class RequiredAttachmentSerializer(serializers.Serializer):
     required_attachments = serializers.ListField()
+
 
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)
@@ -123,6 +98,7 @@ class TableViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableView
         fields = "__all__"
+
 
 class ProjectSerializer(serializers.ModelSerializer):
 
@@ -175,9 +151,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         return filtered_fields
 
     def create(self, validated_data):
-        validated_data["created_at"] = timezone.now()
         validated_data["moved_at"] = timezone.now()
-        
+
+        if self.request:
+            validated_data.s_history.append(
+                {
+                    "created_by": self.request.user,
+                    "created_at": timezone.now(),
+                    "created_in": self.request.data.get("current_stage"),
+                }
+            )
+
         # allFilesTypes = [
         #     "contract",
         #     "deed",
@@ -262,12 +246,10 @@ class ProjectSerializer(serializers.ModelSerializer):
             required_attachments.extend(destruction)
 
         validated_data["required_attachments"] = required_attachments
-        
+
         result = super().create(validated_data)
-        if(validated_data.get("global_id") == None):
-            global_id, created  = GlobalID.objects.get_or_create(
-                design_id = result
-            )
+        if validated_data.get("global_id") == None:
+            global_id, created = GlobalID.objects.get_or_create(design_id=result)
             result.global_id = global_id.id
             result.save()
 
@@ -316,13 +298,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         final = []
 
         for attachment in attachments_list:
-            if(attachment.type in all_primary):
+            if attachment.type in all_primary:
                 if attachment.type not in primary:
                     primary.append(attachment.type)
-            elif(attachment.type in all_secondary):
+            elif attachment.type in all_secondary:
                 if attachment.type not in secondary:
                     secondary.append(attachment.type)
-            elif(attachment.type in all_final):
+            elif attachment.type in all_final:
                 if attachment.type not in final:
                     final.append(attachment.type)
 
@@ -332,9 +314,21 @@ class ProjectSerializer(serializers.ModelSerializer):
             # attachments[attachment.type].insert(
             #     0, self.context["request"].build_absolute_uri(attachment.attachment.url)
             # )
-        required_primary = [primary_instance for primary_instance in all_primary if primary_instance in obj.required_attachments]
-        required_secondary = [secondary_instance for secondary_instance in all_secondary if secondary_instance in obj.required_attachments]
-        required_final = [final_instance for final_instance in all_final if final_instance in obj.required_attachments]
+        required_primary = [
+            primary_instance
+            for primary_instance in all_primary
+            if primary_instance in obj.required_attachments
+        ]
+        required_secondary = [
+            secondary_instance
+            for secondary_instance in all_secondary
+            if secondary_instance in obj.required_attachments
+        ]
+        required_final = [
+            final_instance
+            for final_instance in all_final
+            if final_instance in obj.required_attachments
+        ]
         primary_status = len(required_primary) == len(primary)
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
@@ -360,8 +354,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
-
 class BaladyProjectSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
 
@@ -378,13 +370,11 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
                 phone=self.context["request"].data["client_phone"]
             )
         return default
-    
+
     def create(self, validated_data):
         result = super().create(validated_data)
-        if(validated_data.get("global_id") == None):
-            global_id, created  = GlobalID.objects.get_or_create(
-                balady_id = result
-            )
+        if validated_data.get("global_id") == None:
+            global_id, created = GlobalID.objects.get_or_create(balady_id=result)
             result.global_id = global_id.id
             result.save()
         return result
@@ -405,13 +395,11 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
                 phone=self.context["request"].data["client_phone"]
             )
         return super().get_fields()
-    
+
     def create(self, validated_data):
         result = super().create(validated_data)
-        if(validated_data.get("global_id") == None):
-            global_id, created  = GlobalID.objects.get_or_create(
-                land_id = result
-            )
+        if validated_data.get("global_id") == None:
+            global_id, created = GlobalID.objects.get_or_create(land_id=result)
             result.global_id = global_id.id
             result.save()
         return result
@@ -432,13 +420,11 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
                 phone=self.context["request"].data["client_phone"]
             )
         return super().get_fields()
-    
+
     def create(self, validated_data):
         result = super().create(validated_data)
-        if(validated_data.get("global_id") == None):
-            global_id, created  = GlobalID.objects.get_or_create(
-                sorting_id = result
-            )
+        if validated_data.get("global_id") == None:
+            global_id, created = GlobalID.objects.get_or_create(sorting_id=result)
             result.global_id = global_id.id
             result.save()
         return result
@@ -446,6 +432,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = SortingDeedsProject
         fields = "__all__"
+
 
 class GlobalIDSerializer(serializers.ModelSerializer):
     class Meta:

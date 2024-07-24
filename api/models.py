@@ -62,7 +62,7 @@ class Project(models.Model):
         max_length=100, choices=Stages.choices, null=True, blank=True
     )
 
-    s_history = models.JSONField(null=True, blank=True)
+    s_history = models.JSONField(null=True, blank=True, default=list)
 
     # attachments
     required_attachments = models.JSONField(null=True, blank=True)
