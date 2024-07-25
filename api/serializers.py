@@ -255,7 +255,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         return result
 
-    def get_attachments(self, obj):
+    def get_attachments_statuses(self, obj):
         if not self.context:
             return {}
 
@@ -291,7 +291,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             "civil_defense",
         ]
 
-        # attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj.id))
         primary = []
         secondary = []
@@ -308,12 +307,6 @@ class ProjectSerializer(serializers.ModelSerializer):
                 if attachment.type not in final:
                     final.append(attachment.type)
 
-            # if attachment.type not in attachments:
-            #     attachments[attachment.type] = []
-
-            # attachments[attachment.type].insert(
-            #     0, self.context["request"].build_absolute_uri(attachment.attachment.url)
-            # )
         required_primary = [
             primary_instance
             for primary_instance in all_primary
@@ -333,19 +326,20 @@ class ProjectSerializer(serializers.ModelSerializer):
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
 
-        return [None, primary_status, secondary_status, final_status]
-
-    def get_comments_count(self, obj_id):
-        return Comment.objects.filter(written_for=obj_id).count()
+        return [primary_status, secondary_status, final_status]
 
     def to_representation(self, instance):
         default = super().to_representation(instance)
 
-        # default["attachments"] = self.get_attachments(instance)[0]
-        default["primary_status"] = self.get_attachments(instance)[1]
-        default["secondary_status"] = self.get_attachments(instance)[2]
-        default["final_status"] = self.get_attachments(instance)[3]
-        default["comments_count"] = self.get_comments_count(instance.id)
+        default["primary_status"] = self.get_attachments_statuses(instance)[0]
+        default["secondary_status"] = self.get_attachments_statuses(instance)[1]
+        default["final_status"] = self.get_attachments_statuses(instance)[2]
+        default["comments_count"] = Comment.objects.filter(written_for=instance.id).count()
+        
+        default.pop("required_attachments")
+        if(self.context and self.context["request"].user.is_superuser):
+            default.pop("s_history")
+            default.pop("s_payments")
 
         return default
 
