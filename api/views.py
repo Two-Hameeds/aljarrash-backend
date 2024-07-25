@@ -11,7 +11,6 @@ from .models import (
     Attachment,
     Comment,
     TableView,
-    UseTypes,
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
@@ -24,6 +23,7 @@ from .serializers import (
     ProjectSerializer,
     AttachmentSerializer,
     RequiredAttachmentSerializer,
+    PaymentsSerializer,
     CommentSerializer,
     TableViewSerializer,
     BaladyProjectSerializer,
@@ -91,26 +91,6 @@ class EngineersView(APIView):
         
         response["ids"] = ids
         return Response(response)
-
-
-# class RegisterAPI(GenericAPIView):
-#     serializer_class = RegisterSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         data = request.data.copy()
-#         data["username"] = data["username"].lower().strip()
-#         serializer = self.get_serializer(data=data)
-#         serializer.is_valid(raise_exception=True)
-#         employee = serializer.save()
-
-#         return Response(
-#             {
-#                 "employee": EmployeeSerializer(
-#                     employee, context=self.get_serializer_context()
-#                 ).data,
-#                 "token": AuthToken.objects.create(employee)[1],
-#             }
-#         )
 
 
 class LoginAPI(KnoxLoginView):
@@ -367,6 +347,24 @@ class RequiredAttachmentsViewSet(GenericAPIView):
             status=200,
         )
 
+class PaymentsViewSet(GenericAPIView):
+    serializer_class = PaymentsSerializer
+    queryset = Project.objects.all()
+    
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+
+        return Response({"s_project_value":project.s_project_value, "s_payments":project.s_payments}, status=200)
+    
+    def put(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+        data = request.data
+        serializer = PaymentsSerializer(project, data=data)
+        if serializer.is_valid():
+            serializer.save()
+
+        
+        return Response({"s_project_value":project.s_project_value, "s_payments":project.s_payments}, status=200)
 
 class DashboardView(APIView):
     def get(self, request):

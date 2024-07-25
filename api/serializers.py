@@ -353,6 +353,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = "__all__"
 
+class PaymentsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Project
+        fields = ["s_project_value", "s_payments"]
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)

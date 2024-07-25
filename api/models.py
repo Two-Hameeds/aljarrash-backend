@@ -89,7 +89,7 @@ class Project(models.Model):
     # sensetive fields
     s_project_value = models.FloatField(null=True, blank=True)
     
-    s_payments = models.JSONField(null=True, blank=True)
+    s_payments = models.JSONField(null=True, blank=True, default=list)
     # s_first_payment = models.FloatField(null=True, blank=True)
     # s_first_payment_date = models.DateField(null=True, blank=True)
     # s_second_payment = models.FloatField(null=True, blank=True)
