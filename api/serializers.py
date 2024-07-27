@@ -159,7 +159,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                 {
                     "created_by": self.context["request"].user,
                     "created_at": timezone.now(),
-                    "created_in": self.request.data.get("current_stage"),
+                    "created_in": self.context["request"].data.get("current_stage"),
                 }
             )
 
