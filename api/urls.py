@@ -23,6 +23,7 @@ from .views import (
     CopyBaladyProjectsView,
     MoveProjectsViewSet,
     HelloView,
+    HistoryViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -62,4 +63,5 @@ urlpatterns = router.urls + [
         CopyBaladyProjectsView.as_view(),
         name="copy_balady_projects",
     ),
+    path("history/<int:project_id>/", HistoryViewSet.as_view(), name="history"),
 ]

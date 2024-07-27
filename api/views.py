@@ -573,3 +573,9 @@ class MoveProjectsViewSet(APIView):
         serializer.save()
 
         return Response({"status": "Moved"}, status=200)
+
+
+class HistoryViewSet(APIView):
+    def get(self, request, project_id):
+        project = Project.objects.get(id=project_id)
+        return Response(project.s_history, status=200)
