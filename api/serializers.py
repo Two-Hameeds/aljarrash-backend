@@ -154,7 +154,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         validated_data["moved_at"] = timezone.now()
 
         if self.context["request"]:
-            validated_data.s_history.append(
+            validated_data["s_history"] = []
+            validated_data["s_history"].append(
                 {
                     "created_by": self.context["request"].user,
                     "created_at": timezone.now(),
