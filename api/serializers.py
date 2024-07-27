@@ -153,10 +153,10 @@ class ProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["moved_at"] = timezone.now()
 
-        if self.request:
+        if self.context["request"]:
             validated_data.s_history.append(
                 {
-                    "created_by": self.request.user,
+                    "created_by": self.context["request"].user,
                     "created_at": timezone.now(),
                     "created_in": self.request.data.get("current_stage"),
                 }
