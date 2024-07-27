@@ -345,8 +345,11 @@ class ProjectSerializer(serializers.ModelSerializer):
             paid = 0
             for s_payment in s_payments:
                 paid = paid + int(s_payment["amount"])
-                
-            default["s_paid"] = str(int(paid / int(instance.s_project_value) * 100)) + "%"
+            
+            if(instance.s_project_value):
+                default["s_paid"] = str(int(paid / int(instance.s_project_value) * 100)) + "%"
+            else:
+                default["s_paid"] = "0%"
 
         return default
 
