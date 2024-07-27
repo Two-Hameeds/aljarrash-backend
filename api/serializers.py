@@ -155,13 +155,13 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         if self.context["request"]:
             validated_data["s_history"] = []
-            validated_data["s_history"].append(
-                {
-                    "created_by": self.context["request"].user,
-                    "created_at": timezone.now(),
-                    "created_in": self.context["request"].data.get("current_stage"),
-                }
-            )
+            # validated_data["s_history"].append(
+            #     {
+            #         "created_by": self.context["request"].user,
+            #         "created_at": timezone.now(),
+            #         "created_in": validated_data["current_stage"],
+            #     }
+            # )
 
         # allFilesTypes = [
         #     "contract",
