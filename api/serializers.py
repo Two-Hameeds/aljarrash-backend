@@ -340,6 +340,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         if(self.context and self.context["request"].user.is_superuser):
             # default.pop("s_history")
             default.pop("s_payments")
+            
+            s_payments = instance.s_payments
+            paid = 0
+            for s_payment in s_payments:
+                paid = paid + int(s_payment["amount"])
+                
+            default["s_paid"] = str(int(paid / int(instance.s_project_value) * 100)) + "%"
 
         return default
 
