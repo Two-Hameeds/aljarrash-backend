@@ -57,12 +57,6 @@ class Project(models.Model):
         max_length=100, choices=Stages.choices, null=False, blank=False
     )
 
-    # stages info
-    previous_stage = models.CharField(
-        max_length=100, choices=Stages.choices, null=True, blank=True
-    )
-
-    s_history = models.JSONField(null=True, blank=True, default=list)
 
     # attachments
     required_attachments = models.JSONField(null=True, blank=True)
@@ -88,18 +82,9 @@ class Project(models.Model):
 
     # sensetive fields
     s_project_value = models.FloatField(null=True, blank=True)
-    
     s_payments = models.JSONField(null=True, blank=True, default=list)
-    # s_first_payment = models.FloatField(null=True, blank=True)
-    # s_first_payment_date = models.DateField(null=True, blank=True)
-    # s_second_payment = models.FloatField(null=True, blank=True)
-    # s_second_payment_date = models.DateField(null=True, blank=True)
-    # s_third_payment = models.FloatField(null=True, blank=True)
-    # s_third_payment_date = models.DateField(null=True, blank=True)
-    # s_first_payment_stage = models.CharField(max_length=100, null=True, blank=True)
-    # s_second_payment_stage = models.CharField(max_length=100, null=True, blank=True)
-    # s_third_payment_stage = models.CharField(max_length=100, null=True, blank=True)
     s_modification_price = models.FloatField(null=True, blank=True)
+    s_history = models.JSONField(null=True, blank=True, default=list)
 
     architecture_status = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
@@ -205,7 +190,7 @@ class Project(models.Model):
     )
     plan_delivery_date = models.DateField(null=True, blank=True)
 
-    created_at = models.DateTimeField(null=True, blank=True)
+    # created_at = models.DateTimeField(null=True, blank=True)
     moved_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -311,8 +296,11 @@ class BaladyProject(models.Model):
     request_submission = models.JSONField(null=True, blank=True)
     municipality_visit = models.JSONField(null=True, blank=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # sensitive data
+    s_history = models.JSONField(null=True, blank=True, default=list)
 
     class Meta:
         ordering = ["moved_at"]

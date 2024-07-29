@@ -102,7 +102,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
 
-    created_at = serializers.DateTimeField(read_only=True)
+    # created_at = serializers.DateTimeField(read_only=True)
     history = serializers.JSONField(read_only=True)
 
     def get_filtered_fields(self, default):
@@ -365,7 +365,7 @@ class PaymentsSerializer(serializers.ModelSerializer):
         fields = ["s_project_value", "s_payments"]
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
-    created_at = serializers.DateTimeField(read_only=True)
+    # created_at = serializers.DateTimeField(read_only=True)
 
     def get_fields(self):
         default = super().get_fields()
@@ -383,6 +383,16 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         result = super().create(validated_data)
+        
+        if(self.context['request']):
+            validated_data = [
+                {
+                    'created_by': str(self.context['request'].user),
+                    'created_at': str(timezone.now()),
+                    'created_in': validated_data['path']
+                }
+            ]
+        
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(balady_id=result)
             result.global_id = global_id.id

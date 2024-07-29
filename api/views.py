@@ -204,7 +204,8 @@ class CopyProjectsView(APIView):
             for project in projects:
                 project.id = None
                 project.current_stage = stage
-                project.created_at = timezone.now()
+                # TODO: add s_history
+                # project.created_at = timezone.now()
                 project.moved_at = timezone.now()
                 project.save()
                 new_projects.append(project)
@@ -231,7 +232,8 @@ class CopyBaladyProjectsView(APIView):
             for project in projects:
                 project.id = None
                 project.path = path
-                project.created_at = timezone.now()
+                # TODO: add s_history
+                # project.created_at = timezone.now()
                 project.moved_at = timezone.now()
                 project.save()
                 new_projects.append(project)
@@ -260,7 +262,8 @@ class ExportProjectsView(APIView):
         except:
             return Response({"message": "Invalid date format"}, status=400)
 
-        projects = Project.objects.filter(created_at__range=(start_date, end_date))
+        # TODO: remove this view or improve it
+        projects = Project.objects.filter()
         serializer = ProjectSerializer(projects, many=True)
 
         wb = Workbook()
