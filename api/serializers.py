@@ -154,14 +154,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         validated_data["moved_at"] = timezone.now()
 
         if self.context["request"]:
-            validated_data["s_history"] = []
-            validated_data["s_history"].append(
+            validated_data["s_history"] = [
                 {
                     "created_by": str(self.context["request"].user),
                     "created_at": str(timezone.now()),
                     "created_in": validated_data["current_stage"]
                 }
-            )
+            ]
 
         # allFilesTypes = [
         #     "contract",
@@ -382,10 +381,9 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         return default
 
     def create(self, validated_data):
-        result = super().create(validated_data)
         
         if(self.context['request']):
-            validated_data = [
+            validated_data["s_history"] = [
                 {
                     'created_by': str(self.context['request'].user),
                     'created_at': str(timezone.now()),
@@ -393,7 +391,9 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
                 }
             ]
         
+        result = super().create(validated_data)
         if validated_data.get("global_id") == None:
+            print(validated_data["s_history"])
             global_id, created = GlobalID.objects.get_or_create(balady_id=result)
             result.global_id = global_id.id
             result.save()
