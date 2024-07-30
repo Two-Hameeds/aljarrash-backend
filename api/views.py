@@ -318,7 +318,7 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         for attachment in attachments_list:
             if attachment.type not in attachments:
                 attachments[attachment.type] = []
-            attachments[attachment.type].insert(0, (attachment.attachment.url))
+            attachments[attachment.type].insert(0, (f"{attachment.id}_{attachment.attachment.url}"))
 
         return Response(
             {
