@@ -30,6 +30,7 @@ from .serializers import (
     LandSurveyProjectSerializer,
     SortingDeedsProjectSerializer,
     GlobalIDSerializer,
+    GroupSerializer
 )
 from .permissions import HasGroupPermission
 
@@ -75,6 +76,12 @@ class EmployeesViewSet(ModelViewSet):
         instance.save()
 
         return Response(serializer.data)
+
+class GroupsViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated, )
+
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
 
 
 class EngineersView(APIView):

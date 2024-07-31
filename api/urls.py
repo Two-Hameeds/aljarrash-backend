@@ -24,6 +24,7 @@ from .views import (
     MoveProjectsViewSet,
     HelloView,
     HistoryViewSet,
+    GroupsViewSet
 )
 
 from rest_framework.routers import DefaultRouter
@@ -43,6 +44,7 @@ router.register("balady_projects", BaladyProjectsViewSet)
 router.register("land_survey_projects", LandSurveyProjectsViewSet)
 router.register("sorting_deeds_projects", SortingDeedsProjectsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
+router.register("groups", GroupsViewSet)
 
 urlpatterns = router.urls + [
     path("projects/copy", CopyProjectsView.as_view(), name="copy_projects"),
