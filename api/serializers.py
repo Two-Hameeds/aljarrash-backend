@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from django.contrib.auth.models import Group
 from .models import (
     Employee,
     Client,
@@ -47,6 +49,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         if obj.first_name == "" and obj.last_name == "":
             return None
         return obj.first_name + " " + obj.last_name
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ["id", "name"]
 
 
 class RemoveTokensSerializer(serializers.ModelSerializer):
