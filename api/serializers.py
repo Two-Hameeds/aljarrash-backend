@@ -354,7 +354,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                 paid = paid + float(s_payment["amount"])
             
             if(instance.s_project_value):
-                default["s_paid"] = str(float(paid / int(instance.s_project_value) * 100)) + "%"
+                default["s_paid"] = str(int(paid / float(instance.s_project_value) * 100)) + "%"
             else:
                 default["s_paid"] = "0%"
 
