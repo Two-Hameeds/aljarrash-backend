@@ -92,7 +92,7 @@ class AttachmentTypes(models.TextChoices):
     Other = "other"
 
 
-class BaladyPaths(models.TextChoices):
+class BaladyStages(models.TextChoices):
     Balady = "balady"
     Service_Card = "service_card"
     Quantity_Sorting = "quantity_sorting"

@@ -12,7 +12,7 @@ from .choices import (
     StructuralReviewStatus,
     Stages,
     AttachmentTypes,
-    BaladyPaths,
+    BaladyStages,
     BaladyRequestTypes,
     LandSurveyStages,
     SortingDeedsStages,
@@ -256,17 +256,9 @@ class TableView(models.Model):
 
 class BaladyProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
-    design_proj = models.ForeignKey(
-        Project,
-        to_field="id",
-        on_delete=models.SET_NULL,
-        related_name="balady_project",
-        null=True,
-        blank=True,
-    )
 
-    path = models.CharField(
-        max_length=100, choices=BaladyPaths.choices, null=False, blank=False
+    stage = models.CharField(
+        max_length=100, choices=BaladyStages.choices, null=False, blank=False
     )
 
     project_name = models.CharField(max_length=100, null=False, blank=False)
