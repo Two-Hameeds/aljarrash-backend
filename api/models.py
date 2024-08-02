@@ -53,7 +53,7 @@ class Project(models.Model):
         max_length=100, choices=UseTypes.choices, null=False, blank=False
     )
 
-    current_stage = models.CharField(
+    stage = models.CharField(
         max_length=100, choices=Stages.choices, null=False, blank=False
     )
 

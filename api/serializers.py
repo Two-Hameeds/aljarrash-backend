@@ -114,7 +114,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_filtered_fields(self, default):
         user = self.context["request"].user
-        stage = self.context["request"].query_params.get("current_stage")
+        stage = self.context["request"].query_params.get("stage")
         table_view = self.context["request"].query_params.get("table_view")
 
         if (not stage and not table_view) or (
@@ -165,7 +165,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                 {
                     "created_by": str(self.context["request"].user),
                     "created_at": str(timezone.now()),
-                    "created_in": validated_data["current_stage"]
+                    "created_in": validated_data["stage"]
                 }
             ]
 

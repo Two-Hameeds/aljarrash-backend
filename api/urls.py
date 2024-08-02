@@ -24,7 +24,7 @@ from .views import (
     MoveProjectsViewSet,
     HelloView,
     HistoryViewSet,
-    GroupsViewSet
+    GroupsViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -47,23 +47,39 @@ router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
 
 urlpatterns = router.urls + [
-    path("projects/copy", CopyProjectsView.as_view(), name="copy_projects"),
+    # Design Projects
+    path("design_projects/copy", CopyProjectsView.as_view(), name="copy_projects"),
+    path(
+        "design_projects/<int:project_id>/attachments/",
+        RequiredAttachmentsViewSet.as_view(),
+        name="required_attachments",
+    ),
+    path(
+        "design_projects/<int:project_id>/payments/",
+        PaymentsViewSet.as_view(),
+        name="payments",
+    ),
+    path(
+        "design_projects/<int:project_id>/history/",
+        HistoryViewSet.as_view(),
+        name="history",
+    ),
     path("move_projects/", MoveProjectsViewSet.as_view(), name="move_projects"),
-    path("projects/export", ExportProjectsView.as_view(), name="export_projects"),
-    path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    path("delayed_projects/", DelayedProjectsView.as_view(), name="delayed_projects"),
-    path("hello/", HelloView.as_view(), name="hello"),
     path("engineers/", EngineersView.as_view(), name="engineers"),
-    path("required_attachments/<int:project_id>/", RequiredAttachmentsViewSet.as_view(), name="required_attachments"),
-    path("payments/<int:project_id>/", PaymentsViewSet.as_view(), name="payments"),
-    path("login/", LoginAPI.as_view(), name="login"),
-    path("logout/", knox_views.LogoutView.as_view(), name="logout"),
-    path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
-    path("remove_tokens/", RemoveTokensAPI.as_view(), name="remove_tokens"),
+    # Balady Projects
     path(
         "balady_projects/copy",
         CopyBaladyProjectsView.as_view(),
         name="copy_balady_projects",
     ),
-    path("history/<int:project_id>/", HistoryViewSet.as_view(), name="history"),
+    # Authentication
+    path("login/", LoginAPI.as_view(), name="login"),
+    path("logout/", knox_views.LogoutView.as_view(), name="logout"),
+    path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
+    path("remove_tokens/", RemoveTokensAPI.as_view(), name="remove_tokens"),
+    # path("projects/export", ExportProjectsView.as_view(), name="export_projects"),
+    # path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    # path("delayed_projects/", DelayedProjectsView.as_view(), name="delayed_projects"),
+    # path("hello/", HelloView.as_view(), name="hello"),
+    # path("balady_projects/<int:project_id>/payments/", PaymentsViewSet.as_view(), name="payments"),
 ]

@@ -155,11 +155,11 @@ class ProjectsViewSet(ModelViewSet):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
 
-        current_stage = instance.current_stage
-        new_stage = data.get("current_stage")
+        stage = instance.stage
+        new_stage = data.get("stage")
 
-        if data.get("current_stage") == None:
-            data["current_stage"] = instance.current_stage
+        if data.get("stage") == None:
+            data["stage"] = instance.stage
         if data.get("project_name") == None:
             data["project_name"] = instance.project_name
         if data.get("project_type") == None:
@@ -176,7 +176,7 @@ class ProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        if current_stage != data.get("current_stage"):
+        if stage != data.get("stage"):
             instance.moved_at = timezone.now()
             if instance.s_history == None:
                 instance.s_history = []
@@ -184,7 +184,7 @@ class ProjectsViewSet(ModelViewSet):
                 {
                     "moved_by": str(self.request.user),
                     "moved_at": str(timezone.now()),
-                    "from": current_stage,
+                    "from": stage,
                     "to": new_stage,
                 }
             )
@@ -194,7 +194,7 @@ class ProjectsViewSet(ModelViewSet):
     filter_backends = [
         DjangoFilterBackend,
     ]
-    filterset_fields = ["current_stage"]
+    filterset_fields = ["stage"]
 
 
 class CopyProjectsView(APIView):
@@ -210,7 +210,7 @@ class CopyProjectsView(APIView):
             new_projects = []
             for project in projects:
                 project.id = None
-                project.current_stage = stage
+                project.stage = stage
                 # TODO: add s_history
                 # project.created_at = timezone.now()
                 project.moved_at = timezone.now()
@@ -277,7 +277,7 @@ class ExportProjectsView(APIView):
         ws = wb.active
         ws.title = "Projects"
 
-        headers = ["id", "project_name", "project_type", "use_type", "current_stage"]
+        headers = ["id", "project_name", "project_type", "use_type", "stage"]
         ws.append(headers)
 
         for project in projects:
@@ -287,7 +287,7 @@ class ExportProjectsView(APIView):
                     project.project_name,
                     project.project_type,
                     project.use_type,
-                    project.current_stage,
+                    project.stage,
                 ]
             )
 
@@ -380,9 +380,9 @@ class DashboardView(APIView):
     def get(self, request):
         total_projects = Project.objects.all().count()
         active_projects = Project.objects.filter(
-            current_stage__in=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+            stage__in=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
         ).count()
-        completed_projects = Project.objects.filter(current_stage=13).count()
+        completed_projects = Project.objects.filter(stage=13).count()
         inactive_projects = total_projects - (active_projects + completed_projects)
 
         return Response(
@@ -398,8 +398,8 @@ class DashboardView(APIView):
 
 class DelayedProjectsView(APIView):
     def get(self, request):
-        sketch_projects = Project.objects.filter(current_stage=1).order_by("-moved_at")
-        execution_stage_projects = Project.objects.filter(current_stage=4).order_by(
+        sketch_projects = Project.objects.filter(stage=1).order_by("-moved_at")
+        execution_stage_projects = Project.objects.filter(stage=4).order_by(
             "-moved_at"
         )
 
@@ -415,7 +415,7 @@ class DelayedProjectsView(APIView):
                 {
                     "id": project.id,
                     "project_name": project.project_name,
-                    "current_stage": project.current_stage,
+                    "stage": project.stage,
                     "moved_at": project.moved_at,
                     "days_since_moved": days_since_moved,
                 }
@@ -431,7 +431,7 @@ class DelayedProjectsView(APIView):
                 {
                     "id": project.id,
                     "project_name": project.project_name,
-                    "current_stage": project.current_stage,
+                    "stage": project.stage,
                     "moved_at": project.moved_at,
                     "days_since_moved": days_since_moved,
                 }
@@ -572,7 +572,7 @@ class MoveProjectsViewSet(APIView):
         origin_instance = from_model.objects.filter(id=data.get("id"))[0]
         params = {
             "project_name": origin_instance.project_name,
-            "current_stage": "sketch",
+            "stage": "sketch",
             "client_phone": origin_instance.client_phone.phone,
             "project_type": "new",
             "use_type": "residential",
