@@ -228,17 +228,17 @@ class CopyProjectsView(APIView):
 class CopyBaladyProjectsView(APIView):
     def post(self, request):
         ids = request.data.get("ids")
-        path = request.data.get("path")
+        stage = request.data.get("stage")
 
-        if not ids or not path:
-            return Response({"message": "ids and path are required"}, status=400)
+        if not ids or not stage:
+            return Response({"message": "ids and stage are required"}, status=400)
 
         try:
             projects = BaladyProject.objects.filter(id__in=ids)
             new_projects = []
             for project in projects:
                 project.id = None
-                project.path = path
+                project.stage = stage
                 # TODO: add s_history
                 # project.created_at = timezone.now()
                 project.moved_at = timezone.now()
@@ -490,11 +490,11 @@ class BaladyProjectsViewSet(ModelViewSet):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
 
-        path = instance.path
-        new_path = data.get("path")
+        stage = instance.stage
+        new_stage = data.get("stage")
 
-        if data.get("path") == None:
-            data["path"] = instance.path
+        if data.get("stage") == None:
+            data["stage"] = instance.stage
         if data.get("project_name") == None:
             data["project_name"] = instance.project_name
         if data.get("request_type") == None:
@@ -509,7 +509,7 @@ class BaladyProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        if path != data.get("path"):
+        if stage != data.get("stage"):
             instance.moved_at = timezone.now()
         instance.save()
         return Response(serializer.data)
@@ -517,7 +517,7 @@ class BaladyProjectsViewSet(ModelViewSet):
     filter_backends = [
         DjangoFilterBackend,
     ]
-    filterset_fields = ["path", "project_name", "client_phone"]
+    filterset_fields = ["stage", "project_name", "client_phone"]
 
 
 class LandSurveyProjectsViewSet(ModelViewSet):

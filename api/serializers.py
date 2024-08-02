@@ -394,7 +394,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
                 {
                     'created_by': str(self.context['request'].user),
                     'created_at': str(timezone.now()),
-                    'created_in': validated_data['path']
+                    'created_in': validated_data['stage']
                 }
             ]
         
