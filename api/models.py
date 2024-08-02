@@ -293,6 +293,8 @@ class BaladyProject(models.Model):
     
     # sensitive data
     s_history = models.JSONField(null=True, blank=True, default=list)
+    s_project_value = models.FloatField(null=True, blank=True)
+    s_payments = models.JSONField(default=list)
 
     class Meta:
         ordering = ["moved_at"]
