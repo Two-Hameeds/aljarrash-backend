@@ -36,7 +36,7 @@ from knox import views as knox_views
 router = DefaultRouter()
 router.register("employees", EmployeesViewSet)
 router.register("clients", ClientsViewSet)
-router.register("projects", ProjectsViewSet)
+router.register("design_projects", ProjectsViewSet)
 router.register("comments", CommentsViewSet)
 router.register("table_views", TableViewsViewSet)
 router.register("attachments", AttachmentsViewSet)
