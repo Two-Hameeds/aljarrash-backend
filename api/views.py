@@ -15,6 +15,7 @@ from .models import (
     LandSurveyProject,
     SortingDeedsProject,
     GlobalID,
+    Payment,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -30,9 +31,10 @@ from .serializers import (
     LandSurveyProjectSerializer,
     SortingDeedsProjectSerializer,
     GlobalIDSerializer,
-    GroupSerializer
+    GroupSerializer,
+    PaymentSerializer,
 )
-from .permissions import HasGroupPermission
+# from .permissions import HasGroupPermission
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import GenericAPIView
@@ -46,7 +48,7 @@ from knox.views import LoginView as KnoxLoginView
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from openpyxl import Workbook
+# from openpyxl import Workbook
 
 
 class EmployeesViewSet(ModelViewSet):
@@ -308,7 +310,7 @@ class RequiredAttachmentsViewSet(GenericAPIView):
             status=200,
         )
 
-class PaymentsViewSet(GenericAPIView):
+class DesignPaymentsViewSet(GenericAPIView):
     serializer_class = PaymentsSerializer
     queryset = Project.objects.all()
     
@@ -540,3 +542,7 @@ class HistoryViewSet(APIView):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         return Response(project.s_history, status=200)
+    
+class PaymentsViewSet(ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer

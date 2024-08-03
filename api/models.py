@@ -356,3 +356,11 @@ class GlobalID(models.Model):
     balady_id = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     sorting_id = models.OneToOneField(SortingDeedsProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     land_id = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    
+
+class Payment(models.Model):
+    paid_for = models.ForeignKey(GlobalID, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    date = models.DateField()
+    stage = models.CharField(max_length=100)
+    s_history = models.JSONField(null=True, blank=True, default=list)

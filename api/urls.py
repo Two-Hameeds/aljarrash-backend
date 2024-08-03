@@ -9,7 +9,7 @@ from .views import (
     ProjectsViewSet,
     AttachmentsViewSet,
     RequiredAttachmentsViewSet,
-    PaymentsViewSet,
+    DesignPaymentsViewSet,
     CopyProjectsView,
     DashboardView,
     DelayedProjectsView,
@@ -23,6 +23,7 @@ from .views import (
     MoveProjectsViewSet,
     HistoryViewSet,
     GroupsViewSet,
+    PaymentsViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -43,6 +44,7 @@ router.register("land_survey_projects", LandSurveyProjectsViewSet)
 router.register("sorting_deeds_projects", SortingDeedsProjectsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
+router.register("payments", PaymentsViewSet)
 
 urlpatterns = router.urls + [
     # Design Projects
@@ -54,8 +56,8 @@ urlpatterns = router.urls + [
     ),
     path(
         "design_projects/<int:project_id>/payments/",
-        PaymentsViewSet.as_view(),
-        name="payments",
+        DesignPaymentsViewSet.as_view(),
+        name="design_payments",
     ),
     path(
         "design_projects/<int:project_id>/history/",
