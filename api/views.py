@@ -253,55 +253,6 @@ class CopyBaladyProjectsView(APIView):
             return Response({"error": str(e)}, status=400)
 
 
-class ExportProjectsView(APIView):
-    def get(self, request):
-        start_date = request.query_params.get("start_date")
-        end_date = request.query_params.get("end_date")
-
-        if not start_date or not end_date:
-            return Response(
-                {"message": "start_date and end_date are required"}, status=400
-            )
-
-        try:
-            start_date = timezone.datetime.strptime(start_date, "%Y-%m-%d").date()
-            end_date = timezone.datetime.strptime(end_date, "%Y-%m-%d").date()
-        except:
-            return Response({"message": "Invalid date format"}, status=400)
-
-        # TODO: remove this view or improve it
-        projects = Project.objects.filter()
-        serializer = ProjectSerializer(projects, many=True)
-
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Projects"
-
-        headers = ["id", "project_name", "project_type", "use_type", "stage"]
-        ws.append(headers)
-
-        for project in projects:
-            ws.append(
-                [
-                    project.id,
-                    project.project_name,
-                    project.project_type,
-                    project.use_type,
-                    project.stage,
-                ]
-            )
-
-        response = HttpResponse(
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-        response["Content-Disposition"] = 'attachment; filename="projects.xlsx"'
-        wb.save(response)
-
-        return response
-
-        # return Response(serializer.data, status=200)
-
-
 class AttachmentsViewSet(ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer

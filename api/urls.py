@@ -7,7 +7,6 @@ from .views import (
     RemoveTokensAPI,
     ClientsViewSet,
     ProjectsViewSet,
-    ExportProjectsView,
     AttachmentsViewSet,
     RequiredAttachmentsViewSet,
     PaymentsViewSet,
@@ -22,7 +21,6 @@ from .views import (
     GlobalIDsViewSet,
     CopyBaladyProjectsView,
     MoveProjectsViewSet,
-    HelloView,
     HistoryViewSet,
     GroupsViewSet,
 )
