@@ -259,7 +259,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(design_id=result)
-            result.global_id = global_id.id
+            result.global_id = global_id
             result.save()
 
         return result
