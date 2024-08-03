@@ -35,7 +35,7 @@ class Client(models.Model):
 
 
 class Project(models.Model):
-    global_id = models.IntegerField(null=True, blank=True)
+    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
     # essential info
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
@@ -361,6 +361,6 @@ class GlobalID(models.Model):
 class Payment(models.Model):
     paid_for = models.ForeignKey(GlobalID, on_delete=models.CASCADE)
     amount = models.FloatField()
-    date = models.DateField()
+    date = models.DateField(blank=True, null=True)
     stage = models.CharField(max_length=100)
     s_history = models.JSONField(null=True, blank=True, default=list)

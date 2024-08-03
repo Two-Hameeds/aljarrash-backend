@@ -51,6 +51,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             return None
         return obj.first_name + " " + obj.last_name
 
+
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
@@ -166,7 +167,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                 {
                     "created_by": str(self.context["request"].user),
                     "created_at": str(timezone.now()),
-                    "created_in": validated_data["stage"]
+                    "created_in": validated_data["stage"],
                 }
             ]
 
@@ -342,20 +343,24 @@ class ProjectSerializer(serializers.ModelSerializer):
         default["primary_status"] = self.get_attachments_statuses(instance)[0]
         default["secondary_status"] = self.get_attachments_statuses(instance)[1]
         default["final_status"] = self.get_attachments_statuses(instance)[2]
-        default["comments_count"] = Comment.objects.filter(written_for=instance.id).count()
-        
+        default["comments_count"] = Comment.objects.filter(
+            written_for=instance.id
+        ).count()
+
         default.pop("required_attachments")
-        if(self.context and self.context["request"].user.is_superuser):
+        if self.context and self.context["request"].user.is_superuser:
             # default.pop("s_history")
             default.pop("s_payments")
-            
+
             s_payments = instance.s_payments
             paid = 0
             for s_payment in s_payments:
                 paid = paid + float(s_payment["amount"])
-            
-            if(instance.s_project_value):
-                default["s_paid"] = str(int(paid / float(instance.s_project_value) * 100)) + "%"
+
+            if instance.s_project_value:
+                default["s_paid"] = (
+                    str(int(paid / float(instance.s_project_value) * 100)) + "%"
+                )
             else:
                 default["s_paid"] = "0%"
 
@@ -365,11 +370,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = "__all__"
 
+
 class PaymentsSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Project
         fields = ["s_project_value", "s_payments"]
+
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
     # created_at = serializers.DateTimeField(read_only=True)
@@ -389,16 +396,16 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         return default
 
     def create(self, validated_data):
-        
-        if(self.context['request']):
+
+        if self.context["request"]:
             validated_data["s_history"] = [
                 {
-                    'created_by': str(self.context['request'].user),
-                    'created_at': str(timezone.now()),
-                    'created_in': validated_data['stage']
+                    "created_by": str(self.context["request"].user),
+                    "created_at": str(timezone.now()),
+                    "created_in": validated_data["stage"],
                 }
             ]
-        
+
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             print(validated_data["s_history"])
@@ -467,7 +474,28 @@ class GlobalIDSerializer(serializers.ModelSerializer):
         model = GlobalID
         fields = "__all__"
 
+
+count = 0
+
+
 class PaymentSerializer(serializers.ModelSerializer):
+    # def get_fields(self):
+    #     global count
+    #     if count == 0:
+    #         # Payment.objects.all().delete()
+    #         projects = Project.objects.all()
+    #         # for project in projects:
+    #         #     for payment in project.s_payments:
+    #         #         Payment.objects.create(
+    #         #             paid_for=project.global_id,
+    #         #             amount=payment["amount"],
+    #         #             date=payment["date"] if payment["date"] else None,
+    #         #             stage=payment["stage"],
+    #         #         )
+
+    #     count = count + 1
+    #     return super().get_fields()
+
     class Meta:
         model = Payment
         fields = "__all__"
