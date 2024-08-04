@@ -209,22 +209,32 @@ class CopyProjectsView(APIView):
 
         try:
             projects = Project.objects.filter(id__in=ids)
-            new_projects = []
+            new_serializers = []
+            
             for project in projects:
                 project.id = None
-                project.stage = stage
                 # TODO: add s_history
-                # project.created_at = timezone.now()
-                project.moved_at = timezone.now()
-                project.save()
-                new_projects.append(project)
+                serializer = ProjectSerializer(project, data={"stage": stage, "moved_at": timezone.now(), "s_history": []}, partial=True)
+                serializer.is_valid(raise_exception=True)
+                try:
+                    print(serializer.data)
+                except Exception as e:
+                    print("errors:", e)
+                serializer.save()
 
-            serializer = ProjectSerializer(new_projects, many=True)
+                new_serializers.append(serializer)
+            
+            
+            # serializer = ProjectSerializer(data=new_projects, many=True)
+            # serializer.is_valid(raise_exception=True)
+            # data = serializer.data
+            # print()
 
-            return Response(serializer.data, status=201)
+            return Response({"result": "Copied successfully"}, status=201)
 
         except Exception as e:
-            return Response({"error": str(e)}, status=400)
+            raise e
+            return Response({"error": e}, status=400)
 
 
 class CopyBaladyProjectsView(APIView):

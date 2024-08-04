@@ -288,8 +288,10 @@ class BaladyProject(models.Model):
     request_submission = models.JSONField(null=True, blank=True)
     municipality_visit = models.JSONField(null=True, blank=True)
 
-    # created_at = models.DateTimeField(auto_now_add=True)
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # attachments
+    required_attachments = models.JSONField(null=True, blank=True, default=list)
     
     # sensitive data
     s_history = models.JSONField(null=True, blank=True, default=list)
