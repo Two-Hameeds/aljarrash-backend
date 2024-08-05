@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     EmployeesViewSet,
+    EmployeeRolesViewSet,
     EngineersView,
     LoginAPI,
     RemoveTokensAPI,
@@ -77,6 +78,7 @@ urlpatterns = router.urls + [
     path("logout/", knox_views.LogoutView.as_view(), name="logout"),
     path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
     path("remove_tokens/", RemoveTokensAPI.as_view(), name="remove_tokens"),
+    path("employee_roles/", EmployeeRolesViewSet.as_view(), name="employee_roles"),
     # path("projects/export", ExportProjectsView.as_view(), name="export_projects"),
     # path("dashboard/", DashboardView.as_view(), name="dashboard"),
     # path("delayed_projects/", DelayedProjectsView.as_view(), name="delayed_projects"),

@@ -80,6 +80,19 @@ class EmployeesViewSet(ModelViewSet):
         instance.save()
 
         return Response(serializer.data)
+    
+class EmployeeRolesViewSet(APIView):
+    # permission_classes = (IsAuthenticated, )
+
+    # queryset = Group.objects.all()
+    # serializer_class = GroupSerializer
+    def get(self, request):
+        user = request.user
+        data = {
+            "isAdmin": user.is_superuser,
+            "isStaff": user.is_staff
+        }
+        return Response(data)
 
 class GroupsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )
