@@ -48,6 +48,8 @@ from knox.views import LoginView as KnoxLoginView
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .permissions import IsAdmin
+
 # from openpyxl import Workbook
 
 
@@ -321,6 +323,8 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         )
 
 class DesignPaymentsViewSet(GenericAPIView):
+    permission_classes = (IsAuthenticated, IsAdmin)
+    
     serializer_class = PaymentsSerializer
     queryset = Project.objects.all()
     
