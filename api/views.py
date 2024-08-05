@@ -296,6 +296,45 @@ class RequiredAttachmentsViewSet(GenericAPIView):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         required_attachments = project.required_attachments
+        all_primary = [
+            "contract",
+            "deed",
+            "report",
+            "identity",
+            "container_contract",
+            "plan",
+            "load_bearing_certificate",
+            "location_certificate",
+            "land_survey",
+            "soil_test",
+            "coordinate_certificate",
+            "demolition_letters",
+            "client_form",
+            "old_license",
+            "civil_defense",
+            "water_authority",
+        ]
+
+        all_secondary = {
+            "technical_report",
+        }
+
+        all_final = [
+            "architecture_plan",
+            "construction_plan",
+            "plumbing_plan",
+            "electrical_plan",
+            "energy_efficiency_plan",
+            "civil_defense",
+        ]
+        
+        for index, required_attachment in enumerate(required_attachments):
+            if required_attachment in all_primary:
+                required_attachments[index] = f"1_{required_attachments[index]}"
+            elif required_attachment in all_secondary:
+                required_attachments[index] = f"2_{required_attachments[index]}"
+            elif required_attachment in all_final:
+                required_attachments[index] = f"3_{required_attachments[index]}"
 
         attachments = {}
         attachments_list = list(Attachment.objects.filter(uploaded_for=project))
