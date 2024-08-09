@@ -270,8 +270,8 @@ class BaladyProject(models.Model):
         null=False,
         blank=False,
     )
-    request_type = models.CharField(
-        max_length=100, choices=BaladyRequestTypes.choices, null=False, blank=False
+    request_type = models.JSONField(
+        max_length=100, null=False, blank=False, default=list
     )
     request_review = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
