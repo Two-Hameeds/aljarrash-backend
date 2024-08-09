@@ -234,7 +234,7 @@ class Comment(models.Model):
         Employee, on_delete=models.CASCADE, null=False, blank=False
     )
     written_for = models.ForeignKey(
-        Project, on_delete=models.SET_NULL, null=True, blank=True
+        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
     )
 
     # def __str__(self):

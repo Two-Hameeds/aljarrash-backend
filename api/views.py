@@ -516,8 +516,8 @@ class BaladyProjectsViewSet(ModelViewSet):
             data["stage"] = instance.stage
         if data.get("project_name") == None:
             data["project_name"] = instance.project_name
-        if data.get("request_type") == None:
-            data["request_type"] = instance.request_type
+        if data.get("request_types") == None:
+            data["request_types"] = instance.request_types
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone

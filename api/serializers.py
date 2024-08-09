@@ -16,6 +16,7 @@ from .models import (
 )
 from django.utils import timezone
 from pathlib import Path
+from .templates import ATTACHMENT_TEMPLATES
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -171,90 +172,12 @@ class ProjectSerializer(serializers.ModelSerializer):
                 }
             ]
 
-        # allFilesTypes = [
-        #     "contract",
-        #     "deed",
-        #     "identity",
-        #     "land_survey",
-        #     "client_form",
-        #     "architecture_plan",
-        #     "construction_plan",
-        #     "plumbing_plan",
-        #     "electrical_plan",
-        #     "energy_efficiency_plan",
-        #     "soil_test",
-        #     "civil_defense",
-        #     "old_license",
-        #     "plan",
-        #     "building_pictures",
-        #     "load_bearing_certificate",
-        #     "report",
-        #     "container_contract",
-        #     "coordinate_certificate",
-        #     "technical_report",
-        #     "demolition_letters",
-        #     "water_authority",
-        # ]
-
-        common_attachments = [
-            "contract",
-            "deed",
-            "identity",
-            "land_survey",
-            "client_form",
-            "architecture_plan",
-            "construction_plan",
-            "plumbing_plan",
-            "electrical_plan",
-            "energy_efficiency_plan",
-        ]
-
-        new_residential_commercial = ["soil_test", "civil_defense"]
-
-        new_other = ["soil_test"]
-        addition = ["old_license", "plan", "building_pictures"]
-        add_floors = [
-            "old_license",
-            "load_bearing_certificate",
-            "plan",
-            "building_pictures",
-        ]
-        restoration = [
-            "old_license",
-            "report",
-            "container_contract",
-            "plan",
-            "building_pictures",
-        ]
-        destruction = [
-            "old_license",
-            "coordinate_certificate",
-            "technical_report",
-            "demolition_letters",
-            "civil_defense",
-            "water_authority",
-        ]
-
-        required_attachments = common_attachments
-
         project_type = validated_data["project_type"]
         use_type = validated_data["use_type"]
 
-        if project_type == "new":
-            if use_type == "residential_commercial":
-                required_attachments.extend(new_residential_commercial)
-            else:
-                required_attachments.extend(new_other)
-        elif project_type == "addition":
-            required_attachments.extend(addition)
-        elif project_type == "add_floors":
-            required_attachments.extend(add_floors)
-        elif project_type == "restoration":
-            required_attachments.extend(restoration)
-        elif project_type == "destruction":
-            required_attachments.extend(destruction)
-
-        validated_data["required_attachments"] = required_attachments
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["design"][
+            project_type
+        ][use_type]
 
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
@@ -264,7 +187,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         return result
 
-    def get_attachments_statuses(self, obj):
+    def get_attachments_status(self, obj):
         if not self.context:
             return {}
 
@@ -334,22 +257,26 @@ class ProjectSerializer(serializers.ModelSerializer):
         primary_status = len(required_primary) == len(primary)
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
-
-        return [primary_status, secondary_status, final_status]
+        if primary_status and secondary_status and final_status:
+            return "final"
+        elif primary_status and secondary_status:
+            return "secondary"
+        elif primary_status:
+            return "primary"
+        else:
+            return "none"
 
     def to_representation(self, instance):
         default = super().to_representation(instance)
 
-        default["primary_status"] = self.get_attachments_statuses(instance)[0]
-        default["secondary_status"] = self.get_attachments_statuses(instance)[1]
-        default["final_status"] = self.get_attachments_statuses(instance)[2]
+        default["attachments_status"] = self.get_attachments_status(instance)
+
         default["comments_count"] = Comment.objects.filter(
             written_for=instance.id
         ).count()
 
         default.pop("required_attachments")
         if self.context and self.context["request"].user.is_superuser:
-            # default.pop("s_history")
             default.pop("s_payments")
 
             s_payments = instance.s_payments
@@ -405,7 +332,15 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
                     "created_in": validated_data["stage"],
                 }
             ]
+        request_types = validated_data["request_types"]
+        required_attachments = []
+        for request_type in request_types:
+            required_attachments = required_attachments + (ATTACHMENT_TEMPLATES[
+                "balady"
+            ][request_type]["administrative"]+ATTACHMENT_TEMPLATES["balady"][request_type]["engineering"])
 
+        validated_data["required_attachments"] = list(set(required_attachments))
+        
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             print(validated_data["s_history"])
@@ -413,6 +348,33 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
             result.global_id = global_id.id
             result.save()
         return result
+
+    def to_representation(self, instance):
+        default = super().to_representation(instance)
+
+        default["attachments_status"] = 50
+
+        default["comments_count"] = Comment.objects.filter(
+            written_for=instance.global_id
+        ).count()
+
+        # default.pop("required_attachments")
+        if self.context and self.context["request"].user.is_superuser:
+            default.pop("s_payments")
+
+            s_payments = instance.s_payments
+            paid = 0
+            for s_payment in s_payments:
+                paid = paid + float(s_payment["amount"])
+
+            if instance.s_project_value:
+                default["s_paid"] = (
+                    str(int(paid / float(instance.s_project_value) * 100)) + "%"
+                )
+            else:
+                default["s_paid"] = "0%"
+
+        return default
 
     class Meta:
         model = BaladyProject
