@@ -331,115 +331,63 @@ ATTACHMENT_TEMPLATES = {
     "balady": {
         "issue_license": {
             "administrative": [
-                
+                "land_survey",
+                "approved_contractor",
+                "engineering_supervision",
             ],
-            "engineering": [
-                
-            ],
+            "engineering": [],
         },
         "convert_license_to_electronic": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "restoration_license": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "add_modify_components_license": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "construction_completion_certificate": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "license_separation": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "license_renewal": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "demolition_license": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "ownership_license_transfer": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "survey_decision": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "service_card": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "loading_certificate": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "components_form": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
         "quantity_sorting": {
-            "administrative": [
-                
-            ],
-            "engineering": [
-                
-            ],
+            "administrative": [],
+            "engineering": [],
         },
-    }
+    },
 }

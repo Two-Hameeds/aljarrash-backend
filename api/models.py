@@ -270,7 +270,7 @@ class BaladyProject(models.Model):
         null=False,
         blank=False,
     )
-    request_type = models.JSONField(
+    request_types = models.JSONField(
         max_length=100, null=False, blank=False, default=list
     )
     request_review = models.CharField(
