@@ -228,13 +228,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
         if primary_status and secondary_status and final_status:
-            return "final"
+            return 3
         elif primary_status and secondary_status:
-            return "secondary"
+            return 2
         elif primary_status:
-            return "primary"
+            return 1
         else:
-            return "none"
+            return 0
 
     def to_representation(self, instance):
         default = super().to_representation(instance)
