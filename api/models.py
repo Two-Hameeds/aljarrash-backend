@@ -214,8 +214,11 @@ class Attachment(models.Model):
     uploaded_by = models.ForeignKey(
         Employee, on_delete=models.SET_NULL, null=True, blank=True
     )
+    # uploaded_for = models.ForeignKey(
+    #     Project, on_delete=models.SET_NULL, null=True, blank=True
+    # )
     uploaded_for = models.ForeignKey(
-        Project, on_delete=models.SET_NULL, null=True, blank=True
+        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
     )
     uploaded_at = models.DateTimeField(null=True, blank=True)
 

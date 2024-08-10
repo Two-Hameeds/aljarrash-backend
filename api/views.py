@@ -315,7 +315,7 @@ class RequiredAttachmentsViewSet(GenericAPIView):
                 required_attachments[index] = f"3_{required_attachments[index]}"
 
         attachments = {}
-        attachments_list = list(Attachment.objects.filter(uploaded_for=instance))
+        attachments_list = list(Attachment.objects.filter(uploaded_for=instance.global_id))
 
         for attachment in attachments_list:
             if attachment.type not in attachments:

@@ -76,6 +76,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data["uploaded_at"] = timezone.now()
+        if str(self.context["request"].user) == "AnonymousUser":
+            validated_data["uploaded_by"] = None
+        else:
+            validated_data["uploaded_by"] = self.context["request"].user
         return super().create(validated_data)
 
     class Meta:
