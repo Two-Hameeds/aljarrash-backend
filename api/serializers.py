@@ -140,6 +140,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             table_view_data = TableView.objects.values_list().get(name=table_view)[4]
 
         table_view_data.insert(0, "id")
+        table_view_data.insert(1, "global_id")
 
         if not user.is_staff:
             table_view_data = list(
