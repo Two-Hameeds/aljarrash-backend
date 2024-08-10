@@ -199,29 +199,29 @@ class ProjectSerializer(serializers.ModelSerializer):
         final = []
 
         for attachment in attachments_list:
-            if attachment.type in constants["primary"]:
+            if attachment.type in constants["type_1"]:
                 if attachment.type not in primary:
                     primary.append(attachment.type)
-            elif attachment.type in constants["secondary"]:
+            elif attachment.type in constants["type_2"]:
                 if attachment.type not in secondary:
                     secondary.append(attachment.type)
-            elif attachment.type in constants["final"]:
+            elif attachment.type in constants["type_3"]:
                 if attachment.type not in final:
                     final.append(attachment.type)
 
         required_primary = [
             primary_instance
-            for primary_instance in constants["primary"]
+            for primary_instance in constants["type_1"]
             if primary_instance in obj.required_attachments
         ]
         required_secondary = [
             secondary_instance
-            for secondary_instance in constants["secondary"]
+            for secondary_instance in constants["type_2"]
             if secondary_instance in obj.required_attachments
         ]
         required_final = [
             final_instance
-            for final_instance in constants["final"]
+            for final_instance in constants["type_3"]
             if final_instance in obj.required_attachments
         ]
         primary_status = len(required_primary) == len(primary)
