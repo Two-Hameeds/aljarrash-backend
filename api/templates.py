@@ -476,7 +476,6 @@ ATTACHMENT_TEMPLATES = {
                 "container_contract",
                 "identity",
                 "old_license",
-                "architecture_plan",
                 "license",
                 "building_pictures",
                 "deed",
@@ -487,6 +486,7 @@ ATTACHMENT_TEMPLATES = {
                 "owner_sign_loads",
             ],
             "type_2": [  # engineering
+                "architecture_plan",
                 "construction_plan",
                 "soil_test",
                 "counter_location",
