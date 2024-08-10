@@ -260,6 +260,14 @@ class ProjectSerializer(serializers.ModelSerializer):
                 )
             else:
                 default["s_paid"] = "0%"
+                
+        # print("here i am:", instance.global_id)
+        
+        if instance.global_id == None:
+            # print("here i am 2")
+            global_id, created = GlobalID.objects.get_or_create(design_id=instance)
+            instance.global_id = global_id
+            instance.save()
 
         return default
 

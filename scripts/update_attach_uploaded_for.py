@@ -1,14 +1,12 @@
 import requests
 
-API_URL = "https://your-api-url.com/projects/"
+API_URL = "https://jellyfish-app-ebfd5.ondigitalocean.app/api/design/"
 
 def get_project_ids():
-    response = requests.get(API_URL, headers=headers)
+    response = requests.get(API_URL)
 
-    # Check if the request was successful
     if response.status_code == 200:
         projects = response.json()
-        # Iterate over the projects and print their id and global_id
         for project in projects:
             print(f"Project ID: {project['id']}, Global ID: {project['global_id']}")
     else:
