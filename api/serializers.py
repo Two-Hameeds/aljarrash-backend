@@ -191,37 +191,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         if not self.context:
             return {}
 
-        all_primary = [
-            "contract",
-            "deed",
-            "report",
-            "identity",
-            "container_contract",
-            "plan",
-            "load_bearing_certificate",
-            "location_certificate",
-            "land_survey",
-            "soil_test",
-            "coordinate_certificate",
-            "demolition_letters",
-            "client_form",
-            "old_license",
-            "civil_defense",
-            "water_authority",
-        ]
-
-        all_secondary = {
-            "technical_report",
-        }
-
-        all_final = [
-            "architecture_plan",
-            "construction_plan",
-            "plumbing_plan",
-            "electrical_plan",
-            "energy_efficiency_plan",
-            "civil_defense",
-        ]
+        constants = ATTACHMENT_TEMPLATES["design"]["constants"]
 
         attachments_list = list(Attachment.objects.filter(uploaded_for=obj.id))
         primary = []
@@ -229,29 +199,29 @@ class ProjectSerializer(serializers.ModelSerializer):
         final = []
 
         for attachment in attachments_list:
-            if attachment.type in all_primary:
+            if attachment.type in constants["primary"]:
                 if attachment.type not in primary:
                     primary.append(attachment.type)
-            elif attachment.type in all_secondary:
+            elif attachment.type in constants["secondary"]:
                 if attachment.type not in secondary:
                     secondary.append(attachment.type)
-            elif attachment.type in all_final:
+            elif attachment.type in constants["final"]:
                 if attachment.type not in final:
                     final.append(attachment.type)
 
         required_primary = [
             primary_instance
-            for primary_instance in all_primary
+            for primary_instance in constants["primary"]
             if primary_instance in obj.required_attachments
         ]
         required_secondary = [
             secondary_instance
-            for secondary_instance in all_secondary
+            for secondary_instance in constants["secondary"]
             if secondary_instance in obj.required_attachments
         ]
         required_final = [
             final_instance
-            for final_instance in all_final
+            for final_instance in constants["final"]
             if final_instance in obj.required_attachments
         ]
         primary_status = len(required_primary) == len(primary)
@@ -335,12 +305,12 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         request_types = validated_data["request_types"]
         required_attachments = []
         for request_type in request_types:
-            required_attachments = required_attachments + (ATTACHMENT_TEMPLATES[
-                "balady"
-            ][request_type]["administrative"]+ATTACHMENT_TEMPLATES["balady"][request_type]["engineering"])
+            required_attachments = (
+                required_attachments + ATTACHMENT_TEMPLATES["balady"][request_type]
+            )
 
         validated_data["required_attachments"] = list(set(required_attachments))
-        
+
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             print(validated_data["s_history"])

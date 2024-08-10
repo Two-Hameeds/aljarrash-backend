@@ -1,3 +1,4 @@
+from .models import (Project, BaladyProject)
 ATTACHMENT_TEMPLATES = {
     "design": {
         "new": {
@@ -327,159 +328,183 @@ ATTACHMENT_TEMPLATES = {
                 "water_authority",
             ],
         },
-    },
-    "balady": {
-        "issue_license": {
-            "administrative": [
+        "constants": {
+            "type_1": [  # primary
+                "contract",
+                "deed",
+                "report",
+                "identity",
+                "container_contract",
+                "plan",
+                "load_bearing_certificate",
+                "location_certificate",
                 "land_survey",
-                "approved_contractor",
-                "engineering_supervision",
+                "soil_test",
+                "coordinate_certificate",
+                "demolition_letters",
+                "client_form",
+                "old_license",
+                "civil_defense",
+                "water_authority",
             ],
-            "engineering": [
-                "general_location",
-                "electrical_service_card",
+            "type_2": ["technical_report"],  # secondary
+            "type_3": [  # final
                 "architecture_plan",
                 "construction_plan",
-                "spaces_table",
-                "soil_test",
-                "facade_picture",
+                "plumbing_plan",
+                "electrical_plan",
                 "energy_efficiency_plan",
                 "civil_defense",
             ],
         },
-        "survey_decision": {
-            "administrative": [
-                "identity",
-                "deed",
-                "land_survey",
-            ],
-            "engineering": [],
-        },
-        "convert_license_to_electronic": {
-            "administrative": [
-                "identity",
-                "deed",
-                "old_license",
-                "approved_plan",
-                "building_pictures",
-            ],
-            "engineering": [],
-        },
-        "restoration_license": {
-            "administrative": [
-                "identity",
-                "deed",
+        "model": Project
+    },
+    "balady": {
+        "issue_license": [
+            "land_survey",
+            "approved_contractor",
+            "engineering_supervision",
+            "general_location",
+            "electrical_service_card",
+            "architecture_plan",
+            "construction_plan",
+            "spaces_table",
+            "soil_test",
+            "facade_picture",
+            "energy_efficiency_plan",
+            "civil_defense",
+        ],
+        "survey_decision": [
+            "identity",
+            "deed",
+            "land_survey",
+        ],
+        "convert_license_to_electronic": [
+            "identity",
+            "deed",
+            "old_license",
+            "approved_plan",
+            "building_pictures",
+        ],
+        "restoration_license": [
+            "identity",
+            "deed",
+            "e_license",
+            "approved_plan",
+            "container_contract",
+            "owner_authorize",
+            "technical_report",
+        ],
+        "add_modify_components_license": [
+            "identity",
+            "deed",
+            "e_license",
+            "approved_plan",
+            "construction_plan",
+            "architecture_plan",
+            "general_location",
+            "facade_picture",
+        ],
+        "construction_completion_certificate": [
+            "e_license",
+            "building_pictures",
+            "owner_authorize",
+            "technical_report",
+        ],
+        "license_separation": [
+            "identity",
+            "deed",
+            "e_license_before_sort",
+            "coordinate_certificate",
+            "architecture_plan",
+            "construction_plan",
+        ],
+        "license_renewal": [
+            "e_license",
+            "architecture_plan",
+        ],
+        "demolition_license": [
+            "identity",
+            "deed",
+            "demolition_letters",
+            "coordinate_certificate",
+            "architecture_plan",
+        ],
+        "ownership_license_transfer": [
+            "e_license",
+            "architecture_plan",
+        ],
+        "service_card": [
+            "identity",
+            "deed",
+            "license",
+            "architecture_plan",
+            "coordinate_certificate_electricity",
+            "determine_exert_type",
+            "counter_location",
+        ],
+        "loading_certificate": [
+            "identity",
+            "deed",
+            "license",
+            "owner_sign_loads",
+            "determine_exert_type",
+            "standing_cutter_capacity",
+            "cutter_capacity_after_strengthening",
+            "existing_loads",
+            "strengthening_reason",
+        ],
+        "components_form": [
+            "deed",
+            "license",
+            "architecture_plan",
+        ],
+        "quantity_sorting": [
+            "complete_plans",
+            "request_purpose",
+        ],
+        "constants": {
+            "type_1": [  # administrative
                 "e_license",
+                "demolition_letters",
+                "owner_authorize",
+                "request_purpose",
                 "approved_plan",
+                "approved_contractor",
+                "coordinate_certificate",
+                "coordinate_certificate_electricity",
                 "container_contract",
-                "owner_authorize",
-            ],
-            "engineering": [
-                "technical_report",
-            ],
-        },
-        "add_modify_components_license": {
-            "administrative": [
                 "identity",
-                "deed",
-                "e_license",
-                "approved_plan",
-            ],
-            "engineering": [
-                "construction_plan",
+                "old_license",
                 "architecture_plan",
-                "general_location",
-                "facade_picture",
-            ],
-        },
-        "construction_completion_certificate": {
-            "administrative": [
-                "e_license",
+                "license",
                 "building_pictures",
-                "owner_authorize",
-            ],
-            "engineering": [
-                "technical_report",
-            ],
-        },
-        "license_separation": {
-            "administrative": [
-                "identity",
                 "deed",
                 "e_license_before_sort",
-                "coordinate_certificate",
-            ],
-            "engineering": [
-                "architecture_plan",
-                "construction_plan",
-            ],
-        },
-        "license_renewal": {
-            "administrative": [
-                "e_license",
-                "architecture_plan",
-            ],
-            "engineering": [],
-        },
-        "demolition_license": {
-            "administrative": [
-                "identity",
-                "deed",
-                "demolition_letters",
-                "coordinate_certificate",
-                "architecture_plan",
-            ],
-            "engineering": [],
-        },
-        "ownership_license_transfer": {
-            "administrative": [
-                "e_license",
-                "architecture_plan",
-            ],
-            "engineering": [],
-        },
-        "service_card": {
-            "administrative": [
-                "identity",
-                "deed",
-                "license",
-                "architecture_plan",
-                "coordinate_certificate_electricity",
-            ],
-            "engineering": [
-                "determine_exert_type",
-                "counter_location",
-            ],
-        },
-        "loading_certificate": {
-            "administrative": [
-                "identity",
-                "deed",
-                "license",
+                "engineering_supervision",
+                "complete_plans",
+                "land_survey",
                 "owner_sign_loads",
             ],
-            "engineering": [
-                "determine_exert_type",
-                "standing_cutter_capacity",
+            "type_2": [  # engineering
+                "construction_plan",
+                "soil_test",
+                "counter_location",
                 "cutter_capacity_after_strengthening",
+                "standing_cutter_capacity",
                 "existing_loads",
                 "strengthening_reason",
-            ],
-        },
-        "components_form": {
-            "administrative": [
-                "deed",
-                "license",
+                "general_location",
+                "technical_report",
+                "spaces_table",
                 "architecture_plan",
+                "determine_exert_type",
+                "electrical_service_card",
+                "civil_defense",
+                "facade_picture",
+                "energy_efficiency_plan",
             ],
-            "engineering": [],
         },
-        "quantity_sorting": {
-            "administrative": [
-                "complete_plans",
-                "request_purpose",
-            ],
-            "engineering": [],
-        },
+        "model": BaladyProject
     },
 }

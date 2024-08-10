@@ -36,32 +36,27 @@ from knox import views as knox_views
 router = DefaultRouter()
 router.register("employees", EmployeesViewSet)
 router.register("clients", ClientsViewSet)
-router.register("design_projects", ProjectsViewSet)
+router.register("design", ProjectsViewSet)
 router.register("comments", CommentsViewSet)
 router.register("table_views", TableViewsViewSet)
 router.register("attachments", AttachmentsViewSet)
-router.register("balady_projects", BaladyProjectsViewSet)
-router.register("land_survey_projects", LandSurveyProjectsViewSet)
-router.register("sorting_deeds_projects", SortingDeedsProjectsViewSet)
+router.register("balady", BaladyProjectsViewSet)
+router.register("land_survey", LandSurveyProjectsViewSet)
+router.register("sorting_deeds", SortingDeedsProjectsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
 router.register("payments", PaymentsViewSet)
 
 urlpatterns = router.urls + [
     # Design Projects
-    path("design_projects/copy", CopyProjectsView.as_view(), name="copy_projects"),
+    path("design/copy", CopyProjectsView.as_view(), name="copy_projects"),
     path(
-        "design_projects/<int:project_id>/attachments/",
-        RequiredAttachmentsViewSet.as_view(),
-        name="required_attachments",
-    ),
-    path(
-        "design_projects/<int:project_id>/payments/",
+        "design/<int:project_id>/payments/",
         DesignPaymentsViewSet.as_view(),
         name="design_payments",
     ),
     path(
-        "design_projects/<int:project_id>/history/",
+        "design/<int:project_id>/history/",
         HistoryViewSet.as_view(),
         name="history",
     ),
@@ -69,9 +64,16 @@ urlpatterns = router.urls + [
     path("engineers/", EngineersView.as_view(), name="engineers"),
     # Balady Projects
     path(
-        "balady_projects/copy",
+        "balady/copy",
         CopyBaladyProjectsView.as_view(),
         name="copy_balady_projects",
+    ),
+    
+    # common
+    path(
+        "<str:project_category>/<int:project_id>/attachments/",
+        RequiredAttachmentsViewSet.as_view(),
+        name="required_attachments",
     ),
     # Authentication
     path("login/", LoginAPI.as_view(), name="login"),

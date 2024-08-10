@@ -34,6 +34,7 @@ from .serializers import (
     GroupSerializer,
     PaymentSerializer,
 )
+
 # from .permissions import HasGroupPermission
 
 from rest_framework.viewsets import ModelViewSet
@@ -49,6 +50,7 @@ from knox.views import LoginView as KnoxLoginView
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .permissions import IsAdmin
+from .templates import ATTACHMENT_TEMPLATES
 
 # from openpyxl import Workbook
 
@@ -70,7 +72,7 @@ class EmployeesViewSet(ModelViewSet):
 
         if data.get("password") == None:
             data["password"] = instance.password
-            
+
         if data.get("username") == None:
             data["username"] = instance.username
 
@@ -80,7 +82,8 @@ class EmployeesViewSet(ModelViewSet):
         instance.save()
 
         return Response(serializer.data)
-    
+
+
 class EmployeeRolesViewSet(APIView):
     # permission_classes = (IsAuthenticated, )
 
@@ -88,11 +91,9 @@ class EmployeeRolesViewSet(APIView):
     # serializer_class = GroupSerializer
     def get(self, request):
         user = request.user
-        data = {
-            "isAdmin": user.is_superuser,
-            "isStaff": user.is_staff
-        }
+        data = {"isAdmin": user.is_superuser, "isStaff": user.is_staff}
         return Response(data)
+
 
 class GroupsViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticated, )
@@ -109,10 +110,10 @@ class EngineersView(APIView):
         for group in groups:
             Employee.objects.filter(groups=group)
             array = Employee.objects.filter(groups=group).values("id", "username")
-            employee_dict = {employee['id']: employee['username'] for employee in array} 
-            ids = {**ids, **employee_dict}           
+            employee_dict = {employee["id"]: employee["username"] for employee in array}
+            ids = {**ids, **employee_dict}
             response[group.name] = array
-        
+
         response["ids"] = ids
         return Response(response)
 
@@ -225,11 +226,15 @@ class CopyProjectsView(APIView):
         try:
             projects = Project.objects.filter(id__in=ids)
             new_serializers = []
-            
+
             for project in projects:
                 project.id = None
                 # TODO: add s_history
-                serializer = ProjectSerializer(project, data={"stage": stage, "moved_at": timezone.now(), "s_history": []}, partial=True)
+                serializer = ProjectSerializer(
+                    project,
+                    data={"stage": stage, "moved_at": timezone.now(), "s_history": []},
+                    partial=True,
+                )
                 serializer.is_valid(raise_exception=True)
                 try:
                     print(serializer.data)
@@ -238,8 +243,7 @@ class CopyProjectsView(APIView):
                 serializer.save()
 
                 new_serializers.append(serializer)
-            
-            
+
             # serializer = ProjectSerializer(data=new_projects, many=True)
             # serializer.is_valid(raise_exception=True)
             # data = serializer.data
@@ -293,56 +297,31 @@ class AttachmentsViewSet(ModelViewSet):
 class RequiredAttachmentsViewSet(GenericAPIView):
     serializer_class = RequiredAttachmentSerializer
 
-    def get(self, request, project_id):
-        project = Project.objects.get(id=project_id)
-        required_attachments = project.required_attachments
-        all_primary = [
-            "contract",
-            "deed",
-            "report",
-            "identity",
-            "container_contract",
-            "plan",
-            "load_bearing_certificate",
-            "location_certificate",
-            "land_survey",
-            "soil_test",
-            "coordinate_certificate",
-            "demolition_letters",
-            "client_form",
-            "old_license",
-            "civil_defense",
-            "water_authority",
-        ]
-
-        all_secondary = {
-            "technical_report",
-        }
-
-        all_final = [
-            "architecture_plan",
-            "construction_plan",
-            "plumbing_plan",
-            "electrical_plan",
-            "energy_efficiency_plan",
-            "civil_defense",
-        ]
+    def get(self, request, project_category, project_id):
+        print(project_category)
         
+        attachment_template = ATTACHMENT_TEMPLATES[project_category]
+        instance = attachment_template["model"].objects.get(id=project_id)
+        required_attachments = instance.required_attachments
+
+        constants = attachment_template["constants"]
         for index, required_attachment in enumerate(required_attachments):
-            if required_attachment in all_primary:
+            if required_attachment in constants["type_1"]:
                 required_attachments[index] = f"1_{required_attachments[index]}"
-            elif required_attachment in all_secondary:
+            elif required_attachment in constants["type_2"]:
                 required_attachments[index] = f"2_{required_attachments[index]}"
-            elif required_attachment in all_final:
+            elif required_attachment in constants["type_3"]:
                 required_attachments[index] = f"3_{required_attachments[index]}"
 
         attachments = {}
-        attachments_list = list(Attachment.objects.filter(uploaded_for=project))
+        attachments_list = list(Attachment.objects.filter(uploaded_for=instance))
 
         for attachment in attachments_list:
             if attachment.type not in attachments:
                 attachments[attachment.type] = []
-            attachments[attachment.type].insert(0, (f"{attachment.id}_{attachment.attachment.url}"))
+            attachments[attachment.type].insert(
+                0, (f"{attachment.id}_{attachment.attachment.url}")
+            )
 
         return Response(
             {
@@ -374,17 +353,24 @@ class RequiredAttachmentsViewSet(GenericAPIView):
             status=200,
         )
 
+
 class DesignPaymentsViewSet(GenericAPIView):
     permission_classes = (IsAuthenticated, IsAdmin)
-    
+
     serializer_class = PaymentsSerializer
     queryset = Project.objects.all()
-    
+
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
 
-        return Response({"s_project_value":project.s_project_value, "s_payments":project.s_payments}, status=200)
-    
+        return Response(
+            {
+                "s_project_value": project.s_project_value,
+                "s_payments": project.s_payments,
+            },
+            status=200,
+        )
+
     def put(self, request, project_id):
         project = Project.objects.get(id=project_id)
         data = request.data
@@ -392,8 +378,14 @@ class DesignPaymentsViewSet(GenericAPIView):
         if serializer.is_valid():
             serializer.save()
 
-        
-        return Response({"s_project_value":project.s_project_value, "s_payments":project.s_payments}, status=200)
+        return Response(
+            {
+                "s_project_value": project.s_project_value,
+                "s_payments": project.s_payments,
+            },
+            status=200,
+        )
+
 
 class DashboardView(APIView):
     def get(self, request):
@@ -418,9 +410,7 @@ class DashboardView(APIView):
 class DelayedProjectsView(APIView):
     def get(self, request):
         sketch_projects = Project.objects.filter(stage=1).order_by("-moved_at")
-        execution_stage_projects = Project.objects.filter(stage=4).order_by(
-            "-moved_at"
-        )
+        execution_stage_projects = Project.objects.filter(stage=4).order_by("-moved_at")
 
         result = {}
 
@@ -608,7 +598,8 @@ class HistoryViewSet(APIView):
     def get(self, request, project_id):
         project = Project.objects.get(id=project_id)
         return Response(project.s_history, status=200)
-    
+
+
 class PaymentsViewSet(ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
