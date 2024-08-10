@@ -229,6 +229,7 @@ class CopyProjectsView(APIView):
 
             for project in projects:
                 project.id = None
+                project.global_id = None
                 # TODO: add s_history
                 serializer = ProjectSerializer(
                     project,
