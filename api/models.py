@@ -80,7 +80,7 @@ class Project(models.Model):
     columns_approval_date = models.DateField(null=True, blank=True)
     obstacles = models.CharField(max_length=100, null=True, blank=True)
 
-    # sensetive fields
+    # sensitive fields
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(null=True, blank=True, default=list)
     s_modification_price = models.FloatField(null=True, blank=True)
@@ -103,7 +103,7 @@ class Project(models.Model):
     construction_eng = models.ForeignKey(
         Employee,
         on_delete=models.SET_NULL,
-        related_name="contruction_engineer",
+        related_name="construction_engineer",
         null=True,
         blank=True,
     )

@@ -332,10 +332,15 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
             result.save()
         return result
 
+    def attachments_status(self, instance):
+        attach_count = Attachment.objects.filter(uploaded_for=instance.global_id, type__in=instance.required_attachments).distinct('type').count()
+        
+        return int(attach_count / len(instance.required_attachments) * 3)
+
     def to_representation(self, instance):
         default = super().to_representation(instance)
 
-        default["attachments_status"] = 50
+        default["attachments_status"] = self.attachments_status(instance)
 
         default["comments_count"] = Comment.objects.filter(
             written_for=instance.global_id
