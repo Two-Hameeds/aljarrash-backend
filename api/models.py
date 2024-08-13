@@ -357,10 +357,10 @@ class SortingDeedsProject(models.Model):
 
 
 class GlobalID(models.Model):
-    design_id = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    balady_id = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    sorting_id = models.OneToOneField(SortingDeedsProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    land_id = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    design = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    balady = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    sorting = models.OneToOneField(SortingDeedsProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    land = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     
 
 class Payment(models.Model):

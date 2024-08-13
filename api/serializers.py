@@ -186,7 +186,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
-            global_id, created = GlobalID.objects.get_or_create(design_id=result)
+            global_id, created = GlobalID.objects.get_or_create(design=result)
             result.global_id = global_id
             result.save()
 
@@ -270,7 +270,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         
         if instance.global_id == None:
             # print("here i am 2")
-            global_id, created = GlobalID.objects.get_or_create(design_id=instance)
+            global_id, created = GlobalID.objects.get_or_create(design=instance)
             instance.global_id = global_id
             instance.save()
 
@@ -327,7 +327,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             print(validated_data["s_history"])
-            global_id, created = GlobalID.objects.get_or_create(balady_id=result)
+            global_id, created = GlobalID.objects.get_or_create(balady=result)
             result.global_id = global_id.id
             result.save()
         return result
@@ -384,7 +384,7 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
-            global_id, created = GlobalID.objects.get_or_create(land_id=result)
+            global_id, created = GlobalID.objects.get_or_create(land=result)
             result.global_id = global_id.id
             result.save()
         return result
@@ -409,7 +409,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
-            global_id, created = GlobalID.objects.get_or_create(sorting_id=result)
+            global_id, created = GlobalID.objects.get_or_create(sorting=result)
             result.global_id = global_id.id
             result.save()
         return result
