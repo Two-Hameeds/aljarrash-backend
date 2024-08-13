@@ -299,8 +299,6 @@ class RequiredAttachmentsViewSet(GenericAPIView):
     serializer_class = RequiredAttachmentSerializer
 
     def get(self, request, project_category, project_id):
-        print(project_category)
-        
         attachment_template = ATTACHMENT_TEMPLATES[project_category]
         instance = attachment_template["model"].objects.get(id=project_id)
         required_attachments = instance.required_attachments
@@ -332,14 +330,15 @@ class RequiredAttachmentsViewSet(GenericAPIView):
             status=200,
         )
 
-    def put(self, request, project_id):
-        project = Project.objects.get(id=project_id)
+    def put(self, request, project_category, project_id):
+        attachment_template = ATTACHMENT_TEMPLATES[project_category]
+        instance = attachment_template["model"].objects.get(id=project_id)
         required_attachments = request.data.get("required_attachments")
-        project.required_attachments = required_attachments
-        project.save()
+        instance.required_attachments = required_attachments
+        instance.save()
 
         attachments = {}
-        attachments_list = list(Attachment.objects.filter(uploaded_for=project))
+        attachments_list = list(Attachment.objects.filter(uploaded_for=instance.global_id))
 
         for attachment in attachments_list:
             if attachment.type not in attachments:
