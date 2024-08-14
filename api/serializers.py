@@ -281,11 +281,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PaymentsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Project
-        fields = ["s_project_value", "s_payments"]
+class PaymentsSerializer(serializers.Serializer):
+    s_project_value = serializers.FloatField()
+    s_payments = serializers.JSONField()
 
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
@@ -347,7 +345,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         ).count()
 
         # default.pop("required_attachments")
-        if self.context and self.context["request"].user.is_superuser:
+        if self.context: #and self.context["request"].user.is_superuser:
             default.pop("s_payments")
 
             s_payments = instance.s_payments

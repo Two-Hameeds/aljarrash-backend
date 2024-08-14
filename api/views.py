@@ -354,34 +354,38 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         )
 
 
-class DesignPaymentsViewSet(GenericAPIView):
+class PaymentsViewSet(GenericAPIView):
     permission_classes = (IsAuthenticated, IsAdmin)
 
     serializer_class = PaymentsSerializer
-    queryset = Project.objects.all()
+    # queryset = Project.objects.all()
 
-    def get(self, request, project_id):
-        project = Project.objects.get(id=project_id)
+    def get(self, request, project_category, project_id):
+        attachment_template = ATTACHMENT_TEMPLATES[project_category]
+        instance = attachment_template["model"].objects.get(id=project_id)
 
         return Response(
             {
-                "s_project_value": project.s_project_value,
-                "s_payments": project.s_payments,
+                "s_project_value": instance.s_project_value,
+                "s_payments": instance.s_payments,
             },
             status=200,
         )
 
-    def put(self, request, project_id):
-        project = Project.objects.get(id=project_id)
+    def put(self, request, project_category, project_id):
+        attachment_template = ATTACHMENT_TEMPLATES[project_category]
+        instance = attachment_template["model"].objects.get(id=project_id)
         data = request.data
-        serializer = PaymentsSerializer(project, data=data)
-        if serializer.is_valid():
-            serializer.save()
+        
+        instance.s_project_value = data.get("s_project_value")
+        instance.s_payments = data.get("s_payments")
+
+        instance.save()
 
         return Response(
             {
-                "s_project_value": project.s_project_value,
-                "s_payments": project.s_payments,
+                "s_project_value": instance.s_project_value,
+                "s_payments": instance.s_payments,
             },
             status=200,
         )
@@ -600,6 +604,6 @@ class HistoryViewSet(APIView):
         return Response(project.s_history, status=200)
 
 
-class PaymentsViewSet(ModelViewSet):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
+# class PaymentsViewSet(ModelViewSet):
+#     queryset = Payment.objects.all()
+#     serializer_class = PaymentSerializer

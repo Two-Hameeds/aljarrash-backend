@@ -10,7 +10,6 @@ from .views import (
     ProjectsViewSet,
     AttachmentsViewSet,
     RequiredAttachmentsViewSet,
-    DesignPaymentsViewSet,
     CopyProjectsView,
     DashboardView,
     DelayedProjectsView,
@@ -51,11 +50,6 @@ urlpatterns = router.urls + [
     # Design Projects
     path("design/copy", CopyProjectsView.as_view(), name="copy_projects"),
     path(
-        "design/<int:project_id>/payments/",
-        DesignPaymentsViewSet.as_view(),
-        name="design_payments",
-    ),
-    path(
         "design/<int:project_id>/history/",
         HistoryViewSet.as_view(),
         name="history",
@@ -75,6 +69,12 @@ urlpatterns = router.urls + [
         RequiredAttachmentsViewSet.as_view(),
         name="required_attachments",
     ),
+    path(
+        "<str:project_category>/<int:project_id>/payments/",
+        PaymentsViewSet.as_view(),
+        name="design_payments",
+    ),
+    
     # Authentication
     path("login/", LoginAPI.as_view(), name="login"),
     path("logout/", knox_views.LogoutView.as_view(), name="logout"),
