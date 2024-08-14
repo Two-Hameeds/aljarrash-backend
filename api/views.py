@@ -358,7 +358,6 @@ class PaymentsViewSet(GenericAPIView):
     permission_classes = (IsAuthenticated, IsAdmin)
 
     serializer_class = PaymentsSerializer
-    # queryset = Project.objects.all()
 
     def get(self, request, project_category, project_id):
         attachment_template = ATTACHMENT_TEMPLATES[project_category]
