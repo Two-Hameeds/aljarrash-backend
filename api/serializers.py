@@ -11,6 +11,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
+    QataryOfficeProject,
     GlobalID,
     Payment,
 )
@@ -416,6 +417,10 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         model = SortingDeedsProject
         fields = "__all__"
 
+class QataryOfficeProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QataryOfficeProject
+        fields = "__all__"
 
 class GlobalIDSerializer(serializers.ModelSerializer):
     class Meta:
@@ -424,7 +429,6 @@ class GlobalIDSerializer(serializers.ModelSerializer):
 
 
 count = 0
-
 
 class PaymentSerializer(serializers.ModelSerializer):
     # def get_fields(self):

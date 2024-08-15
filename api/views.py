@@ -16,6 +16,7 @@ from .models import (
     SortingDeedsProject,
     GlobalID,
     Payment,
+    QataryOfficeProject,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -33,6 +34,7 @@ from .serializers import (
     GlobalIDSerializer,
     GroupSerializer,
     PaymentSerializer,
+    QataryOfficeProjectSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -313,7 +315,9 @@ class RequiredAttachmentsViewSet(GenericAPIView):
                 required_attachments[index] = f"3_{required_attachments[index]}"
 
         attachments = {}
-        attachments_list = list(Attachment.objects.filter(uploaded_for=instance.global_id))
+        attachments_list = list(
+            Attachment.objects.filter(uploaded_for=instance.global_id)
+        )
 
         for attachment in attachments_list:
             if attachment.type not in attachments:
@@ -338,7 +342,9 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         instance.save()
 
         attachments = {}
-        attachments_list = list(Attachment.objects.filter(uploaded_for=instance.global_id))
+        attachments_list = list(
+            Attachment.objects.filter(uploaded_for=instance.global_id)
+        )
 
         for attachment in attachments_list:
             if attachment.type not in attachments:
@@ -375,7 +381,7 @@ class PaymentsViewSet(GenericAPIView):
         attachment_template = ATTACHMENT_TEMPLATES[project_category]
         instance = attachment_template["model"].objects.get(id=project_id)
         data = request.data
-        
+
         instance.s_project_value = data.get("s_project_value")
         instance.s_payments = data.get("s_payments")
 
@@ -549,6 +555,18 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 
     queryset = SortingDeedsProject.objects.all()
     serializer_class = SortingDeedsProjectSerializer
+
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["stage"]
+
+
+class QataryOfficeProjectsViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated, )
+
+    queryset = QataryOfficeProject.objects.all()
+    serializer_class = QataryOfficeProjectSerializer
 
     filter_backends = [
         DjangoFilterBackend,

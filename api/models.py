@@ -16,6 +16,7 @@ from .choices import (
     BaladyRequestTypes,
     LandSurveyStages,
     SortingDeedsStages,
+    QataryStages,
 )
 
 
@@ -355,7 +356,20 @@ class SortingDeedsProject(models.Model):
     accounting = models.CharField(max_length=100, null=True, blank=True)
     notes = models.CharField(max_length=100, null=True, blank=True)
 
-
+class QataryOfficeProject(models.Model):
+    global_id = models.IntegerField(null=True, blank=True)
+    stage = models.CharField(max_length=100, choices=QataryStages.choices, null=False, blank=False)
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey(Client, to_field="phone", on_delete=models.CASCADE, related_name="qatary_projects", null=False, blank=False)
+    location_visit = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    location_visit_date = models.DateField(null=True, blank=True)
+    record_number = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=500, null=True, blank=True)
+    transaction_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name="qatary_projects_reviewer", null=True, blank=True)
+    record_purpose = models.CharField(max_length=100, null=True, blank=True)
+    payment_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)    
+    land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
+    
 class GlobalID(models.Model):
     design = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     balady = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
