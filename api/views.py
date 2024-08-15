@@ -35,6 +35,7 @@ from .serializers import (
     GlobalIDSerializer,
     GroupSerializer,
     PaymentSerializer,
+    RequestSubmissionSerializer,
     QataryOfficeProjectSerializer,
 )
 
@@ -398,6 +399,7 @@ class PaymentsViewSet(GenericAPIView):
 
 class RequestSubmissionsView(GenericAPIView):
     # permission_classes = (IsAuthenticated, IsAdmin)
+    serializer_class = RequestSubmissionSerializer
     
     def get(self, request, project_id):
         requests = BaladyProject.objects.get(id=project_id).request_submissions

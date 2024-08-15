@@ -285,7 +285,10 @@ class ProjectSerializer(serializers.ModelSerializer):
 class PaymentsSerializer(serializers.Serializer):
     s_project_value = serializers.FloatField()
     s_payments = serializers.JSONField()
-
+    
+    
+class RequestSubmissionSerializer(serializers.Serializer):
+    requests = serializers.JSONField()
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
     # created_at = serializers.DateTimeField(read_only=True)
