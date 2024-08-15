@@ -289,7 +289,7 @@ class BaladyProject(models.Model):
     approval_date = models.DateField(null=True, blank=True)
     is_eng_needed = models.BooleanField(null=True, blank=True)
     sorting_purpose = models.CharField(max_length=255, null=True, blank=True)
-    request_submission = models.JSONField(null=True, blank=True)
+    request_submissions = models.JSONField(null=True, blank=True, default=list)
     municipality_visit = models.JSONField(null=True, blank=True)
 
     moved_at = models.DateTimeField(auto_now_add=True)

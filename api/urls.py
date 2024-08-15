@@ -25,6 +25,7 @@ from .views import (
     HistoryViewSet,
     GroupsViewSet,
     PaymentsViewSet,
+    RequestSubmissionsView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -63,6 +64,11 @@ urlpatterns = router.urls + [
         "balady/copy",
         CopyBaladyProjectsView.as_view(),
         name="copy_balady_projects",
+    ),
+    path(
+        "balady/<int:project_id>/requests",
+        RequestSubmissionsView.as_view(),
+        name="balady_request_submissions",
     ),
     
     # common

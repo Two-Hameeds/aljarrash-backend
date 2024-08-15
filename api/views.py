@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from django.utils import timezone
 from django.http import HttpResponse
 from django.contrib.auth.models import Group
+import json
 
 from .models import (
     Employee,
@@ -395,6 +396,20 @@ class PaymentsViewSet(GenericAPIView):
             status=200,
         )
 
+class RequestSubmissionsView(GenericAPIView):
+    # permission_classes = (IsAuthenticated, IsAdmin)
+    
+    def get(self, request, project_id):
+        requests = BaladyProject.objects.get(id=project_id).request_submissions
+        return Response ({requests}, 200)
+    
+    def put(self, request, project_id):
+        data = request.data
+        instance = BaladyProject.objects.get(id=project_id)
+        instance.request_submissions = data.get("requests")
+        instance.save()
+        
+        return Response(instance.request_submissions, 200)
 
 class DashboardView(APIView):
     def get(self, request):
