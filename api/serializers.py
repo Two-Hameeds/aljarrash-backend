@@ -288,7 +288,10 @@ class PaymentsSerializer(serializers.Serializer):
     
     
 class RequestSubmissionSerializer(serializers.Serializer):
-    requests = serializers.JSONField()
+    requests = serializers.ListField()
+    
+class MunicipalityVisitSerializer(serializers.Serializer):
+    visits = serializers.ListField()
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
     # created_at = serializers.DateTimeField(read_only=True)

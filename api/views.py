@@ -34,8 +34,8 @@ from .serializers import (
     SortingDeedsProjectSerializer,
     GlobalIDSerializer,
     GroupSerializer,
-    PaymentSerializer,
     RequestSubmissionSerializer,
+    MunicipalityVisitSerializer,
     QataryOfficeProjectSerializer,
 )
 
@@ -403,7 +403,7 @@ class RequestSubmissionsView(GenericAPIView):
     
     def get(self, request, project_id):
         requests = BaladyProject.objects.get(id=project_id).request_submissions
-        return Response (requests, 200)
+        return Response ({"requests": requests}, 200)
     
     def put(self, request, project_id):
         data = request.data
@@ -412,6 +412,25 @@ class RequestSubmissionsView(GenericAPIView):
         instance.save()
         
         return Response(instance.request_submissions, 200)
+    
+
+class MunicipalityVisitsView(GenericAPIView):
+    # permission_classes = (IsAuthenticated, IsAdmin)
+    serializer_class = MunicipalityVisitSerializer
+    
+    def get(self, request, project_id):
+        visits = BaladyProject.objects.get(id=project_id).municipality_visits
+        return Response ({"visits": visits}, 200)
+    
+    def put(self, request, project_id):
+        data = request.data
+        instance = BaladyProject.objects.get(id=project_id)
+        instance.municipality_visits = data.get("visits")
+        instance.save()
+        
+        return Response(instance.municipality_visits, 200)
+    
+
 
 class DashboardView(APIView):
     def get(self, request):

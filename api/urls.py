@@ -26,6 +26,7 @@ from .views import (
     GroupsViewSet,
     PaymentsViewSet,
     RequestSubmissionsView,
+    MunicipalityVisitsView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -66,9 +67,14 @@ urlpatterns = router.urls + [
         name="copy_balady_projects",
     ),
     path(
-        "balady/<int:project_id>/requests",
+        "balady/<int:project_id>/requests/",
         RequestSubmissionsView.as_view(),
         name="balady_request_submissions",
+    ),
+    path(
+        "balady/<int:project_id>/visits/",
+        MunicipalityVisitsView.as_view(),
+        name="balady_municipality_visits",
     ),
     
     # common
