@@ -401,7 +401,7 @@ class RequestSubmissionsView(GenericAPIView):
     
     def get(self, request, project_id):
         requests = BaladyProject.objects.get(id=project_id).request_submissions
-        return Response ({requests}, 200)
+        return Response (requests, 200)
     
     def put(self, request, project_id):
         data = request.data
