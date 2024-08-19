@@ -1,14 +1,11 @@
-from django.forms.models import model_to_dict
 from django.contrib.auth import login
 from django.utils import timezone
-from django.http import HttpResponse
 from django.contrib.auth.models import Group
-import json
 
 from .models import (
     Employee,
     Client,
-    Project,
+    DesignProject,
     Attachment,
     Comment,
     TableView,
@@ -16,7 +13,6 @@ from .models import (
     LandSurveyProject,
     SortingDeedsProject,
     GlobalID,
-    Payment,
     QataryOfficeProject,
 )
 from .serializers import (
@@ -56,11 +52,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAdmin
 from .templates import ATTACHMENT_TEMPLATES
 
-# from openpyxl import Workbook
 
 
 class EmployeesViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -89,7 +84,7 @@ class EmployeesViewSet(ModelViewSet):
 
 
 class EmployeeRolesViewSet(APIView):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     # queryset = Group.objects.all()
     # serializer_class = GroupSerializer
@@ -100,13 +95,14 @@ class EmployeeRolesViewSet(APIView):
 
 
 class GroupsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
 class EngineersView(APIView):
+    permission_classes = (IsAuthenticated, )
     def get(self, request):
         groups = Group.objects.all()
         ids = {}
@@ -154,16 +150,16 @@ class RemoveTokensAPI(GenericAPIView):
 
 
 class ClientsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
 
 class ProjectsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
-    queryset = Project.objects.all()
+    queryset = DesignProject.objects.all()
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
@@ -220,6 +216,7 @@ class ProjectsViewSet(ModelViewSet):
 
 
 class CopyProjectsView(APIView):
+    permission_classes = (IsAuthenticated, )
     def post(self, request):
         ids = request.data.get("ids")
         stage = request.data.get("stage")
@@ -228,7 +225,7 @@ class CopyProjectsView(APIView):
             return Response({"message": "ids and stage are required"}, status=400)
 
         try:
-            projects = Project.objects.filter(id__in=ids)
+            projects = DesignProject.objects.filter(id__in=ids)
             new_serializers = []
 
             for project in projects:
@@ -262,6 +259,8 @@ class CopyProjectsView(APIView):
 
 
 class CopyBaladyProjectsView(APIView):
+    permission_classes = (IsAuthenticated, )
+    
     def post(self, request):
         ids = request.data.get("ids")
         stage = request.data.get("stage")
@@ -290,6 +289,8 @@ class CopyBaladyProjectsView(APIView):
 
 
 class AttachmentsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
 
@@ -300,6 +301,8 @@ class AttachmentsViewSet(ModelViewSet):
 
 
 class RequiredAttachmentsViewSet(GenericAPIView):
+    permission_classes = (IsAuthenticated, )
+    
     serializer_class = RequiredAttachmentSerializer
 
     def get(self, request, project_category, project_id):
@@ -398,7 +401,7 @@ class PaymentsViewSet(GenericAPIView):
         )
 
 class RequestSubmissionsView(GenericAPIView):
-    # permission_classes = (IsAuthenticated, IsAdmin)
+    permission_classes = (IsAuthenticated, )
     serializer_class = RequestSubmissionSerializer
     
     def get(self, request, project_id):
@@ -415,7 +418,7 @@ class RequestSubmissionsView(GenericAPIView):
     
 
 class MunicipalityVisitsView(GenericAPIView):
-    # permission_classes = (IsAuthenticated, IsAdmin)
+    permission_classes = (IsAuthenticated, )
     serializer_class = MunicipalityVisitSerializer
     
     def get(self, request, project_id):
@@ -429,73 +432,10 @@ class MunicipalityVisitsView(GenericAPIView):
         instance.save()
         
         return Response(instance.municipality_visits, 200)
-    
-
-
-class DashboardView(APIView):
-    def get(self, request):
-        total_projects = Project.objects.all().count()
-        active_projects = Project.objects.filter(
-            stage__in=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        ).count()
-        completed_projects = Project.objects.filter(stage=13).count()
-        inactive_projects = total_projects - (active_projects + completed_projects)
-
-        return Response(
-            {
-                "total_projects": total_projects,
-                "active_projects": active_projects,
-                "completed_projects": completed_projects,
-                "inactive_projects": inactive_projects,
-            },
-            status=200,
-        )
-
-
-class DelayedProjectsView(APIView):
-    def get(self, request):
-        sketch_projects = Project.objects.filter(stage=1).order_by("-moved_at")
-        execution_stage_projects = Project.objects.filter(stage=4).order_by("-moved_at")
-
-        result = {}
-
-        result["sketch_projects"] = []
-        for project in sketch_projects:
-            days_since_moved = (
-                (timezone.now() - project.moved_at).days if project.moved_at else None
-            )
-
-            result["sketch_projects"].append(
-                {
-                    "id": project.id,
-                    "project_name": project.project_name,
-                    "stage": project.stage,
-                    "moved_at": project.moved_at,
-                    "days_since_moved": days_since_moved,
-                }
-            )
-
-        result["execution_stage_projects"] = []
-        for project in execution_stage_projects:
-            days_since_moved = (
-                (timezone.now() - project.moved_at).days if project.moved_at else None
-            )
-
-            result["execution_stage_projects"].append(
-                {
-                    "id": project.id,
-                    "project_name": project.project_name,
-                    "stage": project.stage,
-                    "moved_at": project.moved_at,
-                    "days_since_moved": days_since_moved,
-                }
-            )
-
-        return Response(result, status=200)
 
 
 class CommentsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     filter_Backends = [
         DjangoFilterBackend,
@@ -507,7 +447,7 @@ class CommentsViewSet(ModelViewSet):
 
 
 class TableViewsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = TableView.objects.all()
     serializer_class = TableViewSerializer
@@ -518,17 +458,8 @@ class TableViewsViewSet(ModelViewSet):
     filterset_fields = ["employee", "stage", "name"]
 
 
-# Learn Authentication
-class HelloView(APIView):
-    # permission_classes = (IsAuthenticated, )
-
-    def get(self, request):
-        content = {"message": "Hello World!"}
-        return Response(content)
-
-
 class BaladyProjectsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = BaladyProject.objects.all()
     serializer_class = BaladyProjectSerializer
@@ -575,7 +506,7 @@ class BaladyProjectsViewSet(ModelViewSet):
 
 
 class LandSurveyProjectsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = LandSurveyProject.objects.all()
     serializer_class = LandSurveyProjectSerializer
@@ -587,7 +518,7 @@ class LandSurveyProjectsViewSet(ModelViewSet):
 
 
 class SortingDeedsProjectsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = SortingDeedsProject.objects.all()
     serializer_class = SortingDeedsProjectSerializer
@@ -599,7 +530,7 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 
 
 class QataryOfficeProjectsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
 
     queryset = QataryOfficeProject.objects.all()
     serializer_class = QataryOfficeProjectSerializer
@@ -611,16 +542,19 @@ class QataryOfficeProjectsViewSet(ModelViewSet):
 
 
 class GlobalIDsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    
     queryset = GlobalID.objects.all()
     serializer_class = GlobalIDSerializer
 
 
 class MoveProjectsViewSet(APIView):
+    permission_classes = (IsAuthenticated, )
     def post(self, request, *args, **kwargs):
         data = request.data
 
         get_model_serializer = {
-            "design": {"model": Project, "serializer": ProjectSerializer},
+            "design": {"model": DesignProject, "serializer": ProjectSerializer},
             "balady": {"model": BaladyProject, "serializer": BaladyProjectSerializer},
             "sorting": {
                 "model": SortingDeedsProject,
@@ -652,8 +586,9 @@ class MoveProjectsViewSet(APIView):
 
 
 class HistoryViewSet(APIView):
+    permission_classes = (IsAuthenticated, )
     def get(self, request, project_id):
-        project = Project.objects.get(id=project_id)
+        project = DesignProject.objects.get(id=project_id)
         return Response(project.s_history, status=200)
 
 

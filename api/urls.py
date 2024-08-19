@@ -11,8 +11,6 @@ from .views import (
     AttachmentsViewSet,
     RequiredAttachmentsViewSet,
     CopyProjectsView,
-    DashboardView,
-    DelayedProjectsView,
     CommentsViewSet,
     TableViewsViewSet,
     BaladyProjectsViewSet,
@@ -33,7 +31,6 @@ from rest_framework.routers import DefaultRouter
 
 from knox import views as knox_views
 
-# from rest_framework.authtoken.views import obtain_auth_token
 
 router = DefaultRouter()
 router.register("employees", EmployeesViewSet)
@@ -95,9 +92,4 @@ urlpatterns = router.urls + [
     path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
     path("remove_tokens/", RemoveTokensAPI.as_view(), name="remove_tokens"),
     path("employee_roles/", EmployeeRolesViewSet.as_view(), name="employee_roles"),
-    # path("projects/export", ExportProjectsView.as_view(), name="export_projects"),
-    # path("dashboard/", DashboardView.as_view(), name="dashboard"),
-    # path("delayed_projects/", DelayedProjectsView.as_view(), name="delayed_projects"),
-    # path("hello/", HelloView.as_view(), name="hello"),
-    # path("balady_projects/<int:project_id>/payments/", PaymentsViewSet.as_view(), name="payments"),
 ]

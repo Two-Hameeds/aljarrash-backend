@@ -8,12 +8,9 @@ from .choices import (
     UseTypes,
     Status,
     DesignStatus,
-    FollowUpTypes,
-    StructuralReviewStatus,
     Stages,
     AttachmentTypes,
     BaladyStages,
-    BaladyRequestTypes,
     LandSurveyStages,
     SortingDeedsStages,
     QataryStages,
@@ -35,7 +32,7 @@ class Client(models.Model):
         return self.name
 
 
-class Project(models.Model):
+class DesignProject(models.Model):
     global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
     # essential info
     project_name = models.CharField(max_length=100, null=False, blank=False)
@@ -324,9 +321,9 @@ class LandSurveyProject(models.Model):
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     location_visit_date = models.DateField(null=True, blank=True)
-    protocol_number = models.IntegerField(null=True, blank=True)
+    record_number = models.IntegerField(null=True, blank=True)
     transaction_review = models.CharField(max_length=255, null=True, blank=True)
-    protocol_purpose = models.CharField(max_length=255, null=True, blank=True)
+    record_purpose = models.CharField(max_length=255, null=True, blank=True)
     payment_status = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
@@ -371,7 +368,7 @@ class QataryOfficeProject(models.Model):
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
     
 class GlobalID(models.Model):
-    design = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    design = models.OneToOneField(DesignProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     balady = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     sorting = models.OneToOneField(SortingDeedsProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     land = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)

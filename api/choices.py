@@ -120,6 +120,7 @@ class BaladyStages(models.TextChoices):
     Balady = "balady"
     Service_Card = "service_card"
     Quantity_Sorting = "quantity_sorting"
+    Supervision = "supervision"
 
 
 class BaladyRequestTypes(models.TextChoices):
@@ -155,7 +156,7 @@ class SortingDeedsStages(models.TextChoices):
     housing_sorting_completed = "housing_sorting_completed"
 
 class QataryStages(models.TextChoices):
-    qatary = "qatary"
-    land_survey = "land_survey"
+    main = "main"
+    land_report = "land_report"
     completed_land_survey = "completed_land_survey"
-    unofficial_transactions = "unofficial_transactions"
+    informal_transactions = "informal_transactions"

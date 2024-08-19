@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from .models import (
     Employee,
     Client,
-    Project,
+    DesignProject,
     Attachment,
     Comment,
     TableView,
@@ -16,7 +16,6 @@ from .models import (
     Payment,
 )
 from django.utils import timezone
-from pathlib import Path
 from .templates import ATTACHMENT_TEMPLATES
 
 
@@ -278,7 +277,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         return default
 
     class Meta:
-        model = Project
+        model = DesignProject
         fields = "__all__"
 
 

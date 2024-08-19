@@ -1,4 +1,4 @@
-from .models import (Project, BaladyProject)
+from .models import (DesignProject, BaladyProject)
 ATTACHMENT_TEMPLATES = {
     "design": {
         "new": {
@@ -357,7 +357,7 @@ ATTACHMENT_TEMPLATES = {
                 "civil_defense",
             ],
         },
-        "model": Project
+        "model": DesignProject
     },
     "balady": {
         "issue_license": [
