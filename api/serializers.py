@@ -86,11 +86,6 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = "__all__"
 
-
-class RequiredAttachmentSerializer(serializers.Serializer):
-    required_attachments = serializers.ListField()
-
-
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)
     written_by = serializers.CharField(read_only=True)
@@ -114,7 +109,8 @@ class TableViewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+# Projects Serializers
+class DesignProjectSerializer(serializers.ModelSerializer):
 
     # created_at = serializers.DateTimeField(read_only=True)
     history = serializers.JSONField(read_only=True)
@@ -280,18 +276,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = DesignProject
         fields = "__all__"
 
-
-class PaymentsSerializer(serializers.Serializer):
-    s_project_value = serializers.FloatField()
-    s_payments = serializers.JSONField()
-    
-    
-class RequestSubmissionSerializer(serializers.Serializer):
-    requests = serializers.ListField()
-    
-class MunicipalityVisitSerializer(serializers.Serializer):
-    visits = serializers.ListField()
-
 class BaladyProjectSerializer(serializers.ModelSerializer):
     # created_at = serializers.DateTimeField(read_only=True)
 
@@ -379,7 +363,6 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         model = BaladyProject
         fields = "__all__"
 
-
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
 
     def get_fields(self):
@@ -403,7 +386,6 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = LandSurveyProject
         fields = "__all__"
-
 
 class SortingDeedsProjectSerializer(serializers.ModelSerializer):
 
@@ -434,6 +416,25 @@ class QataryOfficeProjectSerializer(serializers.ModelSerializer):
         model = QataryOfficeProject
         fields = "__all__"
 
+
+# Projects Related Serializers
+class PaymentsSerializer(serializers.Serializer):
+    s_contract = serializers.FileField()
+    s_project_value = serializers.FloatField()
+    s_payments = serializers.JSONField()
+    
+    
+class RequestSubmissionSerializer(serializers.Serializer):
+    requests = serializers.ListField()
+    
+class MunicipalityVisitSerializer(serializers.Serializer):
+    visits = serializers.ListField()
+
+class RequiredAttachmentSerializer(serializers.Serializer):
+    required_attachments = serializers.ListField()
+
+
+# Other Serializers
 class GlobalIDSerializer(serializers.ModelSerializer):
     class Meta:
         model = GlobalID
