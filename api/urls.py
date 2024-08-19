@@ -44,7 +44,7 @@ router.register("land_survey", LandSurveyProjectsViewSet)
 router.register("sorting_deeds", SortingDeedsProjectsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
-router.register("qatary", QataryOfficeProjectsViewSet)
+router.register("qatari", QataryOfficeProjectsViewSet)
 # router.register("payments", PaymentsViewSet)
 
 urlpatterns = router.urls + [
