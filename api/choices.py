@@ -151,9 +151,9 @@ class SortingDeedsStages(models.TextChoices):
     land_sorting = "land_sorting"
     land_merging = "land_merging"
     housing_sorting = "housing_sorting"
-    completed_land_sorting = "land_sorting_completed"
-    completed_land_merging = "land_merging_completed"
-    completed_housing_sorting = "housing_sorting_completed"
+    completed_land_sorting = "completed_land_sorting"
+    completed_land_merging = "completed_land_merging"
+    completed_housing_sorting = "completed_housing_sorting"
 
 class QataryStages(models.TextChoices):
     main = "main"
