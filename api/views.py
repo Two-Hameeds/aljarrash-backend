@@ -218,7 +218,8 @@ class QatariOfficeProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     queryset = QatariOfficeProject.objects.annotate(
-        comments_count=Count("global_id__comments")
+        comments_count=Count("global_id__comments"),
+        attachments_count=Count("global_id__attachments"),
     )
     serializer_class = QatariOfficeProjectSerializer
 

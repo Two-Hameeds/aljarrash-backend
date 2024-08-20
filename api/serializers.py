@@ -245,11 +245,6 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         if self.context and self.context["request"].user.is_superuser:
             default.pop("s_payments")
 
-        if instance.global_id == None:
-            global_id, created = GlobalID.objects.get_or_create(design=instance)
-            instance.global_id = global_id
-            instance.save()
-
         return default
 
     def get_s_paid(self, obj):
@@ -326,10 +321,6 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         default = super().to_representation(instance)
 
         default["attachments_status"] = self.attachments_status(instance)
-
-        default["comments_count"] = Comment.objects.filter(
-            written_for=instance.global_id
-        ).count()
 
         # default.pop("required_attachments")
         if self.context:  # and self.context["request"].user.is_superuser:
@@ -414,6 +405,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
 class QatariOfficeProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    attachments_count = serializers.IntegerField(read_only=True)
 
     def create(self, validated_data):
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["qatari"][
@@ -426,6 +418,20 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
             result.save()
 
         return result
+    
+    def get_fields(self):
+        default = super().get_fields()
+        if not self.context:
+            return default
+        if (
+            str(self.context["request"].method) == "POST"
+            and self.context["request"].data
+        ):
+            Client.objects.get_or_create(
+                phone=self.context["request"].data["client_phone"]
+            )
+
+        return default
 
     def get_s_paid(self, obj):
         return obj.s_paid()
