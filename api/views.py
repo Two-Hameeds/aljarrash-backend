@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from django.utils import timezone
 from django.contrib.auth.models import Group
+from django.db.models import Count
 
 from .models import (
     Employee,
@@ -55,15 +56,12 @@ from .templates import ATTACHMENT_TEMPLATES
 
 # Projects Views
 class DesignProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
-    queryset = DesignProject.objects.all()
+    queryset = DesignProject.objects.annotate(
+        comments_count=Count("global_id__comments")
+    )
     serializer_class = DesignProjectSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.order_by("moved_at")
-        return queryset
 
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -103,10 +101,13 @@ class DesignProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
-class BaladyProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
 
-    queryset = BaladyProject.objects.all()
+class BaladyProjectsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    queryset = BaladyProject.objects.annotate(
+        comments_count=Count("global_id__comments")
+    )
     serializer_class = BaladyProjectSerializer
 
     def get_queryset(self):
@@ -143,11 +144,13 @@ class BaladyProjectsViewSet(ModelViewSet):
     filterset_fields = ["stage", "project_name", "client_phone"]
 
 class LandSurveyProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
-    queryset = LandSurveyProject.objects.all()
+    queryset = LandSurveyProject.objects.annotate(
+        comments_count=Count("global_id__comments")
+    )
     serializer_class = LandSurveyProjectSerializer
-    
+
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
 
@@ -175,11 +178,13 @@ class LandSurveyProjectsViewSet(ModelViewSet):
     filterset_fields = ["stage"]
 
 class SortingDeedsProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
-    queryset = SortingDeedsProject.objects.all()
+    queryset = SortingDeedsProject.objects.annotate(
+        comments_count=Count("global_id__comments")
+    )
     serializer_class = SortingDeedsProjectSerializer
-    
+
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
 
@@ -207,11 +212,13 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     filterset_fields = ["stage"]
 
 class QataryOfficeProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
-    queryset = QataryOfficeProject.objects.all()
+    queryset = QataryOfficeProject.objects.annotate(
+        comments_count=Count("global_id__comments")
+    )
     serializer_class = QataryOfficeProjectSerializer
-    
+
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
 
@@ -219,7 +226,6 @@ class QataryOfficeProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -237,11 +243,12 @@ class QataryOfficeProjectsViewSet(ModelViewSet):
         DjangoFilterBackend,
     ]
     filterset_fields = ["stage"]
-    
+
 
 # Projects Related Views
 class MoveProjectsViewSet(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request, *args, **kwargs):
         data = request.data
 
@@ -276,15 +283,17 @@ class MoveProjectsViewSet(APIView):
 
         return Response({"status": "Moved"}, status=200)
 
+
 # class HistoryViewSet(APIView):
 #     permission_classes = (IsAuthenticated, )
 #     def get(self, request, project_id):
 #         project = DesignProject.objects.get(id=project_id)
 #         return Response(project.s_history, status=200)
 
+
 class RequiredAttachmentsViewSet(GenericAPIView):
-    permission_classes = (IsAuthenticated, )
-    
+    permission_classes = (IsAuthenticated,)
+
     serializer_class = RequiredAttachmentSerializer
 
     def get(self, request, project_category, project_id):
@@ -346,22 +355,24 @@ class RequiredAttachmentsViewSet(GenericAPIView):
             status=200,
         )
 
+
 class RequestSubmissionsView(GenericAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = RequestSubmissionSerializer
-    
+
     def get(self, request, project_id):
         requests = BaladyProject.objects.get(id=project_id).request_submissions
-        return Response ({"requests": requests}, 200)
-    
+        return Response({"requests": requests}, 200)
+
     def put(self, request, project_id):
         data = request.data
         instance = BaladyProject.objects.get(id=project_id)
         instance.request_submissions = data.get("requests")
         instance.save()
-        
+
         return Response(instance.request_submissions, 200)
-    
+
+
 class PaymentsViewSet(GenericAPIView):
     permission_classes = (IsAuthenticated, IsAdmin)
 
@@ -370,12 +381,14 @@ class PaymentsViewSet(GenericAPIView):
     def get(self, request, project_category, project_id):
         attachment_template = ATTACHMENT_TEMPLATES[project_category]
         instance = attachment_template["model"].objects.get(id=project_id)
-        contract = Attachment.objects.filter(uploaded_for=instance.global_id, type="contract")
+        contract = Attachment.objects.filter(
+            uploaded_for=instance.global_id, type="contract"
+        )
         # contract = Attachment.objects.get(uploaded_for=instance.global_id, type="contract")
 
         return Response(
             {
-                "s_contract": map(lambda x: x.attachment.url,list(contract)),
+                "s_contract": map(lambda x: x.attachment.url, list(contract)),
                 "s_project_value": instance.s_project_value,
                 "s_payments": instance.s_payments,
             },
@@ -400,25 +413,27 @@ class PaymentsViewSet(GenericAPIView):
             status=200,
         )
 
+
 class MunicipalityVisitsView(GenericAPIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = MunicipalityVisitSerializer
-    
+
     def get(self, request, project_id):
         visits = BaladyProject.objects.get(id=project_id).municipality_visits
-        return Response ({"visits": visits}, 200)
-    
+        return Response({"visits": visits}, 200)
+
     def put(self, request, project_id):
         data = request.data
         instance = BaladyProject.objects.get(id=project_id)
         instance.municipality_visits = data.get("visits")
         instance.save()
-        
+
         return Response(instance.municipality_visits, 200)
 
+
 class CopyBaladyProjectsView(APIView):
-    permission_classes = (IsAuthenticated, )
-    
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         ids = request.data.get("ids")
         stage = request.data.get("stage")
@@ -445,8 +460,10 @@ class CopyBaladyProjectsView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
 
+
 class CopyProjectsView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         ids = request.data.get("ids")
         stage = request.data.get("stage")
@@ -487,8 +504,10 @@ class CopyProjectsView(APIView):
             raise e
             return Response({"error": e}, status=400)
 
+
 class EngineersView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         groups = Group.objects.all()
         ids = {}
@@ -502,7 +521,6 @@ class EngineersView(APIView):
 
         response["ids"] = ids
         return Response(response)
-
 
 
 # Auth Views
@@ -520,6 +538,7 @@ class RemoveTokensAPI(GenericAPIView):
         AuthToken.objects.filter(user=user).delete()
         return Response({"message": "Tokens removed successfully"})
 
+
 class LoginAPI(KnoxLoginView):
     permission_classes = (AllowAny,)
 
@@ -536,16 +555,16 @@ class LoginAPI(KnoxLoginView):
         return response
 
 
-
 # Other Views
 class GlobalIDsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
-    
+    permission_classes = (IsAuthenticated,)
+
     queryset = GlobalID.objects.all()
     serializer_class = GlobalIDSerializer
-    
+
+
 class TableViewsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     queryset = TableView.objects.all()
     serializer_class = TableViewSerializer
@@ -555,8 +574,9 @@ class TableViewsViewSet(ModelViewSet):
     ]
     filterset_fields = ["employee", "stage", "name"]
 
+
 class CommentsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     filter_Backends = [
         DjangoFilterBackend,
@@ -566,9 +586,10 @@ class CommentsViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+
 class AttachmentsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
-    
+    permission_classes = (IsAuthenticated,)
+
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
 
@@ -577,20 +598,23 @@ class AttachmentsViewSet(ModelViewSet):
     ]
     filterset_fields = ["uploaded_for", "uploaded_by"]
 
+
 class ClientsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
+
 class GroupsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+
 class EmployeesViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -617,8 +641,9 @@ class EmployeesViewSet(ModelViewSet):
 
         return Response(serializer.data)
 
+
 class EmployeeRolesViewSet(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     # queryset = Group.objects.all()
     # serializer_class = GroupSerializer
@@ -626,5 +651,3 @@ class EmployeeRolesViewSet(APIView):
         user = request.user
         data = {"isAdmin": user.is_superuser, "isStaff": user.is_staff}
         return Response(data)
-
-

@@ -20,7 +20,6 @@ from .views import (
     GlobalIDsViewSet,
     CopyBaladyProjectsView,
     MoveProjectsViewSet,
-    # HistoryViewSet,
     GroupsViewSet,
     PaymentsViewSet,
     RequestSubmissionsView,
@@ -33,18 +32,18 @@ from knox import views as knox_views
 
 
 router = DefaultRouter()
-router.register("employees", EmployeesViewSet)
-router.register("clients", ClientsViewSet)
 router.register("design", DesignProjectsViewSet)
-router.register("comments", CommentsViewSet)
-router.register("table_views", TableViewsViewSet)
-router.register("attachments", AttachmentsViewSet)
 router.register("balady", BaladyProjectsViewSet)
 router.register("land_survey", LandSurveyProjectsViewSet)
 router.register("sorting_deeds", SortingDeedsProjectsViewSet)
+router.register("qatari", QataryOfficeProjectsViewSet)
+router.register("employees", EmployeesViewSet)
+router.register("clients", ClientsViewSet)
+router.register("comments", CommentsViewSet)
+router.register("table_views", TableViewsViewSet)
+router.register("attachments", AttachmentsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
-router.register("qatari", QataryOfficeProjectsViewSet)
 # router.register("payments", PaymentsViewSet)
 
 urlpatterns = router.urls + [

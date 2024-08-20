@@ -112,6 +112,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 # Projects Serializers
 class DesignProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
     
     def get_filtered_fields(self, default):
         user = self.context["request"].user
@@ -160,7 +161,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         return filtered_fields
 
     def create(self, validated_data):
-        validated_data["moved_at"] = timezone.now()
+        # validated_data["moved_at"] = timezone.now()
 
         # if self.context["request"]:
         #     validated_data["s_history"] = [
@@ -240,30 +241,11 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
         default["attachments_status"] = self.get_attachments_status(instance)
 
-        default["comments_count"] = Comment.objects.filter(
-            written_for=instance.id
-        ).count()
-
         default.pop("required_attachments")
         if self.context and self.context["request"].user.is_superuser:
             default.pop("s_payments")
-
-            # s_payments = instance.s_payments
-            # paid = 0
-            # for s_payment in s_payments:
-            #     paid = paid + float(s_payment["amount"])
-
-            # if instance.s_project_value:
-            #     default["s_paid"] = (
-            #         str(int(paid / float(instance.s_project_value) * 100)) + "%"
-            #     )
-            # else:
-            #     default["s_paid"] = "0%"
-                
-        # print("here i am:", instance.global_id)
         
         if instance.global_id == None:
-            # print("here i am 2")
             global_id, created = GlobalID.objects.get_or_create(design=instance)
             instance.global_id = global_id
             instance.save()
@@ -272,6 +254,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
     def get_s_paid(self, obj):
         return obj.s_paid()
+    
 
     class Meta:
         model = DesignProject
@@ -279,7 +262,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
-
+    comments_count = serializers.IntegerField(read_only=True)
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -316,7 +299,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(balady=result)
-            result.global_id = global_id.id
+            result.global_id = global_id
             result.save()
         return result
     
@@ -368,7 +351,8 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
-
+    comments_count = serializers.IntegerField(read_only=True)
+    
     def get_fields(self):
         if (
             str(self.context["request"].method) == "POST"
@@ -383,7 +367,7 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(land=result)
-            result.global_id = global_id.id
+            result.global_id = global_id
             result.save()
         return result
 
@@ -396,7 +380,8 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
 
 class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
-
+    comments_count = serializers.IntegerField(read_only=True)
+    
     def get_fields(self):
         if (
             str(self.context["request"].method) == "POST"
@@ -411,7 +396,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(sorting=result)
-            result.global_id = global_id.id
+            result.global_id = global_id
             result.save()
         return result
 
@@ -424,7 +409,17 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
 
 class QataryOfficeProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
+    
+    def create(self, validated_data):
+        result = super().create(validated_data)
+        if validated_data.get("global_id") == None:
+            global_id, created = GlobalID.objects.get_or_create(qatari=result)
+            result.global_id = global_id
+            result.save()
 
+        return result
+    
     def get_s_paid(self, obj):
         return obj.s_paid()
     
@@ -438,7 +433,6 @@ class PaymentsSerializer(serializers.Serializer):
     s_contract = serializers.FileField()
     s_project_value = serializers.FloatField()
     s_payments = serializers.JSONField()
-    
     
 class RequestSubmissionSerializer(serializers.Serializer):
     requests = serializers.ListField()
