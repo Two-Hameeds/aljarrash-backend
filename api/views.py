@@ -300,7 +300,7 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         instance = attachment_template["model"].objects.get(id=project_id)
         required_attachments = instance.required_attachments
 
-        constants = attachment_template["constants"]
+        constants = attachment_template.get("constants", )
         for index, required_attachment in enumerate(required_attachments):
             if required_attachment in constants["type_1"]:
                 required_attachments[index] = f"1_{required_attachments[index]}"

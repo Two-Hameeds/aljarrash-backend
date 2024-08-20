@@ -521,6 +521,14 @@ ATTACHMENT_TEMPLATES = {
             "deed",
             "plan",
         ],
+        "constants": {
+            "type_1": [
+                "general_location",
+                "building_pictures",
+                "deed",
+                "plan",
+            ],
+        },
         "model": LandSurveyProject,
     },
     "sorting_deeds": {
@@ -531,6 +539,15 @@ ATTACHMENT_TEMPLATES = {
             "license",
             "land_survey",
         ],
+        "constants": {
+            "type_1": [
+                "deed",
+                "identity",
+                "approved_plan",
+                "license",
+                "land_survey",
+            ],
+        },
         "model": SortingDeedsProject,
     },
     "qatari": {
@@ -540,6 +557,14 @@ ATTACHMENT_TEMPLATES = {
             "deed",
             "plan",
         ],
+        "constants": {
+            "type_1": [
+                "general_location",
+                "building_pictures",
+                "deed",
+                "plan",
+            ],
+        },
         "model": QataryOfficeProject,
     },
 }
