@@ -7,7 +7,7 @@ from .views import (
     LoginAPI,
     RemoveTokensAPI,
     ClientsViewSet,
-    ProjectsViewSet,
+    DesignProjectsViewSet,
     AttachmentsViewSet,
     RequiredAttachmentsViewSet,
     CopyProjectsView,
@@ -35,7 +35,7 @@ from knox import views as knox_views
 router = DefaultRouter()
 router.register("employees", EmployeesViewSet)
 router.register("clients", ClientsViewSet)
-router.register("design", ProjectsViewSet)
+router.register("design", DesignProjectsViewSet)
 router.register("comments", CommentsViewSet)
 router.register("table_views", TableViewsViewSet)
 router.register("attachments", AttachmentsViewSet)
