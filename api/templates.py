@@ -3,7 +3,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
-    QataryOfficeProject,
+    QatariOfficeProject,
 )
 
 ATTACHMENT_TEMPLATES = {
@@ -565,6 +565,6 @@ ATTACHMENT_TEMPLATES = {
                 "plan",
             ],
         },
-        "model": QataryOfficeProject,
+        "model": QatariOfficeProject,
     },
 }

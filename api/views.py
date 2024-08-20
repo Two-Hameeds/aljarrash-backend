@@ -14,7 +14,7 @@ from .models import (
     LandSurveyProject,
     SortingDeedsProject,
     GlobalID,
-    QataryOfficeProject,
+    QatariOfficeProject,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -33,7 +33,7 @@ from .serializers import (
     GroupSerializer,
     RequestSubmissionSerializer,
     MunicipalityVisitSerializer,
-    QataryOfficeProjectSerializer,
+    QatariOfficeProjectSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -101,6 +101,7 @@ class DesignProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
+
 class BaladyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
@@ -142,6 +143,7 @@ class BaladyProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage", "project_name", "client_phone"]
 
+
 class LandSurveyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
@@ -175,6 +177,7 @@ class LandSurveyProjectsViewSet(ModelViewSet):
         DjangoFilterBackend,
     ]
     filterset_fields = ["stage"]
+
 
 class SortingDeedsProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
@@ -210,13 +213,14 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
-class QataryOfficeProjectsViewSet(ModelViewSet):
+
+class QatariOfficeProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
-    queryset = QataryOfficeProject.objects.annotate(
+    queryset = QatariOfficeProject.objects.annotate(
         comments_count=Count("global_id__comments")
     )
-    serializer_class = QataryOfficeProjectSerializer
+    serializer_class = QatariOfficeProjectSerializer
 
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -300,7 +304,9 @@ class RequiredAttachmentsViewSet(GenericAPIView):
         instance = attachment_template["model"].objects.get(id=project_id)
         required_attachments = instance.required_attachments
 
-        constants = attachment_template.get("constants", )
+        constants = attachment_template.get(
+            "constants",
+        )
         for index, required_attachment in enumerate(required_attachments):
             if required_attachment in constants["type_1"]:
                 required_attachments[index] = f"1_{required_attachments[index]}"

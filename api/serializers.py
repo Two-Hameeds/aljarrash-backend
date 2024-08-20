@@ -11,7 +11,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
-    QataryOfficeProject,
+    QatariOfficeProject,
     GlobalID,
     Payment,
 )
@@ -86,6 +86,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = "__all__"
 
+
 class CommentSerializer(serializers.ModelSerializer):
     written_at = serializers.DateTimeField(read_only=True)
     written_by = serializers.CharField(read_only=True)
@@ -113,13 +114,13 @@ class TableViewSerializer(serializers.ModelSerializer):
 class DesignProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
-    
+
     def get_filtered_fields(self, default):
         user = self.context["request"].user
         stage = self.context["request"].query_params.get("stage")
         table_view = self.context["request"].query_params.get("table_view")
 
-        if (not stage and not table_view):
+        if not stage and not table_view:
             table_view_data = list(default.keys())
         elif stage and table_view:
             table_view_data = TableView.objects.values_list().get(
@@ -243,7 +244,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         default.pop("required_attachments")
         if self.context and self.context["request"].user.is_superuser:
             default.pop("s_payments")
-        
+
         if instance.global_id == None:
             global_id, created = GlobalID.objects.get_or_create(design=instance)
             instance.global_id = global_id
@@ -253,15 +254,16 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
     def get_s_paid(self, obj):
         return obj.s_paid()
-    
 
     class Meta:
         model = DesignProject
         fields = "__all__"
 
+
 class BaladyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -301,17 +303,23 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
             result.global_id = global_id
             result.save()
         return result
-    
+
     def attachments_status(self, instance):
-        attach_count = Attachment.objects.filter(uploaded_for=instance.global_id, type__in=instance.required_attachments).distinct('type').count()
-        
+        attach_count = (
+            Attachment.objects.filter(
+                uploaded_for=instance.global_id, type__in=instance.required_attachments
+            )
+            .distinct("type")
+            .count()
+        )
+
         attach_status = 0
-        
+
         try:
             attach_status = int(attach_count / len(instance.required_attachments) * 3)
         except:
             pass
-        
+
         return attach_status
 
     def to_representation(self, instance):
@@ -324,34 +332,23 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         ).count()
 
         # default.pop("required_attachments")
-        if self.context: #and self.context["request"].user.is_superuser:
+        if self.context:  # and self.context["request"].user.is_superuser:
             default.pop("s_payments")
-
-            s_payments = instance.s_payments
-            paid = 0
-            for s_payment in s_payments:
-                paid = paid + float(s_payment["amount"])
-
-            if instance.s_project_value:
-                default["s_paid"] = (
-                    str(int(paid / float(instance.s_project_value) * 100)) + "%"
-                )
-            else:
-                default["s_paid"] = "0%"
 
         return default
 
     def get_s_paid(self, obj):
         return obj.s_paid()
-    
+
     class Meta:
         model = BaladyProject
         fields = "__all__"
 
+
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
-    
+
     def get_fields(self):
         if (
             str(self.context["request"].method) == "POST"
@@ -363,7 +360,9 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
         return super().get_fields()
 
     def create(self, validated_data):
-        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["land_survey"]["required"]
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["land_survey"][
+            "required"
+        ]
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(land=result)
@@ -373,15 +372,16 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
 
     def get_s_paid(self, obj):
         return obj.s_paid()
-    
+
     class Meta:
         model = LandSurveyProject
         fields = "__all__"
 
+
 class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
-    
+
     def get_fields(self):
         if (
             str(self.context["request"].method) == "POST"
@@ -393,7 +393,9 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         return super().get_fields()
 
     def create(self, validated_data):
-        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["sorting_deeds"]["required"]
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["sorting_deeds"][
+            "required"
+        ]
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(sorting=result)
@@ -403,17 +405,20 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
 
     def get_s_paid(self, obj):
         return obj.s_paid()
-    
+
     class Meta:
         model = SortingDeedsProject
         fields = "__all__"
 
-class QataryOfficeProjectSerializer(serializers.ModelSerializer):
+
+class QatariOfficeProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
-    
+
     def create(self, validated_data):
-        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["qatari"]["required"]
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["qatari"][
+            "required"
+        ]
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(qatari=result)
@@ -421,12 +426,12 @@ class QataryOfficeProjectSerializer(serializers.ModelSerializer):
             result.save()
 
         return result
-    
+
     def get_s_paid(self, obj):
         return obj.s_paid()
-    
+
     class Meta:
-        model = QataryOfficeProject
+        model = QatariOfficeProject
         fields = "__all__"
 
 
@@ -435,12 +440,15 @@ class PaymentsSerializer(serializers.Serializer):
     s_contract = serializers.FileField()
     s_project_value = serializers.FloatField()
     s_payments = serializers.JSONField()
-    
+
+
 class RequestSubmissionSerializer(serializers.Serializer):
     requests = serializers.ListField()
-    
+
+
 class MunicipalityVisitSerializer(serializers.Serializer):
     visits = serializers.ListField()
+
 
 class RequiredAttachmentSerializer(serializers.Serializer):
     required_attachments = serializers.ListField()
@@ -454,6 +462,7 @@ class GlobalIDSerializer(serializers.ModelSerializer):
 
 
 count = 0
+
 
 class PaymentSerializer(serializers.ModelSerializer):
     # def get_fields(self):

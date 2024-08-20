@@ -332,7 +332,7 @@ class SortingDeedsProject(models.Model):
     class Meta:
         ordering = ["moved_at"]
 
-class QataryOfficeProject(models.Model):
+class QatariOfficeProject(models.Model):
     global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
     
     stage = models.CharField(max_length=100, choices=QataryStages.choices, null=False, blank=False)
@@ -410,7 +410,7 @@ class Attachment(models.Model):
         "Employee", on_delete=models.SET_NULL, null=True, blank=True
     )
     uploaded_for = models.ForeignKey(
-        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
+        "GlobalID", on_delete=models.SET_NULL, related_name="attachments", null=True, blank=True
     )
     uploaded_at = models.DateTimeField(null=True, blank=True)
 
@@ -446,6 +446,6 @@ class GlobalID(models.Model):
     balady = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     sorting = models.OneToOneField(SortingDeedsProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     land = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    qatari = models.OneToOneField(QataryOfficeProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
+    qatari = models.OneToOneField(QatariOfficeProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     
 

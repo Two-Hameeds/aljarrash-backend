@@ -16,7 +16,7 @@ from .views import (
     BaladyProjectsViewSet,
     LandSurveyProjectsViewSet,
     SortingDeedsProjectsViewSet,
-    QataryOfficeProjectsViewSet,
+    QatariOfficeProjectsViewSet,
     GlobalIDsViewSet,
     CopyBaladyProjectsView,
     MoveProjectsViewSet,
@@ -36,7 +36,7 @@ router.register("design", DesignProjectsViewSet)
 router.register("balady", BaladyProjectsViewSet)
 router.register("land_survey", LandSurveyProjectsViewSet)
 router.register("sorting_deeds", SortingDeedsProjectsViewSet)
-router.register("qatari", QataryOfficeProjectsViewSet)
+router.register("qatari", QatariOfficeProjectsViewSet)
 router.register("employees", EmployeesViewSet)
 router.register("clients", ClientsViewSet)
 router.register("comments", CommentsViewSet)
