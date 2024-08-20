@@ -1,4 +1,3 @@
-# Create your models here.
 from django.db import models
 from django.utils.deconstruct import deconstructible
 from django.contrib.auth.models import AbstractUser
@@ -17,27 +16,13 @@ from .choices import (
 )
 
 
-class Employee(AbstractUser):
-    phone = models.CharField(max_length=13, null=True, blank=True)
-
-
-class Client(models.Model):
-    phone = models.CharField(max_length=13, primary_key=True, blank=False)
-    name = models.CharField(max_length=30, null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
-
-    def __str__(self):
-        if self.name == None:
-            return ""
-        return self.name
-
-
+# Projects Models
 class DesignProject(models.Model):
     global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
     # essential info
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
-        Client,
+        "Client",
         to_field="phone",
         on_delete=models.CASCADE,
         related_name="projects",
@@ -60,7 +45,7 @@ class DesignProject(models.Model):
     required_attachments = models.JSONField(null=True, blank=True)
 
     design_eng = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="designer",
         null=True,
@@ -82,13 +67,12 @@ class DesignProject(models.Model):
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(null=True, blank=True, default=list)
     s_modification_price = models.FloatField(null=True, blank=True)
-    s_history = models.JSONField(null=True, blank=True, default=list)
 
     architecture_status = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     architect = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="architect",
         null=True,
@@ -99,7 +83,7 @@ class DesignProject(models.Model):
     architect_stop_reason = models.CharField(max_length=255, null=True, blank=True)
     construction_status = models.CharField(max_length=100, null=True, blank=True)
     construction_eng = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="construction_engineer",
         null=True,
@@ -112,7 +96,7 @@ class DesignProject(models.Model):
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     plumbing_eng = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="plumbing_engineer",
         null=True,
@@ -125,7 +109,7 @@ class DesignProject(models.Model):
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     electrical_eng = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="electrical_engineer",
         null=True,
@@ -136,7 +120,7 @@ class DesignProject(models.Model):
     electrical_stop_reason = models.CharField(max_length=255, null=True, blank=True)
     architecture_review = models.CharField(max_length=255, null=True, blank=True)
     architect_reviewer = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="architecture_reviewer",
         null=True,
@@ -144,7 +128,7 @@ class DesignProject(models.Model):
     )
     construction_review = models.CharField(max_length=255, null=True, blank=True)
     construction_reviewer = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="construction_reviewer",
         null=True,
@@ -152,7 +136,7 @@ class DesignProject(models.Model):
     )
     plumbing_review = models.CharField(max_length=255, null=True, blank=True)
     plumbing_reviewer = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="plumbing_reviewer",
         null=True,
@@ -160,7 +144,7 @@ class DesignProject(models.Model):
     )
     electrical_review = models.CharField(max_length=255, null=True, blank=True)
     electrical_reviewer = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="electrical_reviewer",
         null=True,
@@ -171,7 +155,7 @@ class DesignProject(models.Model):
     architecture_notes = models.CharField(max_length=255, null=True, blank=True)
     noted_fields = models.CharField(max_length=100, null=True, blank=True)
     corrector = models.ForeignKey(
-        Employee,
+        "Employee",
         on_delete=models.SET_NULL,
         related_name="corrector",
         null=True,
@@ -196,65 +180,6 @@ class DesignProject(models.Model):
             return ""
         return self.project_name
 
-
-@deconstructible
-class PathAndRename:
-    def __call__(self, instance, filename):
-        return f"attachments/{instance.type}s/{filename}"
-
-
-class Attachment(models.Model):
-    title = models.CharField(max_length=100, null=True, blank=True)
-    type = models.CharField(
-        max_length=100, choices=AttachmentTypes.choices, null=False, blank=False
-    )
-    attachment = models.FileField(upload_to=PathAndRename(), null=False, blank=False)
-    uploaded_by = models.ForeignKey(
-        Employee, on_delete=models.SET_NULL, null=True, blank=True
-    )
-    # uploaded_for = models.ForeignKey(
-    #     Project, on_delete=models.SET_NULL, null=True, blank=True
-    # )
-    uploaded_for = models.ForeignKey(
-        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
-    )
-    uploaded_at = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        if self.title == None:
-            return ""
-        return self.title
-
-
-class Comment(models.Model):
-    # title = models.CharField(max_length=100, null=True, blank=True)
-    content = models.TextField(max_length=255, null=True, blank=True)
-    written_at = models.DateTimeField(null=True, blank=True)
-    attachment = models.FileField(upload_to="attachments/", null=True, blank=True)
-    written_by = models.ForeignKey(
-        Employee, on_delete=models.CASCADE, null=False, blank=False
-    )
-    written_for = models.ForeignKey(
-        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
-    )
-
-    # def __str__(self):
-    #     if self.title == None:
-    #         return ""
-    #     return self.title
-
-
-class TableView(models.Model):
-    name = models.CharField(max_length=100, null=True, blank=True)
-    employee = models.ForeignKey(
-        Employee, on_delete=models.SET_NULL, null=True, blank=True
-    )
-    stage = models.CharField(
-        max_length=100, choices=Stages.choices, null=False, blank=False
-    )
-    view = models.JSONField(null=True, blank=True)
-
-
 class BaladyProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
 
@@ -264,7 +189,7 @@ class BaladyProject(models.Model):
 
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
-        Client,
+        "Client",
         to_field="phone",
         on_delete=models.CASCADE,
         related_name="balady_projects",
@@ -295,13 +220,11 @@ class BaladyProject(models.Model):
     required_attachments = models.JSONField(null=True, blank=True, default=list)
     
     # sensitive data
-    s_history = models.JSONField(null=True, blank=True, default=list)
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
 
     class Meta:
         ordering = ["moved_at"]
-
 
 class LandSurveyProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
@@ -310,7 +233,7 @@ class LandSurveyProject(models.Model):
     )
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
-        Client,
+        "Client",
         to_field="phone",
         on_delete=models.CASCADE,
         related_name="land_survey_projects",
@@ -329,7 +252,6 @@ class LandSurveyProject(models.Model):
     )
     survey_report_issuance = models.CharField(max_length=100, null=True, blank=True)
 
-
 class SortingDeedsProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
     stage = models.CharField(
@@ -337,7 +259,7 @@ class SortingDeedsProject(models.Model):
     )
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
-        Client,
+        "Client",
         to_field="phone",
         on_delete=models.CASCADE,
         related_name="sorting_deeds_projects",
@@ -357,16 +279,91 @@ class QataryOfficeProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
     stage = models.CharField(max_length=100, choices=QataryStages.choices, null=False, blank=False)
     project_name = models.CharField(max_length=100, null=False, blank=False)
-    client_phone = models.ForeignKey(Client, to_field="phone", on_delete=models.CASCADE, related_name="qatary_projects", null=False, blank=False)
+    client_phone = models.ForeignKey("Client", to_field="phone", on_delete=models.CASCADE, related_name="qatary_projects", null=False, blank=False)
     location_visit = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
     location_visit_date = models.DateField(null=True, blank=True)
     record_number = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=500, null=True, blank=True)
-    transaction_reviewer = models.ForeignKey(Employee, on_delete=models.SET_NULL, related_name="qatary_projects_reviewer", null=True, blank=True)
+    transaction_reviewer = models.ForeignKey("Employee", on_delete=models.SET_NULL, related_name="qatary_projects_reviewer", null=True, blank=True)
     record_purpose = models.CharField(max_length=100, null=True, blank=True)
     payment_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)    
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
     
+
+# Projects Related Models    
+class Payment(models.Model):
+    paid_for = models.ForeignKey("GlobalID", on_delete=models.CASCADE)
+    amount = models.FloatField()
+    date = models.DateField(blank=True, null=True)
+    stage = models.CharField(max_length=100)
+    s_history = models.JSONField(null=True, blank=True, default=list)
+
+class TableView(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
+    employee = models.ForeignKey(
+        "Employee", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    stage = models.CharField(
+        max_length=100, choices=Stages.choices, null=False, blank=False
+    )
+    view = models.JSONField(null=True, blank=True)
+
+class Comment(models.Model):
+    # title = models.CharField(max_length=100, null=True, blank=True)
+    content = models.TextField(max_length=255, null=True, blank=True)
+    written_at = models.DateTimeField(null=True, blank=True)
+    attachment = models.FileField(upload_to="attachments/", null=True, blank=True)
+    written_by = models.ForeignKey(
+        "Employee", on_delete=models.CASCADE, null=False, blank=False
+    )
+    written_for = models.ForeignKey(
+        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    # def __str__(self):
+    #     if self.title == None:
+    #         return ""
+    #     return self.title
+
+@deconstructible
+class PathAndRename:
+    def __call__(self, instance, filename):
+        return f"attachments/{instance.type}s/{filename}"
+
+class Attachment(models.Model):
+    title = models.CharField(max_length=100, null=True, blank=True)
+    type = models.CharField(
+        max_length=100, choices=AttachmentTypes.choices, null=False, blank=False
+    )
+    attachment = models.FileField(upload_to=PathAndRename(), null=False, blank=False)
+    uploaded_by = models.ForeignKey(
+        "Employee", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    uploaded_for = models.ForeignKey(
+        "GlobalID", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    uploaded_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        if self.title == None:
+            return ""
+        return self.title
+
+
+# Other Models
+class Employee(AbstractUser):
+    phone = models.CharField(max_length=13, null=True, blank=True)
+
+class Client(models.Model):
+    phone = models.CharField(max_length=13, primary_key=True, blank=False)
+    name = models.CharField(max_length=30, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+
+    def __str__(self):
+        if self.name == None:
+            return ""
+        return self.name
+
 class GlobalID(models.Model):
     design = models.OneToOneField(DesignProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     balady = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
@@ -374,9 +371,3 @@ class GlobalID(models.Model):
     land = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     
 
-class Payment(models.Model):
-    paid_for = models.ForeignKey(GlobalID, on_delete=models.CASCADE)
-    amount = models.FloatField()
-    date = models.DateField(blank=True, null=True)
-    stage = models.CharField(max_length=100)
-    s_history = models.JSONField(null=True, blank=True, default=list)

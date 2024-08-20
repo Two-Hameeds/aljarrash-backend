@@ -20,7 +20,7 @@ from .views import (
     GlobalIDsViewSet,
     CopyBaladyProjectsView,
     MoveProjectsViewSet,
-    HistoryViewSet,
+    # HistoryViewSet,
     GroupsViewSet,
     PaymentsViewSet,
     RequestSubmissionsView,
@@ -50,11 +50,11 @@ router.register("qatari", QataryOfficeProjectsViewSet)
 urlpatterns = router.urls + [
     # Design Projects
     path("design/copy", CopyProjectsView.as_view(), name="copy_projects"),
-    path(
-        "design/<int:project_id>/history/",
-        HistoryViewSet.as_view(),
-        name="history",
-    ),
+    # path(
+    #     "design/<int:project_id>/history/",
+    #     HistoryViewSet.as_view(),
+    #     name="history",
+    # ),
     path("move_projects/", MoveProjectsViewSet.as_view(), name="move_projects"),
     path("engineers/", EngineersView.as_view(), name="engineers"),
     # Balady Projects

@@ -68,130 +68,11 @@ class DesignProjectsViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
 
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-
-        stage = instance.stage
-        new_stage = data.get("stage")
-
-        if data.get("stage") == None:
-            data["stage"] = instance.stage
-        if data.get("project_name") == None:
-            data["project_name"] = instance.project_name
-        if data.get("project_type") == None:
-            data["project_type"] = instance.project_type
-        if data.get("use_type") == None:
-            data["use_type"] = instance.use_type
-
-        if data.get("client_phone") == None:
-            data["client_phone"] = instance.client_phone.phone
-        else:
-            Client.objects.get_or_create(phone=data.get("client_phone"))
-
-        serializer = self.get_serializer(instance, data=data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
-        instance = serializer.save()
-        if stage != data.get("stage"):
-            instance.moved_at = timezone.now()
-            if instance.s_history == None:
-                instance.s_history = []
-            instance.s_history.append(
-                {
-                    "moved_by": str(self.request.user),
-                    "moved_at": str(timezone.now()),
-                    "from": stage,
-                    "to": new_stage,
-                }
-            )
-        instance.save()
-        return Response(serializer.data)
-
-    filter_backends = [
-        DjangoFilterBackend,
-    ]
-    filterset_fields = ["stage"]
-
-class BaladyProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
-
-    queryset = BaladyProject.objects.all()
-    serializer_class = BaladyProjectSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.order_by("moved_at")
-        return queryset
-
-    def update(self, request, *args, **kwargs):
-        data = request.data.copy()
-
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-
-        stage = instance.stage
-        new_stage = data.get("stage")
-
-        if data.get("stage") == None:
-            data["stage"] = instance.stage
-        if data.get("project_name") == None:
-            data["project_name"] = instance.project_name
-        if data.get("request_types") == None:
-            data["request_types"] = instance.request_types
-
-        if data.get("client_phone") == None:
-            data["client_phone"] = instance.client_phone.phone
-        else:
-            Client.objects.get_or_create(phone=data.get("client_phone"))
-
-        serializer = self.get_serializer(instance, data=data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
-        instance = serializer.save()
-        if stage != data.get("stage"):
-            instance.moved_at = timezone.now()
-        instance.save()
-        return Response(serializer.data)
-
-    filter_backends = [
-        DjangoFilterBackend,
-    ]
-    filterset_fields = ["stage", "project_name", "client_phone"]
-
-class LandSurveyProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
-
-    queryset = LandSurveyProject.objects.all()
-    serializer_class = LandSurveyProjectSerializer
-
-    filter_backends = [
-        DjangoFilterBackend,
-    ]
-    filterset_fields = ["stage"]
-
-class SortingDeedsProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
-
-    queryset = SortingDeedsProject.objects.all()
-    serializer_class = SortingDeedsProjectSerializer
-    
-    def update(self, request, *args, **kwargs):
-        data = request.data.copy()
-
         # partial = kwargs.pop("partial", False)
         instance = self.get_object()
 
         stage = instance.stage
         new_stage = data.get("stage")
-
-        # if data.get("stage") == None:
-        #     data["stage"] = instance.stage
-        # if data.get("project_name") == None:
-        #     data["project_name"] = instance.project_name
-        # if data.get("project_type") == None:
-        #     data["project_type"] = instance.project_type
-        # if data.get("use_type") == None:
-        #     data["use_type"] = instance.use_type
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -222,6 +103,109 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
+class BaladyProjectsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+
+    queryset = BaladyProject.objects.all()
+    serializer_class = BaladyProjectSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.order_by("moved_at")
+        return queryset
+
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        # partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+
+        stage = instance.stage
+        new_stage = data.get("stage")
+
+        if data.get("client_phone") == None:
+            data["client_phone"] = instance.client_phone.phone
+        else:
+            Client.objects.get_or_create(phone=data.get("client_phone"))
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        if stage != data.get("stage"):
+            instance.moved_at = timezone.now()
+        instance.save()
+        return Response(serializer.data)
+
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["stage", "project_name", "client_phone"]
+
+class LandSurveyProjectsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+
+    queryset = LandSurveyProject.objects.all()
+    serializer_class = LandSurveyProjectSerializer
+    
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        instance = self.get_object()
+
+        stage = instance.stage
+        new_stage = data.get("stage")
+
+        if data.get("client_phone") == None:
+            data["client_phone"] = instance.client_phone.phone
+        else:
+            Client.objects.get_or_create(phone=data.get("client_phone"))
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+
+        instance.save()
+        return Response(serializer.data)
+
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["stage"]
+
+class SortingDeedsProjectsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+
+    queryset = SortingDeedsProject.objects.all()
+    serializer_class = SortingDeedsProjectSerializer
+    
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        # partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+
+        stage = instance.stage
+        new_stage = data.get("stage")
+
+        if data.get("client_phone") == None:
+            data["client_phone"] = instance.client_phone.phone
+        else:
+            Client.objects.get_or_create(phone=data.get("client_phone"))
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        instance.save()
+        return Response(serializer.data)
+
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["stage"]
+
 class QataryOfficeProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
@@ -236,14 +220,6 @@ class QataryOfficeProjectsViewSet(ModelViewSet):
         stage = instance.stage
         new_stage = data.get("stage")
 
-        # if data.get("stage") == None:
-        #     data["stage"] = instance.stage
-        # if data.get("project_name") == None:
-        #     data["project_name"] = instance.project_name
-        # if data.get("project_type") == None:
-        #     data["project_type"] = instance.project_type
-        # if data.get("use_type") == None:
-        #     data["use_type"] = instance.use_type
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -254,18 +230,6 @@ class QataryOfficeProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        if stage != data.get("stage"):
-            instance.moved_at = timezone.now()
-            if instance.s_history == None:
-                instance.s_history = []
-            instance.s_history.append(
-                {
-                    "moved_by": str(self.request.user),
-                    "moved_at": str(timezone.now()),
-                    "from": stage,
-                    "to": new_stage,
-                }
-            )
         instance.save()
         return Response(serializer.data)
 
@@ -312,11 +276,11 @@ class MoveProjectsViewSet(APIView):
 
         return Response({"status": "Moved"}, status=200)
 
-class HistoryViewSet(APIView):
-    permission_classes = (IsAuthenticated, )
-    def get(self, request, project_id):
-        project = DesignProject.objects.get(id=project_id)
-        return Response(project.s_history, status=200)
+# class HistoryViewSet(APIView):
+#     permission_classes = (IsAuthenticated, )
+#     def get(self, request, project_id):
+#         project = DesignProject.objects.get(id=project_id)
+#         return Response(project.s_history, status=200)
 
 class RequiredAttachmentsViewSet(GenericAPIView):
     permission_classes = (IsAuthenticated, )
@@ -500,7 +464,7 @@ class CopyProjectsView(APIView):
                 # TODO: add s_history
                 serializer = DesignProjectSerializer(
                     project,
-                    data={"stage": stage, "moved_at": timezone.now(), "s_history": []},
+                    data={"stage": stage, "moved_at": timezone.now()},
                     partial=True,
                 )
                 serializer.is_valid(raise_exception=True)

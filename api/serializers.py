@@ -164,14 +164,14 @@ class DesignProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data["moved_at"] = timezone.now()
 
-        if self.context["request"]:
-            validated_data["s_history"] = [
-                {
-                    "created_by": str(self.context["request"].user),
-                    "created_at": str(timezone.now()),
-                    "created_in": validated_data["stage"],
-                }
-            ]
+        # if self.context["request"]:
+        #     validated_data["s_history"] = [
+        #         {
+        #             "created_by": str(self.context["request"].user),
+        #             "created_at": str(timezone.now()),
+        #             "created_in": validated_data["stage"],
+        #         }
+        #     ]
 
         project_type = validated_data["project_type"]
         use_type = validated_data["use_type"]
@@ -295,14 +295,14 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        if self.context["request"]:
-            validated_data["s_history"] = [
-                {
-                    "created_by": str(self.context["request"].user),
-                    "created_at": str(timezone.now()),
-                    "created_in": validated_data["stage"],
-                }
-            ]
+        # if self.context["request"]:
+        #     validated_data["s_history"] = [
+        #         {
+        #             "created_by": str(self.context["request"].user),
+        #             "created_at": str(timezone.now()),
+        #             "created_in": validated_data["stage"],
+        #         }
+        #     ]
         request_types = validated_data["request_types"]
         required_attachments = []
         for request_type in request_types:
@@ -314,7 +314,6 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
-            print(validated_data["s_history"])
             global_id, created = GlobalID.objects.get_or_create(balady=result)
             result.global_id = global_id.id
             result.save()
