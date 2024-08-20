@@ -1,4 +1,11 @@
-from .models import (DesignProject, BaladyProject)
+from .models import (
+    DesignProject,
+    BaladyProject,
+    LandSurveyProject,
+    SortingDeedsProject,
+    QataryOfficeProject,
+)
+
 ATTACHMENT_TEMPLATES = {
     "design": {
         "new": {
@@ -357,7 +364,7 @@ ATTACHMENT_TEMPLATES = {
                 "civil_defense",
             ],
         },
-        "model": DesignProject
+        "model": DesignProject,
     },
     "balady": {
         "issue_license": [
@@ -505,6 +512,34 @@ ATTACHMENT_TEMPLATES = {
                 "energy_efficiency_plan",
             ],
         },
-        "model": BaladyProject
+        "model": BaladyProject,
+    },
+    "land_survey": {
+        "required": [
+            "general_location",
+            "building_pictures",
+            "deed",
+            "plan",
+        ],
+        "model": LandSurveyProject,
+    },
+    "sorting_deeds": {
+        "required": [
+            "deed",
+            "identity",
+            "approved_plan",
+            "license",
+            "land_survey",
+        ],
+        "model": SortingDeedsProject,
+    },
+    "qatari": {
+        "required": [
+            "general_location",
+            "building_pictures",
+            "deed",
+            "plan",
+        ],
+        "model": QataryOfficeProject,
     },
 }

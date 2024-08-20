@@ -363,6 +363,7 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
         return super().get_fields()
 
     def create(self, validated_data):
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["land_survey"]["required"]
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(land=result)
@@ -392,6 +393,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         return super().get_fields()
 
     def create(self, validated_data):
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["sorting_deeds"]["required"]
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(sorting=result)
@@ -411,6 +413,7 @@ class QataryOfficeProjectSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField(read_only=True)
     
     def create(self, validated_data):
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["qatari"]["required"]
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
             global_id, created = GlobalID.objects.get_or_create(qatari=result)

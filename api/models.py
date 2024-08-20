@@ -272,6 +272,7 @@ class LandSurveyProject(models.Model):
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     survey_report_issuance = models.CharField(max_length=100, null=True, blank=True)
+    required_attachments = models.JSONField(null=True, blank=True, default=list)
     
     moved_at = models.DateTimeField(auto_now_add=True)
     
@@ -315,6 +316,8 @@ class SortingDeedsProject(models.Model):
     
     moved_at = models.DateTimeField(auto_now_add=True)
     
+    required_attachments = models.JSONField(null=True, blank=True, default=list)
+    
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
@@ -345,6 +348,8 @@ class QataryOfficeProject(models.Model):
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
     
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    required_attachments = models.JSONField(null=True, blank=True, default=list)
     
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
