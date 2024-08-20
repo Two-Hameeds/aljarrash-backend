@@ -117,6 +117,47 @@ class QataryOfficeProjectsViewSet(ModelViewSet):
 
     queryset = QataryOfficeProject.objects.all()
     serializer_class = QataryOfficeProjectSerializer
+    
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        instance = self.get_object()
+
+        stage = instance.stage
+        new_stage = data.get("stage")
+
+        # if data.get("stage") == None:
+        #     data["stage"] = instance.stage
+        # if data.get("project_name") == None:
+        #     data["project_name"] = instance.project_name
+        # if data.get("project_type") == None:
+        #     data["project_type"] = instance.project_type
+        # if data.get("use_type") == None:
+        #     data["use_type"] = instance.use_type
+
+        if data.get("client_phone") == None:
+            data["client_phone"] = instance.client_phone.phone
+        else:
+            Client.objects.get_or_create(phone=data.get("client_phone"))
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        if stage != data.get("stage"):
+            instance.moved_at = timezone.now()
+            if instance.s_history == None:
+                instance.s_history = []
+            instance.s_history.append(
+                {
+                    "moved_by": str(self.request.user),
+                    "moved_at": str(timezone.now()),
+                    "from": stage,
+                    "to": new_stage,
+                }
+            )
+        instance.save()
+        return Response(serializer.data)
 
     filter_backends = [
         DjangoFilterBackend,
