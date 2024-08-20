@@ -202,18 +202,18 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        if stage != data.get("stage"):
-            instance.moved_at = timezone.now()
-            if instance.s_history == None:
-                instance.s_history = []
-            instance.s_history.append(
-                {
-                    "moved_by": str(self.request.user),
-                    "moved_at": str(timezone.now()),
-                    "from": stage,
-                    "to": new_stage,
-                }
-            )
+        # if stage != data.get("stage"):
+        #     instance.moved_at = timezone.now()
+        #     if instance.s_history == None:
+        #         instance.s_history = []
+        #     instance.s_history.append(
+        #         {
+        #             "moved_by": str(self.request.user),
+        #             "moved_at": str(timezone.now()),
+        #             "from": stage,
+        #             "to": new_stage,
+        #         }
+        #     )
         instance.save()
         return Response(serializer.data)
 
