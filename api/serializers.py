@@ -119,9 +119,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         stage = self.context["request"].query_params.get("stage")
         table_view = self.context["request"].query_params.get("table_view")
 
-        if (not stage and not table_view) or (
-            stage == "completed_projects" or stage == "inactive_projects"
-        ):
+        if (not stage and not table_view):
             table_view_data = list(default.keys())
         elif stage and table_view:
             table_view_data = TableView.objects.values_list().get(
@@ -136,6 +134,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
         table_view_data.insert(0, "id")
         table_view_data.insert(1, "global_id")
+        table_view_data.insert(2, "s_paid")
 
         if not user.is_staff:
             table_view_data = list(

@@ -101,7 +101,6 @@ class DesignProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
-
 class BaladyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
