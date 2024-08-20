@@ -67,6 +67,11 @@ class DesignProject(models.Model):
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(null=True, blank=True, default=list)
     s_modification_price = models.FloatField(null=True, blank=True)
+    def s_paid(self):
+        paid = sum(float(payment["amount"]) for payment in self.s_payments)
+        if self.s_project_value:
+            return f"{int(paid / float(self.s_project_value) * 100)}%"
+        return "0%"
 
     architecture_status = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
@@ -220,6 +225,11 @@ class BaladyProject(models.Model):
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
+    def s_paid(self):
+        paid = sum(float(payment["amount"]) for payment in self.s_payments)
+        if self.s_project_value:
+            return f"{int(paid / float(self.s_project_value) * 100)}%"
+        return "0%"
 
     class Meta:
         ordering = ["moved_at"]
@@ -252,6 +262,15 @@ class LandSurveyProject(models.Model):
     
     moved_at = models.DateTimeField(auto_now_add=True)
     
+    # sensitive data
+    s_project_value = models.FloatField(null=True, blank=True)
+    s_payments = models.JSONField(default=list)
+    def s_paid(self):
+        paid = sum(float(payment["amount"]) for payment in self.s_payments)
+        if self.s_project_value:
+            return f"{int(paid / float(self.s_project_value) * 100)}%"
+        return "0%"
+    
     class Meta:
         ordering = ["moved_at"]
 
@@ -280,6 +299,15 @@ class SortingDeedsProject(models.Model):
     
     moved_at = models.DateTimeField(auto_now_add=True)
     
+    # sensitive data
+    s_project_value = models.FloatField(null=True, blank=True)
+    s_payments = models.JSONField(default=list)
+    def s_paid(self):
+        paid = sum(float(payment["amount"]) for payment in self.s_payments)
+        if self.s_project_value:
+            return f"{int(paid / float(self.s_project_value) * 100)}%"
+        return "0%"
+    
     class Meta:
         ordering = ["moved_at"]
 
@@ -298,6 +326,15 @@ class QataryOfficeProject(models.Model):
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
     
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # sensitive data
+    s_project_value = models.FloatField(null=True, blank=True)
+    s_payments = models.JSONField(default=list)
+    def s_paid(self):
+        paid = sum(float(payment["amount"]) for payment in self.s_payments)
+        if self.s_project_value:
+            return f"{int(paid / float(self.s_project_value) * 100)}%"
+        return "0%"
     
     class Meta:
         ordering = ["moved_at"]
@@ -367,6 +404,7 @@ class History(models.Model):
     new_stage = models.CharField(max_length=100, null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
     by = models.ForeignKey("Employee", on_delete=models.PROTECT, null=True, blank=True)
+
 
 # Other Models
 class Employee(AbstractUser):

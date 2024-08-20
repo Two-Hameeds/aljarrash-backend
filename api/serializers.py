@@ -111,10 +111,8 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 # Projects Serializers
 class DesignProjectSerializer(serializers.ModelSerializer):
-
-    # created_at = serializers.DateTimeField(read_only=True)
-    history = serializers.JSONField(read_only=True)
-
+    s_paid = serializers.SerializerMethodField(read_only=True)
+    
     def get_filtered_fields(self, default):
         user = self.context["request"].user
         stage = self.context["request"].query_params.get("stage")
@@ -250,17 +248,17 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         if self.context and self.context["request"].user.is_superuser:
             default.pop("s_payments")
 
-            s_payments = instance.s_payments
-            paid = 0
-            for s_payment in s_payments:
-                paid = paid + float(s_payment["amount"])
+            # s_payments = instance.s_payments
+            # paid = 0
+            # for s_payment in s_payments:
+            #     paid = paid + float(s_payment["amount"])
 
-            if instance.s_project_value:
-                default["s_paid"] = (
-                    str(int(paid / float(instance.s_project_value) * 100)) + "%"
-                )
-            else:
-                default["s_paid"] = "0%"
+            # if instance.s_project_value:
+            #     default["s_paid"] = (
+            #         str(int(paid / float(instance.s_project_value) * 100)) + "%"
+            #     )
+            # else:
+            #     default["s_paid"] = "0%"
                 
         # print("here i am:", instance.global_id)
         
@@ -272,12 +270,15 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
         return default
 
+    def get_s_paid(self, obj):
+        return obj.s_paid()
+
     class Meta:
         model = DesignProject
         fields = "__all__"
 
 class BaladyProjectSerializer(serializers.ModelSerializer):
-    # created_at = serializers.DateTimeField(read_only=True)
+    s_paid = serializers.SerializerMethodField(read_only=True)
 
     def get_fields(self):
         default = super().get_fields()
@@ -318,7 +319,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
             result.global_id = global_id.id
             result.save()
         return result
-
+    
     def attachments_status(self, instance):
         attach_count = Attachment.objects.filter(uploaded_for=instance.global_id, type__in=instance.required_attachments).distinct('type').count()
         
@@ -358,11 +359,15 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 
         return default
 
+    def get_s_paid(self, obj):
+        return obj.s_paid()
+    
     class Meta:
         model = BaladyProject
         fields = "__all__"
 
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
+    s_paid = serializers.SerializerMethodField(read_only=True)
 
     def get_fields(self):
         if (
@@ -382,11 +387,15 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
             result.save()
         return result
 
+    def get_s_paid(self, obj):
+        return obj.s_paid()
+    
     class Meta:
         model = LandSurveyProject
         fields = "__all__"
 
 class SortingDeedsProjectSerializer(serializers.ModelSerializer):
+    s_paid = serializers.SerializerMethodField(read_only=True)
 
     def get_fields(self):
         if (
@@ -406,11 +415,19 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
             result.save()
         return result
 
+    def get_s_paid(self, obj):
+        return obj.s_paid()
+    
     class Meta:
         model = SortingDeedsProject
         fields = "__all__"
 
 class QataryOfficeProjectSerializer(serializers.ModelSerializer):
+    s_paid = serializers.SerializerMethodField(read_only=True)
+
+    def get_s_paid(self, obj):
+        return obj.s_paid()
+    
     class Meta:
         model = QataryOfficeProject
         fields = "__all__"
