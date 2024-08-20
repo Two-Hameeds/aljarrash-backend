@@ -164,7 +164,6 @@ class DesignProject(models.Model):
     corrector_date = models.DateField(null=True, blank=True)
     receive_final_copy_date = models.DateField(null=True, blank=True)
 
-    # typeof_follow_up = models.CharField(max_length=100, choices=FollowUpTypes.choices, null=True, blank=True)
     investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
     project_number = models.IntegerField(null=True, blank=True)
     sketch_design_progress_status = models.CharField(
@@ -172,7 +171,6 @@ class DesignProject(models.Model):
     )
     plan_delivery_date = models.DateField(null=True, blank=True)
 
-    # created_at = models.DateTimeField(null=True, blank=True)
     moved_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -251,6 +249,11 @@ class LandSurveyProject(models.Model):
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     survey_report_issuance = models.CharField(max_length=100, null=True, blank=True)
+    
+    moved_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ["moved_at"]
 
 class SortingDeedsProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
@@ -274,6 +277,11 @@ class SortingDeedsProject(models.Model):
     source = models.CharField(max_length=100, null=True, blank=True)
     accounting = models.CharField(max_length=100, null=True, blank=True)
     notes = models.CharField(max_length=100, null=True, blank=True)
+    
+    moved_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ["moved_at"]
 
 class QataryOfficeProject(models.Model):
     global_id = models.IntegerField(null=True, blank=True)
@@ -289,6 +297,11 @@ class QataryOfficeProject(models.Model):
     payment_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)    
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
     
+    moved_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ["moved_at"]
+    
 
 # Projects Related Models    
 class Payment(models.Model):
@@ -296,7 +309,6 @@ class Payment(models.Model):
     amount = models.FloatField()
     date = models.DateField(blank=True, null=True)
     stage = models.CharField(max_length=100)
-    s_history = models.JSONField(null=True, blank=True, default=list)
 
 class TableView(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -349,6 +361,12 @@ class Attachment(models.Model):
             return ""
         return self.title
 
+class History(models.Model):
+    action = models.CharField(max_length=100)
+    stage = models.CharField(max_length=100, null=True, blank=True)
+    new_stage = models.CharField(max_length=100, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+    by = models.ForeignKey("Employee", on_delete=models.PROTECT, null=True, blank=True)
 
 # Other Models
 class Employee(AbstractUser):
