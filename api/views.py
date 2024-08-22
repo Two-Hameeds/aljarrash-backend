@@ -59,7 +59,8 @@ class DesignProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     queryset = DesignProject.objects.annotate(
-        comments_count=Count("global_id__comments")
+        comments_count=Count("global_id__comments"),
+        attachments_count=Count("global_id__attachments"),
     )
     serializer_class = DesignProjectSerializer
 
@@ -106,7 +107,8 @@ class BaladyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     queryset = BaladyProject.objects.annotate(
-        comments_count=Count("global_id__comments")
+        comments_count=Count("global_id__comments"),
+        attachments_count=Count("global_id__attachments"),
     )
     serializer_class = BaladyProjectSerializer
 
@@ -148,7 +150,8 @@ class LandSurveyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     queryset = LandSurveyProject.objects.annotate(
-        comments_count=Count("global_id__comments")
+        comments_count=Count("global_id__comments"),
+        attachments_count=Count("global_id__attachments"),
     )
     serializer_class = LandSurveyProjectSerializer
 
@@ -183,7 +186,8 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     queryset = SortingDeedsProject.objects.annotate(
-        comments_count=Count("global_id__comments")
+        comments_count=Count("global_id__comments"),
+        attachments_count=Count("global_id__attachments"),
     )
     serializer_class = SortingDeedsProjectSerializer
 

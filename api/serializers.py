@@ -114,6 +114,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 class DesignProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    attachments_count = serializers.IntegerField(read_only=True)
 
     def get_filtered_fields(self, default):
         user = self.context["request"].user
@@ -258,6 +259,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 class BaladyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    attachments_count = serializers.IntegerField(read_only=True)
 
     def get_fields(self):
         default = super().get_fields()
@@ -339,6 +341,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 class LandSurveyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    attachments_count = serializers.IntegerField(read_only=True)
 
     def get_fields(self):
         if (
@@ -372,6 +375,7 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
 class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    attachments_count = serializers.IntegerField(read_only=True)
 
     def get_fields(self):
         if (
