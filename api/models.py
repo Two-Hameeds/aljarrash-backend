@@ -7,7 +7,7 @@ from .choices import (
     UseTypes,
     Status,
     DesignStatus,
-    Stages,
+    DesignStages,
     AttachmentTypes,
     BaladyStages,
     LandSurveyStages,
@@ -42,7 +42,7 @@ class DesignProject(models.Model):
     )
 
     stage = models.CharField(
-        max_length=100, choices=Stages.choices, null=False, blank=False
+        max_length=100, choices=DesignStages.choices, null=False, blank=False
     )
 
 
@@ -379,7 +379,7 @@ class TableView(models.Model):
         "Employee", on_delete=models.SET_NULL, null=True, blank=True
     )
     stage = models.CharField(
-        max_length=100, choices=Stages.choices, null=False, blank=False
+        max_length=100, choices=DesignStages.choices, null=False, blank=False
     )
     view = models.JSONField(null=True, blank=True)
 

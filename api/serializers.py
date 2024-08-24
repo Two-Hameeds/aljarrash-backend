@@ -115,6 +115,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
+    required_attachments_count = serializers.IntegerField(read_only=True)
 
     def get_filtered_fields(self, default):
         user = self.context["request"].user
@@ -137,6 +138,8 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         table_view_data.insert(0, "id")
         table_view_data.insert(1, "global_id")
         table_view_data.insert(2, "s_paid")
+        table_view_data.insert(3, "comments_count")
+        table_view_data.insert(4, "attachments_count")
 
         if not user.is_staff:
             table_view_data = list(
@@ -260,6 +263,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
+    required_attachments_count = serializers.IntegerField(read_only=True)
 
     def get_fields(self):
         default = super().get_fields()

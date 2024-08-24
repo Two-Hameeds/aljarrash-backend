@@ -44,7 +44,8 @@ class StructuralReviewStatus(models.TextChoices):
     Done = "Done"
 
 
-class Stages(models.TextChoices):
+class DesignStages(models.TextChoices):
+    Reception = "reception"
     Sketch = "sketch"
     Sketch_Review = "sketch_review"
     Approval_Before_Columns = "approval_before_columns"

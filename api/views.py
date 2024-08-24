@@ -1,7 +1,10 @@
 from django.contrib.auth import login
 from django.utils import timezone
 from django.contrib.auth.models import Group
-from django.db.models import Count
+from django.db.models import Count, Q, Func, IntegerField, Case, When, Value, F
+from django.db.models.functions import Coalesce
+
+# from django.db.models.functions import JSONObject
 
 from .models import (
     Employee,
@@ -54,13 +57,23 @@ from .permissions import IsAdmin
 from .templates import ATTACHMENT_TEMPLATES
 
 
+class JsonbArrayLength(Func):
+    function = "jsonb_array_length"
+    output_field = IntegerField()
+
+
 # Projects Views
 class DesignProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     queryset = DesignProject.objects.annotate(
-        comments_count=Count("global_id__comments"),
-        attachments_count=Count("global_id__attachments"),
+        comments_count=Count("global_id__comments", distinct=True),
+        attachments_count=Count(
+            "global_id__attachments__type",
+            filter=~Q(global_id__attachments__type="other"),
+            distinct=True,
+        ),
+        required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = DesignProjectSerializer
 
@@ -106,16 +119,25 @@ class DesignProjectsViewSet(ModelViewSet):
 class BaladyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
+    # TODO: check if the attachments types are included in the required_attachments
     queryset = BaladyProject.objects.annotate(
-        comments_count=Count("global_id__comments"),
-        attachments_count=Count("global_id__attachments"),
-    )
+    comments_count=Count("global_id__comments", distinct=True),
+    required_attachments_count=JsonbArrayLength("required_attachments"),
+    attachments_count=Coalesce(
+        Case(
+            When(required_attachments_count=0, then=Value(0)),
+            default=(Count(
+                "global_id__attachments__type",
+                filter=~Q(global_id__attachments__type="other"),
+                distinct=True,
+            ) * 3) / F('required_attachments_count'),
+            output_field=IntegerField()
+        ),
+        0,
+        output_field=IntegerField(),
+    ),
+)
     serializer_class = BaladyProjectSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.order_by("moved_at")
-        return queryset
 
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -149,9 +171,11 @@ class BaladyProjectsViewSet(ModelViewSet):
 class LandSurveyProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
+    # TODO: check if the attachments types are included in the required_attachments
     queryset = LandSurveyProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
+        required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = LandSurveyProjectSerializer
 
@@ -185,9 +209,11 @@ class LandSurveyProjectsViewSet(ModelViewSet):
 class SortingDeedsProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
+    # TODO: check if the attachments types are included in the required_attachments
     queryset = SortingDeedsProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
+        required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = SortingDeedsProjectSerializer
 
@@ -221,9 +247,11 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 class QatariOfficeProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
+    # TODO: check if the attachments types are included in the required_attachments
     queryset = QatariOfficeProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
+        required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = QatariOfficeProjectSerializer
 
