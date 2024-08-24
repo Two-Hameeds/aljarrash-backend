@@ -24,7 +24,7 @@ from .views import (
     PaymentsViewSet,
     RequestSubmissionsView,
     MunicipalityVisitsView,
-    # ProjectNameCheckViewSet,
+    ProjectNameCheckViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -47,7 +47,7 @@ router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
 # router.register("payments", PaymentsViewSet)
 
-urlpatterns = router.urls + [
+urlpatterns = [
     # Design Projects
     path("design/copy", CopyProjectsView.as_view(), name="copy_projects"),
     # path(
@@ -84,15 +84,15 @@ urlpatterns = router.urls + [
         PaymentsViewSet.as_view(),
         name="design_payments",
     ),
-    # path(
-    #     "design/project_name_checker/",
-    #     ProjectNameCheckViewSet.as_view(),
-    #     name="project_name_checker",
-    # ),
+    path(
+        "<str:project_category>/project_name_checker/",
+        ProjectNameCheckViewSet.as_view(),
+        name="project_name_checker",
+    ),
     # Authentication
     path("login/", LoginAPI.as_view(), name="login"),
     path("logout/", knox_views.LogoutView.as_view(), name="logout"),
     path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
     path("remove_tokens/", RemoveTokensAPI.as_view(), name="remove_tokens"),
     path("employee_roles/", EmployeeRolesViewSet.as_view(), name="employee_roles"),
-]
+] + router.urls

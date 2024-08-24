@@ -337,21 +337,22 @@ class TableViewsViewSet(ModelViewSet):
     filterset_fields = ["employee", "stage", "name"]
 
 
+class ProjectNameCheckViewSet(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
 
-# class ProjectNameCheckViewSet(APIView):
-#     # permission_classes = (IsAuthenticated,)
-    
-#     # serializer_class = ProjectNameCheckSerializer
-    
-#     def get(self,request):
-#         Response({"response": "true"}, status=200)
-    
-#     def post(self, request, format=None):
-#         # data = request.data
-#         # response = ATTACHMENT_TEMPLATES[category]["model"].objects.filter(project_name=data['project_name']).exists()
-        
-#         Response({"response": "true"}, status=200)
-    
+    serializer_class = ProjectNameCheckSerializer
+
+    def get(self, request, project_category):
+        data = request.query_params
+        response = (
+            ATTACHMENT_TEMPLATES[project_category]["model"]
+            .objects.filter(project_name=data["project_name"])
+            .exists()
+        )
+
+        return Response({"available": not response}, status=200)
+
+
 # class HistoryViewSet(APIView):
 #     permission_classes = (IsAuthenticated, )
 #     def get(self, request, project_id):
@@ -452,15 +453,13 @@ class PaymentsViewSet(GenericAPIView):
         attachment_template = ATTACHMENT_TEMPLATES[project_category]
         instance = attachment_template["model"].objects.get(id=project_id)
 
-        attachments = {}
+        attachments = []
         contracts = list(
             Attachment.objects.filter(uploaded_for=instance.global_id, type="contract")
         )
 
         for contract in contracts:
-            attachments.insert(
-                0, (f"{contract.id}_{contract.attachment.url}")
-            )
+            attachments.insert(0, (f"{contract.id}_{contract.attachment.url}"))
 
         return Response(
             {
