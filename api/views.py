@@ -463,7 +463,7 @@ class PaymentsViewSet(GenericAPIView):
 
         return Response(
             {
-                "s_contract": map(lambda x: x.attachment.url, list(contract)),
+                "s_contract": list(attachments),
                 "s_project_value": instance.s_project_value,
                 "s_payments": instance.s_payments,
             },
