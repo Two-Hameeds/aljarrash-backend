@@ -37,6 +37,7 @@ from .serializers import (
     RequestSubmissionSerializer,
     MunicipalityVisitSerializer,
     QatariOfficeProjectSerializer,
+    ProjectNameCheckSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -121,22 +122,26 @@ class BaladyProjectsViewSet(ModelViewSet):
 
     # TODO: check if the attachments types are included in the required_attachments
     queryset = BaladyProject.objects.annotate(
-    comments_count=Count("global_id__comments", distinct=True),
-    required_attachments_count=JsonbArrayLength("required_attachments"),
-    attachments_count=Coalesce(
-        Case(
-            When(required_attachments_count=0, then=Value(0)),
-            default=(Count(
-                "global_id__attachments__type",
-                filter=~Q(global_id__attachments__type="other"),
-                distinct=True,
-            ) * 3) / F('required_attachments_count'),
-            output_field=IntegerField()
+        comments_count=Count("global_id__comments", distinct=True),
+        required_attachments_count=JsonbArrayLength("required_attachments"),
+        attachments_count=Coalesce(
+            Case(
+                When(required_attachments_count=0, then=Value(0)),
+                default=(
+                    Count(
+                        "global_id__attachments__type",
+                        filter=~Q(global_id__attachments__type="other"),
+                        distinct=True,
+                    )
+                    * 3
+                )
+                / F("required_attachments_count"),
+                output_field=IntegerField(),
+            ),
+            0,
+            output_field=IntegerField(),
         ),
-        0,
-        output_field=IntegerField(),
-    ),
-)
+    )
     serializer_class = BaladyProjectSerializer
 
     def update(self, request, *args, **kwargs):
@@ -320,6 +325,33 @@ class MoveProjectsViewSet(APIView):
         return Response({"status": "Moved"}, status=200)
 
 
+class TableViewsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+
+    queryset = TableView.objects.all()
+    serializer_class = TableViewSerializer
+
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["employee", "stage", "name"]
+
+
+
+# class ProjectNameCheckViewSet(APIView):
+#     # permission_classes = (IsAuthenticated,)
+    
+#     # serializer_class = ProjectNameCheckSerializer
+    
+#     def get(self,request):
+#         Response({"response": "true"}, status=200)
+    
+#     def post(self, request, format=None):
+#         # data = request.data
+#         # response = ATTACHMENT_TEMPLATES[category]["model"].objects.filter(project_name=data['project_name']).exists()
+        
+#         Response({"response": "true"}, status=200)
+    
 # class HistoryViewSet(APIView):
 #     permission_classes = (IsAuthenticated, )
 #     def get(self, request, project_id):
@@ -419,10 +451,16 @@ class PaymentsViewSet(GenericAPIView):
     def get(self, request, project_category, project_id):
         attachment_template = ATTACHMENT_TEMPLATES[project_category]
         instance = attachment_template["model"].objects.get(id=project_id)
-        contract = Attachment.objects.filter(
-            uploaded_for=instance.global_id, type="contract"
+
+        attachments = {}
+        contracts = list(
+            Attachment.objects.filter(uploaded_for=instance.global_id, type="contract")
         )
-        # contract = Attachment.objects.get(uploaded_for=instance.global_id, type="contract")
+
+        for contract in contracts:
+            attachments.insert(
+                0, (f"{contract.id}_{contract.attachment.url}")
+            )
 
         return Response(
             {
@@ -599,18 +637,6 @@ class GlobalIDsViewSet(ModelViewSet):
 
     queryset = GlobalID.objects.all()
     serializer_class = GlobalIDSerializer
-
-
-class TableViewsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
-
-    queryset = TableView.objects.all()
-    serializer_class = TableViewSerializer
-
-    filter_backends = [
-        DjangoFilterBackend,
-    ]
-    filterset_fields = ["employee", "stage", "name"]
 
 
 class CommentsViewSet(ModelViewSet):

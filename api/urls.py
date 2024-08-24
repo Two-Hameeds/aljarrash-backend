@@ -24,6 +24,7 @@ from .views import (
     PaymentsViewSet,
     RequestSubmissionsView,
     MunicipalityVisitsView,
+    # ProjectNameCheckViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -72,7 +73,6 @@ urlpatterns = router.urls + [
         MunicipalityVisitsView.as_view(),
         name="balady_municipality_visits",
     ),
-    
     # common
     path(
         "<str:project_category>/<int:project_id>/attachments/",
@@ -84,7 +84,11 @@ urlpatterns = router.urls + [
         PaymentsViewSet.as_view(),
         name="design_payments",
     ),
-    
+    # path(
+    #     "design/project_name_checker/",
+    #     ProjectNameCheckViewSet.as_view(),
+    #     name="project_name_checker",
+    # ),
     # Authentication
     path("login/", LoginAPI.as_view(), name="login"),
     path("logout/", knox_views.LogoutView.as_view(), name="logout"),

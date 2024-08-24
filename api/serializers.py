@@ -422,7 +422,7 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
             result.save()
 
         return result
-    
+
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -446,6 +446,10 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
 
 
 # Projects Related Serializers
+class ProjectNameCheckSerializer(serializers.Serializer):
+    project_name = serializers.CharField()
+
+
 class PaymentsSerializer(serializers.Serializer):
     s_contract = serializers.FileField()
     s_project_value = serializers.FloatField()
