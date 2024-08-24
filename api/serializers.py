@@ -245,10 +245,6 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
         default["attachments_status"] = self.get_attachments_status(instance)
 
-        default.pop("required_attachments")
-        if self.context and self.context["request"].user.is_superuser:
-            default.pop("s_payments")
-
         return default
 
     def get_s_paid(self, obj):
