@@ -603,10 +603,10 @@ class DeletedProjectsView(GenericAPIView):
         deleted_projects = []
         
         design_projects = DesignProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("design"))
-        balady_projects = BaladyProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("design"))
-        land_projects = LandSurveyProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("design"))
-        sort_projects = SortingDeedsProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("design"))
-        qatari_projects = QatariOfficeProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("design"))
+        balady_projects = BaladyProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("balady"))
+        land_projects = LandSurveyProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("land_survey"))
+        sort_projects = SortingDeedsProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("sorting_deeds"))
+        qatari_projects = QatariOfficeProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("qatari"))
         
         deleted_projects.extend(design_projects)
         deleted_projects.extend(balady_projects)
