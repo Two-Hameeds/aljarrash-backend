@@ -25,6 +25,7 @@ from .views import (
     RequestSubmissionsView,
     MunicipalityVisitsView,
     ProjectNameCheckViewSet,
+    DeletedProjectsView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -89,6 +90,7 @@ urlpatterns = [
         ProjectNameCheckViewSet.as_view(),
         name="project_name_checker",
     ),
+    path("deleted_projects/", DeletedProjectsView.as_view(), name="deleted_projects"),
     # Authentication
     path("login/", LoginAPI.as_view(), name="login"),
     path("logout/", knox_views.LogoutView.as_view(), name="logout"),
