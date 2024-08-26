@@ -61,6 +61,7 @@ class DesignStages(models.TextChoices):
     Ready_for_Final_Receipt = "ready_for_final_receipt"
     Completed_Projects = "completed_projects"
     Inactive_Projects = "inactive_projects"
+    Deleted_Projects = "deleted_projects"
 
 
 class AttachmentTypes(models.TextChoices):
@@ -122,6 +123,7 @@ class BaladyStages(models.TextChoices):
     Service_Card = "service_card"
     Quantity_Sorting = "quantity_sorting"
     Supervision = "supervision"
+    Deleted_Projects = "deleted_projects"
 
 
 class BaladyRequestTypes(models.TextChoices):
@@ -146,6 +148,7 @@ class LandSurveyStages(models.TextChoices):
     land_report = "land_report"
     completed_projects = "completed_projects"
     informal_transactions = "informal_transactions"
+    deleted_projects = "deleted_projects"
 
 
 class SortingDeedsStages(models.TextChoices):
@@ -155,9 +158,11 @@ class SortingDeedsStages(models.TextChoices):
     completed_land_sorting = "completed_land_sorting"
     completed_land_merging = "completed_land_merging"
     completed_housing_sorting = "completed_housing_sorting"
+    deleted_projects = "deleted_projects"
 
 class QataryStages(models.TextChoices):
     main = "main"
     land_report = "land_report"
     completed_land_survey = "completed_land_survey"
     informal_transactions = "informal_transactions"
+    deleted_projects = "deleted_projects"
