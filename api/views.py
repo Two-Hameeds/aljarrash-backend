@@ -19,6 +19,7 @@ from .models import (
     SortingDeedsProject,
     GlobalID,
     QatariOfficeProject,
+    ReceptionProject,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -39,6 +40,7 @@ from .serializers import (
     MunicipalityVisitSerializer,
     QatariOfficeProjectSerializer,
     ProjectNameCheckSerializer,
+    ReceptionProjectSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -65,6 +67,13 @@ class JsonbArrayLength(Func):
 
 
 # Projects Views
+class ReceptionProjectsViewSet(ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
+
+    queryset = ReceptionProject.objects.all()
+    serializer_class = ReceptionProjectSerializer
+
+
 class DesignProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 

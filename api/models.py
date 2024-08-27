@@ -15,6 +15,11 @@ from .choices import (
     QataryStages,
 )
 
+class ReceptionProject(models.Model):
+    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey("Client", on_delete=models.CASCADE, related_name="reception_projects", null=False, blank=False)
+    notes = models.CharField(max_length=255, null=True, blank=True)
 
 # Models Managers
 class ProjectManager(models.Manager):

@@ -14,6 +14,7 @@ from .models import (
     QatariOfficeProject,
     GlobalID,
     Payment,
+    ReceptionProject,
 )
 from django.utils import timezone
 from .templates import ATTACHMENT_TEMPLATES
@@ -111,6 +112,36 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 
 # Projects Serializers
+class ReceptionProjectSerializer(serializers.ModelSerializer):
+    
+    def get_fields(self):
+        default = super().get_fields()
+        if not self.context:
+            return default
+        if (
+            str(self.context["request"].method) == "POST"
+            and self.context["request"].data
+        ):
+            Client.objects.get_or_create(
+                phone=self.context["request"].data["client_phone"]
+            )
+
+        return default
+    
+    def create(self, validated_data):
+        result = super().create(validated_data)
+        if validated_data.get("global_id") == None:
+            global_id = GlobalID.objects.create()
+            result.global_id = global_id
+            result.save()
+
+        return result
+    
+    class Meta:
+        model = ReceptionProject
+        fields = "__all__"
+
+
 class DesignProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
