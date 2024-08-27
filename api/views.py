@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import Group
 from django.db.models import Count, Q, Func, IntegerField, Case, When, Value, F
 from django.db.models.functions import Coalesce
+from django.http import HttpResponse
 
 # from django.db.models.functions import JSONObject
 
@@ -597,24 +598,46 @@ class EngineersView(APIView):
         response["ids"] = ids
         return Response(response)
 
-class DeletedProjectsView(GenericAPIView):
-    
+
+class DeletedProjectsView(APIView):
+
     def get(self, request):
         deleted_projects = []
-        
-        design_projects = DesignProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("design"))
-        balady_projects = BaladyProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("balady"))
-        land_projects = LandSurveyProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("land_survey"))
-        sort_projects = SortingDeedsProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("sorting_deeds"))
-        qatari_projects = QatariOfficeProject.objects.filter(stage="deleted_projects").values("id","global_id", "client_phone", "project_name").annotate(category=Value("qatari"))
-        
+
+        design_projects = (
+            DesignProject.objects.filter(stage="deleted_projects")
+            .values("id", "global_id", "client_phone", "project_name")
+            .annotate(category=Value("design"))
+        )
+        balady_projects = (
+            BaladyProject.objects.filter(stage="deleted_projects")
+            .values("id", "global_id", "client_phone", "project_name")
+            .annotate(category=Value("balady"))
+        )
+        land_projects = (
+            LandSurveyProject.objects.filter(stage="deleted_projects")
+            .values("id", "global_id", "client_phone", "project_name")
+            .annotate(category=Value("land_survey"))
+        )
+        sort_projects = (
+            SortingDeedsProject.objects.filter(stage="deleted_projects")
+            .values("id", "global_id", "client_phone", "project_name")
+            .annotate(category=Value("sorting_deeds"))
+        )
+        qatari_projects = (
+            QatariOfficeProject.objects.filter(stage="deleted_projects")
+            .values("id", "global_id", "client_phone", "project_name")
+            .annotate(category=Value("qatari"))
+        )
+
         deleted_projects.extend(design_projects)
         deleted_projects.extend(balady_projects)
         deleted_projects.extend(land_projects)
         deleted_projects.extend(sort_projects)
         deleted_projects.extend(qatari_projects)
-        
-        return Response({"deleted_projects": deleted_projects}, status=200)
+
+        return Response(deleted_projects, status=200)
+
 
 # Auth Views
 class RemoveTokensAPI(GenericAPIView):
