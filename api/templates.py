@@ -1,4 +1,5 @@
 from .models import (
+    ReceptionProject,
     DesignProject,
     BaladyProject,
     LandSurveyProject,
@@ -7,6 +8,9 @@ from .models import (
 )
 
 ATTACHMENT_TEMPLATES = {
+    "reception":{
+      "model": ReceptionProject,  
+    },
     "design": {
         "new": {
             "entertaining": [

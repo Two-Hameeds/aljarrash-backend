@@ -113,7 +113,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 # Projects Serializers
 class ReceptionProjectSerializer(serializers.ModelSerializer):
-    
+
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -127,7 +127,7 @@ class ReceptionProjectSerializer(serializers.ModelSerializer):
             )
 
         return default
-    
+
     def create(self, validated_data):
         result = super().create(validated_data)
         if validated_data.get("global_id") == None:
@@ -136,7 +136,7 @@ class ReceptionProjectSerializer(serializers.ModelSerializer):
             result.save()
 
         return result
-    
+
     class Meta:
         model = ReceptionProject
         fields = "__all__"
