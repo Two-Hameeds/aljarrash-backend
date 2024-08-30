@@ -477,6 +477,9 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
 
 
 # Projects Related Serializers
+class ResetPasswordRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
 class ProjectNameCheckSerializer(serializers.Serializer):
     project_name = serializers.CharField()
 

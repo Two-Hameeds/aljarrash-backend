@@ -15,20 +15,33 @@ from .choices import (
     QataryStages,
 )
 
-class ReceptionProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
-    project_name = models.CharField(max_length=100, null=False, blank=False)
-    client_phone = models.ForeignKey("Client", on_delete=models.CASCADE, related_name="reception_projects", null=False, blank=False)
-    notes = models.CharField(max_length=255, null=True, blank=True)
 
 # Models Managers
 class ProjectManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().order_by("moved_at")
 
+
 # Projects Models
+class ReceptionProject(models.Model):
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey(
+        "Client",
+        on_delete=models.CASCADE,
+        related_name="reception_projects",
+        null=False,
+        blank=False,
+    )
+    notes = models.CharField(max_length=255, null=True, blank=True)
+
+
 class DesignProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
     # essential info
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
@@ -49,7 +62,6 @@ class DesignProject(models.Model):
     stage = models.CharField(
         max_length=100, choices=DesignStages.choices, null=False, blank=False
     )
-
 
     # attachments
     required_attachments = models.JSONField(null=True, blank=True)
@@ -77,6 +89,7 @@ class DesignProject(models.Model):
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(null=True, blank=True, default=list)
     s_modification_price = models.FloatField(null=True, blank=True)
+
     def s_paid(self):
         paid = sum(float(payment["amount"]) for payment in self.s_payments)
         if self.s_project_value:
@@ -187,20 +200,23 @@ class DesignProject(models.Model):
     plan_delivery_date = models.DateField(null=True, blank=True)
 
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     objects = ProjectManager()
 
     def __str__(self):
         if self.project_name == None:
             return ""
         return self.project_name
-    
+
     class Meta:
         ordering = ["moved_at"]
 
+
 class BaladyProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
-    
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
+
     stage = models.CharField(
         max_length=100, choices=BaladyStages.choices, null=False, blank=False
     )
@@ -233,27 +249,31 @@ class BaladyProject(models.Model):
     municipality_visits = models.JSONField(null=True, blank=True, default=list)
 
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     # attachments
     required_attachments = models.JSONField(null=True, blank=True, default=list)
-    
+
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
+
     def s_paid(self):
         paid = sum(float(payment["amount"]) for payment in self.s_payments)
         if self.s_project_value:
             return f"{int(paid / float(self.s_project_value) * 100)}%"
         return "0%"
-    
+
     objects = ProjectManager()
 
     class Meta:
         ordering = ["moved_at"]
 
+
 class LandSurveyProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
-    
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
+
     stage = models.CharField(
         max_length=100, choices=LandSurveyStages.choices, null=False, blank=False
     )
@@ -278,26 +298,30 @@ class LandSurveyProject(models.Model):
     )
     survey_report_issuance = models.CharField(max_length=100, null=True, blank=True)
     required_attachments = models.JSONField(null=True, blank=True, default=list)
-    
+
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
+
     def s_paid(self):
         paid = sum(float(payment["amount"]) for payment in self.s_payments)
         if self.s_project_value:
             return f"{int(paid / float(self.s_project_value) * 100)}%"
         return "0%"
-    
+
     objects = ProjectManager()
-    
+
     class Meta:
         ordering = ["moved_at"]
 
+
 class SortingDeedsProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
-    
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
+
     stage = models.CharField(
         max_length=100, choices=SortingDeedsStages.choices, null=False, blank=False
     )
@@ -318,65 +342,96 @@ class SortingDeedsProject(models.Model):
     source = models.CharField(max_length=100, null=True, blank=True)
     accounting = models.CharField(max_length=100, null=True, blank=True)
     notes = models.CharField(max_length=100, null=True, blank=True)
-    
+
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     required_attachments = models.JSONField(null=True, blank=True, default=list)
-    
+
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
+
     def s_paid(self):
         paid = sum(float(payment["amount"]) for payment in self.s_payments)
         if self.s_project_value:
             return f"{int(paid / float(self.s_project_value) * 100)}%"
         return "0%"
-    
+
     objects = ProjectManager()
-    
+
     class Meta:
         ordering = ["moved_at"]
 
+
 class QatariOfficeProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
-    
-    stage = models.CharField(max_length=100, choices=QataryStages.choices, null=False, blank=False)
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    stage = models.CharField(
+        max_length=100, choices=QataryStages.choices, null=False, blank=False
+    )
     project_name = models.CharField(max_length=100, null=False, blank=False)
-    client_phone = models.ForeignKey("Client", to_field="phone", on_delete=models.CASCADE, related_name="qatary_projects", null=False, blank=False)
-    location_visit = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)
+    client_phone = models.ForeignKey(
+        "Client",
+        to_field="phone",
+        on_delete=models.CASCADE,
+        related_name="qatary_projects",
+        null=False,
+        blank=False,
+    )
+    location_visit = models.CharField(
+        max_length=100, choices=Status.choices, null=True, blank=True
+    )
     location_visit_date = models.DateField(null=True, blank=True)
     record_number = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=500, null=True, blank=True)
-    transaction_reviewer = models.ForeignKey("Employee", on_delete=models.SET_NULL, related_name="qatary_projects_reviewer", null=True, blank=True)
+    transaction_reviewer = models.ForeignKey(
+        "Employee",
+        on_delete=models.SET_NULL,
+        related_name="qatary_projects_reviewer",
+        null=True,
+        blank=True,
+    )
     record_purpose = models.CharField(max_length=100, null=True, blank=True)
-    payment_status = models.CharField(max_length=100, choices=Status.choices, null=True, blank=True)    
+    payment_status = models.CharField(
+        max_length=100, choices=Status.choices, null=True, blank=True
+    )
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
-    
+
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     required_attachments = models.JSONField(null=True, blank=True, default=list)
-    
+
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
+
     def s_paid(self):
         paid = sum(float(payment["amount"]) for payment in self.s_payments)
         if self.s_project_value:
             return f"{int(paid / float(self.s_project_value) * 100)}%"
         return "0%"
-    
+
     objects = ProjectManager()
-    
+
     class Meta:
         ordering = ["moved_at"]
-    
 
-# Projects Related Models    
+
+# Projects Related Models
+class PasswordReset(models.Model):
+    email = models.EmailField()
+    token = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class Payment(models.Model):
     paid_for = models.ForeignKey("GlobalID", on_delete=models.CASCADE)
     amount = models.FloatField()
     date = models.DateField(blank=True, null=True)
     stage = models.CharField(max_length=100)
+
 
 class TableView(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -388,6 +443,7 @@ class TableView(models.Model):
     )
     view = models.JSONField(null=True, blank=True)
 
+
 class Comment(models.Model):
     content = models.TextField(max_length=255, null=True, blank=True)
     written_at = models.DateTimeField(null=True, blank=True)
@@ -396,7 +452,11 @@ class Comment(models.Model):
         "Employee", on_delete=models.CASCADE, null=False, blank=False
     )
     written_for = models.ForeignKey(
-        "GlobalID", on_delete=models.SET_NULL, related_name="comments", null=True, blank=True
+        "GlobalID",
+        on_delete=models.SET_NULL,
+        related_name="comments",
+        null=True,
+        blank=True,
     )
 
 
@@ -404,6 +464,7 @@ class Comment(models.Model):
 class PathAndRename:
     def __call__(self, instance, filename):
         return f"attachments/{instance.type}s/{filename}"
+
 
 class Attachment(models.Model):
     title = models.CharField(max_length=100, null=True, blank=True)
@@ -415,7 +476,11 @@ class Attachment(models.Model):
         "Employee", on_delete=models.SET_NULL, null=True, blank=True
     )
     uploaded_for = models.ForeignKey(
-        "GlobalID", on_delete=models.SET_NULL, related_name="attachments", null=True, blank=True
+        "GlobalID",
+        on_delete=models.SET_NULL,
+        related_name="attachments",
+        null=True,
+        blank=True,
     )
     uploaded_at = models.DateTimeField(null=True, blank=True)
 
@@ -423,6 +488,7 @@ class Attachment(models.Model):
         if self.title == None:
             return ""
         return self.title
+
 
 class History(models.Model):
     action = models.CharField(max_length=100)
@@ -436,6 +502,7 @@ class History(models.Model):
 class Employee(AbstractUser):
     phone = models.CharField(max_length=13, null=True, blank=True)
 
+
 class Client(models.Model):
     phone = models.CharField(max_length=13, primary_key=True, blank=False)
     name = models.CharField(max_length=30, null=True, blank=True)
@@ -446,11 +513,28 @@ class Client(models.Model):
             return ""
         return self.name
 
-class GlobalID(models.Model):
-    design = models.OneToOneField(DesignProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    balady = models.OneToOneField(BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    sorting = models.OneToOneField(SortingDeedsProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    land = models.OneToOneField(LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    qatari = models.OneToOneField(QatariOfficeProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True)
-    
 
+class GlobalID(models.Model):
+    design = models.OneToOneField(
+        DesignProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True
+    )
+    balady = models.OneToOneField(
+        BaladyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True
+    )
+    sorting = models.OneToOneField(
+        SortingDeedsProject,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        unique=True,
+    )
+    land = models.OneToOneField(
+        LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True
+    )
+    qatari = models.OneToOneField(
+        QatariOfficeProject,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        unique=True,
+    )

@@ -3,8 +3,11 @@ from django.utils import timezone
 from django.contrib.auth.models import Group
 from django.db.models import Count, Q, Func, IntegerField, Case, When, Value, F
 from django.db.models.functions import Coalesce
-from django.http import HttpResponse
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
+from django.core.mail import send_mail
+
+import os
 # from django.db.models.functions import JSONObject
 
 from .models import (
@@ -20,6 +23,7 @@ from .models import (
     GlobalID,
     QatariOfficeProject,
     ReceptionProject,
+    PasswordReset,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -41,6 +45,7 @@ from .serializers import (
     QatariOfficeProjectSerializer,
     ProjectNameCheckSerializer,
     ReceptionProjectSerializer,
+    ResetPasswordRequestSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -297,6 +302,36 @@ class QatariOfficeProjectsViewSet(ModelViewSet):
 
 
 # Projects Related Views
+class ResetPasswordView(GenericAPIView):
+    permission_classes = [AllowAny, ]
+    serializer_class = ResetPasswordRequestSerializer
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        email = request.data['email']
+        employee = Employee.objects.filter(email=email).first()
+        
+        if employee:
+            token_generator = PasswordResetTokenGenerator()
+            token = token_generator.make_token(employee)
+            reset = PasswordReset(email=email, token=token)
+            reset.save()
+            
+            reset_url = f"{os.environ.get('FRONTEND_URL')}/reset-password/{token}"
+            
+            send_mail(
+                "Password Reset",
+                f"You can reset your password here: {reset_url}",
+                'aljarrashc@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+            
+            return Response({"sucess": "We have sent you an email. Please check your inbox."}, status=200)
+        else:
+            return Response({"error": "Employee not found"}, status=400)
+    
+
 class MoveProjectsViewSet(APIView):
     permission_classes = (IsAuthenticated,)
 

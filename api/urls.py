@@ -27,6 +27,7 @@ from .views import (
     ProjectNameCheckViewSet,
     DeletedProjectsView,
     ReceptionProjectsViewSet,
+    ResetPasswordView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -99,4 +100,5 @@ urlpatterns = [
     path("logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
     path("remove_tokens/", RemoveTokensAPI.as_view(), name="remove_tokens"),
     path("employee_roles/", EmployeeRolesViewSet.as_view(), name="employee_roles"),
+    path("reset_password/", ResetPasswordView.as_view(), name="reset_password"),
 ] + router.urls
