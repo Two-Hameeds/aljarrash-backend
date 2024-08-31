@@ -39,6 +39,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return updated_instance
 
     def create(self, validated_data):
+        validated_data["username"] = validated_data["username"].lower()
         instance = super().create(validated_data=validated_data)
         instance.set_password(validated_data["password"])
         instance.save()
