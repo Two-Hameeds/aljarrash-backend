@@ -95,6 +95,10 @@ class AttachmentTypes(models.TextChoices):
     water_authority = "water_authority"
     electrical_plan = "electrical_plan"
     plumbing_plan = "plumbing_plan"
+    projections_approval = "projections_approval"
+    facade_approval ="facade_approval"
+    columns_approval = "columns_approval"
+    ac_approval = "ac_approval"
     
     # balady
     complete_plans = "complete_plans"

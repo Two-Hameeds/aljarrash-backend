@@ -25,6 +25,10 @@ ATTACHMENT_TEMPLATES = {
                 "electrical_plan",
                 "energy_efficiency_plan",
                 "soil_test",
+                "projections_approval",
+                "facade_approval",
+                "columns_approval",
+                "ac_approval",
             ],
             "agricultural": [
                 "contract",
@@ -38,6 +42,10 @@ ATTACHMENT_TEMPLATES = {
                 "electrical_plan",
                 "energy_efficiency_plan",
                 "soil_test",
+                "projections_approval",
+                "facade_approval",
+                "columns_approval",
+                "ac_approval",
             ],
             "residential_commercial": [
                 "contract",
@@ -52,6 +60,10 @@ ATTACHMENT_TEMPLATES = {
                 "energy_efficiency_plan",
                 "soil_test",
                 "civil_defense",
+                "projections_approval",
+                "facade_approval",
+                "columns_approval",
+                "ac_approval",
             ],
             "residential": [
                 "contract",
@@ -65,6 +77,10 @@ ATTACHMENT_TEMPLATES = {
                 "electrical_plan",
                 "energy_efficiency_plan",
                 "soil_test",
+                "projections_approval",
+                "facade_approval",
+                "columns_approval",
+                "ac_approval",
             ],
         },
         "addition": {
@@ -358,7 +374,13 @@ ATTACHMENT_TEMPLATES = {
                 "civil_defense",
                 "water_authority",
             ],
-            "type_2": ["technical_report"],  # secondary
+            "type_2": [  # secondary
+                "technical_report",
+                "projections_approval",
+                "facade_approval",
+                "columns_approval",
+                "ac_approval",
+            ],  
             "type_3": [  # final
                 "architecture_plan",
                 "construction_plan",
