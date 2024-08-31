@@ -31,6 +31,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return super().to_representation(instance)
 
     def update(self, instance, validated_data):
+        if validated_data["username"]:
+            validated_data["username"] = validated_data["username"].lower()
         password_changed = not validated_data.get("password") == instance.password
         updated_instance = super().update(instance, validated_data)
         if password_changed:
