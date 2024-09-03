@@ -357,7 +357,6 @@ ATTACHMENT_TEMPLATES = {
         },
         "constants": {
             "type_1": [  # primary
-                "contract",
                 "deed",
                 "report",
                 "identity",

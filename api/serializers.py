@@ -97,6 +97,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data["written_at"] = timezone.now()
+        # validated_data["written_for"] = GlobalID.objects.filter(id=validated_data["written_for"]).first()
         if str(self.context["request"].user) == "AnonymousUser":
             validated_data["written_by"] = None
         else:
@@ -231,7 +232,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 
         constants = ATTACHMENT_TEMPLATES["design"]["constants"]
 
-        attachments_list = list(Attachment.objects.filter(uploaded_for=obj.id))
+        attachments_list = list(Attachment.objects.filter(uploaded_for=obj.global_id))
         primary = []
         secondary = []
         final = []
@@ -278,6 +279,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         default = super().to_representation(instance)
 
         default["attachments_status"] = self.get_attachments_status(instance)
+        # print(default["attachments_status"])
 
         return default
 
@@ -480,6 +482,10 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
 
 
 # Projects Related Serializers
+class CopyProjectsSerializer(serializers.Serializer):
+    ids = serializers.ListField()
+    stage = serializers.CharField()
+
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 

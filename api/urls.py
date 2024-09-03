@@ -53,7 +53,7 @@ router.register("reception", ReceptionProjectsViewSet)
 
 urlpatterns = [
     # Design Projects
-    path("design/copy", CopyProjectsView.as_view(), name="copy_projects"),
+    # path("design/copy", CopyProjectsView.as_view(), name="copy_projects"),
     # path(
     #     "design/<int:project_id>/history/",
     #     HistoryViewSet.as_view(),
@@ -62,11 +62,11 @@ urlpatterns = [
     path("move_projects/", MoveProjectsViewSet.as_view(), name="move_projects"),
     path("engineers/", EngineersView.as_view(), name="engineers"),
     # Balady Projects
-    path(
-        "balady/copy",
-        CopyBaladyProjectsView.as_view(),
-        name="copy_balady_projects",
-    ),
+    # path(
+    #     "balady/copy",
+    #     CopyBaladyProjectsView.as_view(),
+    #     name="copy_balady_projects",
+    # ),
     path(
         "balady/<int:project_id>/requests/",
         RequestSubmissionsView.as_view(),
@@ -78,6 +78,9 @@ urlpatterns = [
         name="balady_municipality_visits",
     ),
     # common
+    path(
+        "<str:project_category>/copy", CopyProjectsView.as_view(), name="copy_projects"
+    ),
     path(
         "<str:project_category>/<int:project_id>/attachments/",
         RequiredAttachmentsViewSet.as_view(),

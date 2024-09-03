@@ -584,40 +584,17 @@ class CopyBaladyProjectsView(APIView):
 class CopyProjectsView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request):
+    def post(self, request, project_category):
+        model_class = ATTACHMENT_TEMPLATES[project_category]["model"]
         ids = request.data.get("ids")
         stage = request.data.get("stage")
+        
 
         if not ids or not stage:
             return Response({"message": "ids and stage are required"}, status=400)
 
         try:
-            projects = DesignProject.objects.filter(id__in=ids)
-            new_serializers = []
-
-            for project in projects:
-                project.id = None
-                project.global_id = None
-                # TODO: add s_history
-                serializer = DesignProjectSerializer(
-                    project,
-                    data={"stage": stage, "moved_at": timezone.now()},
-                    partial=True,
-                )
-                serializer.is_valid(raise_exception=True)
-                try:
-                    print(serializer.data)
-                except Exception as e:
-                    print("errors:", e)
-                serializer.save()
-
-                new_serializers.append(serializer)
-
-            # serializer = ProjectSerializer(data=new_projects, many=True)
-            # serializer.is_valid(raise_exception=True)
-            # data = serializer.data
-            # print()
-
+            print(model_class.objects.filter(id__in=ids))
             return Response({"result": "Copied successfully"}, status=201)
 
         except Exception as e:
