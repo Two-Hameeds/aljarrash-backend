@@ -14,7 +14,6 @@ ATTACHMENT_TEMPLATES = {
     "design": {
         "new": {
             "entertaining": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -31,7 +30,6 @@ ATTACHMENT_TEMPLATES = {
                 "ac_approval",
             ],
             "agricultural": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -48,7 +46,6 @@ ATTACHMENT_TEMPLATES = {
                 "ac_approval",
             ],
             "residential_commercial": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -66,7 +63,6 @@ ATTACHMENT_TEMPLATES = {
                 "ac_approval",
             ],
             "residential": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -85,7 +81,6 @@ ATTACHMENT_TEMPLATES = {
         },
         "addition": {
             "entertaining": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -100,7 +95,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "agricultural": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -115,7 +109,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "residential_commercial": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -130,7 +123,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "residential": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -147,7 +139,6 @@ ATTACHMENT_TEMPLATES = {
         },
         "add_floors": {
             "entertaining": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -163,7 +154,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "agricultural": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -179,7 +169,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "residential_commercial": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -195,7 +184,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "residential": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -213,7 +201,6 @@ ATTACHMENT_TEMPLATES = {
         },
         "restoration": {
             "entertaining": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -230,7 +217,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "agricultural": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -247,7 +233,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "residential_commercial": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -264,7 +249,6 @@ ATTACHMENT_TEMPLATES = {
                 "building_pictures",
             ],
             "residential": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -283,7 +267,6 @@ ATTACHMENT_TEMPLATES = {
         },
         "destruction": {
             "entertaining": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -301,7 +284,6 @@ ATTACHMENT_TEMPLATES = {
                 "water_authority",
             ],
             "agricultural": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -319,7 +301,6 @@ ATTACHMENT_TEMPLATES = {
                 "water_authority",
             ],
             "residential_commercial": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",
@@ -337,7 +318,6 @@ ATTACHMENT_TEMPLATES = {
                 "water_authority",
             ],
             "residential": [
-                "contract",
                 "deed",
                 "identity",
                 "land_survey",

@@ -279,7 +279,13 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         default = super().to_representation(instance)
 
         default["attachments_status"] = self.get_attachments_status(instance)
+        default.pop("s_payments", None)
+        default.pop("required_attachments", None)
         # print(default["attachments_status"])
+        # print(instance.id, instance.project_name, end=" ")
+        # instance.required_attachments = ATTACHMENT_TEMPLATES["design"][instance.project_type][instance.use_type]
+        # instance.save()
+        # print("Done!")
 
         return default
 
