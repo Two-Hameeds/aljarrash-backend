@@ -149,8 +149,8 @@ class ReceptionProjectSerializer(serializers.ModelSerializer):
 class DesignProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
-    attachments_count = serializers.IntegerField(read_only=True)
-    required_attachments_count = serializers.IntegerField(read_only=True)
+    # attachments_count = serializers.IntegerField(read_only=True)
+    # required_attachments_count = serializers.IntegerField(read_only=True)
 
     def get_filtered_fields(self, default):
         user = self.context["request"].user
@@ -266,6 +266,8 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         primary_status = len(required_primary) == len(primary)
         secondary_status = len(required_secondary) == len(secondary)
         final_status = len(required_final) == len(final)
+        if obj.required_attachments == []:
+            return -1
         if primary_status and secondary_status and final_status:
             return 3
         elif primary_status and secondary_status:
@@ -281,12 +283,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         default["attachments_status"] = self.get_attachments_status(instance)
         default.pop("s_payments", None)
         default.pop("required_attachments", None)
-        # print(default["attachments_status"])
-        # print(instance.id, instance.project_name, end=" ")
-        # instance.required_attachments = ATTACHMENT_TEMPLATES["design"][instance.project_type][instance.use_type]
-        # instance.save()
-        # print("Done!")
-
+        
         return default
 
     def get_s_paid(self, obj):
@@ -355,7 +352,10 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         attach_status = 0
 
         try:
-            attach_status = int(attach_count / len(instance.required_attachments) * 3)
+            if(instance.required_attachments == []):
+                attach_status = -1
+            else:
+                attach_status = int(attach_count / len(instance.required_attachments) * 3)
         except:
             pass
 
@@ -366,9 +366,8 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
 
         default["attachments_status"] = self.attachments_status(instance)
 
-        # default.pop("required_attachments")
-        if self.context:  # and self.context["request"].user.is_superuser:
-            default.pop("s_payments")
+        default.pop("required_attachments", None)
+        default.pop("s_payments", None)
 
         return default
 
@@ -409,6 +408,37 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
     def get_s_paid(self, obj):
         return obj.s_paid()
 
+    def attachments_status(self, instance):
+        attach_count = (
+            Attachment.objects.filter(
+                uploaded_for=instance.global_id, type__in=instance.required_attachments
+            )
+            .distinct("type")
+            .count()
+        )
+
+        attach_status = 0
+
+        try:
+            if(instance.required_attachments == []):
+                attach_status = -1
+            else:
+                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+        except:
+            pass
+
+        return attach_status
+
+    def to_representation(self, instance):
+        default = super().to_representation(instance)
+
+        default["attachments_status"] = self.attachments_status(instance)
+
+        default.pop("required_attachments", None)
+        default.pop("s_payments", None)
+
+        return default
+
     class Meta:
         model = LandSurveyProject
         fields = "__all__"
@@ -443,6 +473,37 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     def get_s_paid(self, obj):
         return obj.s_paid()
 
+    def attachments_status(self, instance):
+        attach_count = (
+            Attachment.objects.filter(
+                uploaded_for=instance.global_id, type__in=instance.required_attachments
+            )
+            .distinct("type")
+            .count()
+        )
+
+        attach_status = 0
+
+        try:
+            if(instance.required_attachments == []):
+                attach_status = -1
+            else:
+                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+        except:
+            pass
+
+        return attach_status
+
+    def to_representation(self, instance):
+        default = super().to_representation(instance)
+
+        default["attachments_status"] = self.attachments_status(instance)
+
+        default.pop("required_attachments", None)
+        default.pop("s_payments", None)
+
+        return default
+    
     class Meta:
         model = SortingDeedsProject
         fields = "__all__"
@@ -482,6 +543,37 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
     def get_s_paid(self, obj):
         return obj.s_paid()
 
+    def attachments_status(self, instance):
+        attach_count = (
+            Attachment.objects.filter(
+                uploaded_for=instance.global_id, type__in=instance.required_attachments
+            )
+            .distinct("type")
+            .count()
+        )
+
+        attach_status = 0
+
+        try:
+            if(instance.required_attachments == []):
+                attach_status = -1
+            else:
+                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+        except:
+            pass
+
+        return attach_status
+
+    def to_representation(self, instance):
+        default = super().to_representation(instance)
+
+        default["attachments_status"] = self.attachments_status(instance)
+
+        default.pop("required_attachments", None)
+        default.pop("s_payments", None)
+
+        return default
+    
     class Meta:
         model = QatariOfficeProject
         fields = "__all__"

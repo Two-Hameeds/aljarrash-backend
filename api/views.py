@@ -84,12 +84,12 @@ class DesignProjectsViewSet(ModelViewSet):
 
     queryset = DesignProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
-        attachments_count=Count(
-            "global_id__attachments__type",
-            filter=~Q(global_id__attachments__type="other"),
-            distinct=True,
-        ),
-        required_attachments_count=JsonbArrayLength("required_attachments"),
+        # attachments_count=Count(
+        #     "global_id__attachments__type",
+        #     filter=~Q(global_id__attachments__type="other"),
+        #     distinct=True,
+        # ),
+        # required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = DesignProjectSerializer
 

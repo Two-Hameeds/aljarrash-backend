@@ -22,6 +22,7 @@ class Status(models.TextChoices):
     Hold = "Hold"
     Not_required = "Not required"
     Ready = "ready"
+    Post_Tension = "Post Tension"
     No = "no"
 
 
