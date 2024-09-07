@@ -27,3 +27,9 @@ Traceback (most recent call last):
     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
 TypeError: list indices must be integers or slices, not str
 "GET /api/design/271/attachments/ HTTP/1.1" 500 112424
+You're accessing the development server over HTTPS, but it only supports HTTP.
+You're accessing the development server over HTTPS, but it only supports HTTP.
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 2453
+Not Found: /admin/log-view/
+"GET /admin/log-view/ HTTP/1.1" 404 6161

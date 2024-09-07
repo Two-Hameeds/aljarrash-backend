@@ -14,7 +14,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
-# "django-insecure-1#+oydk16!*stgh2h@89k-cjkk0u)0e#)-%+*j$6i3qe=vdtc7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -112,11 +111,6 @@ CHANNEL_LAYERS = {
     }
 }
 
-# DB_NAME = 'db'
-# DB_HOST = 'app-91f8f4e8-ca94-4de0-b669-aa183dba8756-do-user-17044419-0.b.db.ondigitalocean.com'
-# DB_PORT = '25060'
-# DB_USER = 'db'
-# DB_PASSWORD = 'AVNS_r_YqP2naO58Dd_v5bgu'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
