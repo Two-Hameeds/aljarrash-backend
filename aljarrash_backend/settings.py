@@ -13,9 +13,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "django-insecure-1#+oydk16!*stgh2h@89k-cjkk0u)0e#)-%+*j$6i3qe=vdtc7"
-)
+SECRET_KEY = os.getenv("SECRET_KEY")
+# "django-insecure-1#+oydk16!*stgh2h@89k-cjkk0u)0e#)-%+*j$6i3qe=vdtc7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -113,18 +112,35 @@ CHANNEL_LAYERS = {
     }
 }
 
-
+# DB_NAME = 'db'
+# DB_HOST = 'app-91f8f4e8-ca94-4de0-b669-aa183dba8756-do-user-17044419-0.b.db.ondigitalocean.com'
+# DB_PORT = '25060'
+# DB_USER = 'db'
+# DB_PASSWORD = 'AVNS_r_YqP2naO58Dd_v5bgu'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "db",
-        "HOST": "app-91f8f4e8-ca94-4de0-b669-aa183dba8756-do-user-17044419-0.b.db.ondigitalocean.com",
-        "PORT": "25060",
-        "USER": "db",
-        "PASSWORD": "AVNS_r_YqP2naO58Dd_v5bgu",
+        "NAME": os.getenv("DB_NAME"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
         "SSLMODE": "require",
     }
 }
+
+print("DATABASES: ", DATABASES)
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "db",
+#         "HOST": "app-91f8f4e8-ca94-4de0-b669-aa183dba8756-do-user-17044419-0.b.db.ondigitalocean.com",
+#         "PORT": "25060",
+#         "USER": "db",
+#         "PASSWORD": "AVNS_r_YqP2naO58Dd_v5bgu",
+#         "SSLMODE": "require",
+#     }
+# }
 
 AUTH_USER_MODEL = "api.Employee"
 
@@ -197,11 +213,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 
-AWS_ACCESS_KEY_ID = "DO00HHK4GK2CLX8VE2Q9"
-AWS_SECRET_ACCESS_KEY = "F5PGI3p8lMqK4J0OQ3xZSMvppqSf1l3I+EFGEzeRRFw"
-AWS_STORAGE_BUCKET_NAME = "aljarrash"
-AWS_DEFAULT_ACL = "public-read"
-AWS_S3_ENDPOINT_URL = "https://sgp1.digitaloceanspaces.com"
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+AWS_DEFAULT_ACL = os.getenv("AWS_DEFAULT_ACL")
+AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 # static settings
 AWS_LOCATION = "static"
