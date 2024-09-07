@@ -252,7 +252,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "file": {
-            "level": "WARNING",
+            "level": "DEBUG",
             "class": "logging.FileHandler",
             "filename": "debuggers/debug.log",
         },
