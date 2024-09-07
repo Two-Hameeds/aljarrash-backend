@@ -233,6 +233,9 @@ class BaladyProject(models.Model):
     request_types = models.JSONField(
         max_length=100, null=False, blank=False, default=list
     )
+    
+    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="balady_supervisor", null=True, blank=True)
+
     request_review = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
@@ -286,6 +289,10 @@ class LandSurveyProject(models.Model):
         null=False,
         blank=False,
     )
+    
+    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="land_survey_supervisor", null=True, blank=True)
+
+    
     location_visit = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
@@ -334,6 +341,9 @@ class SortingDeedsProject(models.Model):
         null=False,
         blank=False,
     )
+    
+    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="sorting_deeds_supervisor", null=True, blank=True)
+
     case_study = models.CharField(max_length=100, null=True, blank=True)
     spatial_inspection = models.CharField(max_length=100, null=True, blank=True)
     transaction_upload = models.CharField(max_length=100, null=True, blank=True)
@@ -380,6 +390,9 @@ class QatariOfficeProject(models.Model):
         null=False,
         blank=False,
     )
+    
+    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="qatari_supervisor", null=True, blank=True)
+
     location_visit = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
