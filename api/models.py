@@ -480,7 +480,6 @@ class PathAndRename:
 
 
 class Attachment(models.Model):
-    title = models.CharField(max_length=100, null=True, blank=True)
     type = models.CharField(
         max_length=100, choices=AttachmentTypes.choices, null=False, blank=False
     )
@@ -496,6 +495,7 @@ class Attachment(models.Model):
         blank=True,
     )
     uploaded_at = models.DateTimeField(null=True, blank=True)
+    note = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         if self.title == None:

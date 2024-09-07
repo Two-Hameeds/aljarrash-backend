@@ -594,7 +594,6 @@ class CopyProjectsView(APIView):
             return Response({"message": "ids and stage are required"}, status=400)
 
         try:
-            print(model_class.objects.filter(id__in=ids))
             return Response({"result": "Copied successfully"}, status=201)
 
         except Exception as e:
