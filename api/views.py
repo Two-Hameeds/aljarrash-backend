@@ -8,6 +8,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 
 import os
+
 # from django.db.models.functions import JSONObject
 
 from .models import (
@@ -303,34 +304,39 @@ class QatariOfficeProjectsViewSet(ModelViewSet):
 
 # Projects Related Views
 class ResetPasswordView(GenericAPIView):
-    permission_classes = [AllowAny, ]
+    permission_classes = [
+        AllowAny,
+    ]
     serializer_class = ResetPasswordRequestSerializer
-    
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        email = request.data['email']
+        email = request.data["email"]
         employee = Employee.objects.filter(email=email).first()
-        
+
         if employee:
             token_generator = PasswordResetTokenGenerator()
             token = token_generator.make_token(employee)
             reset = PasswordReset(email=email, token=token)
             reset.save()
-            
+
             reset_url = f"{os.environ.get('FRONTEND_URL')}/reset-password/{token}"
-            
+
             send_mail(
                 "Password Reset",
                 f"You can reset your password here: {reset_url}",
-                'aljarrashc@gmail.com',
+                "aljarrashc@gmail.com",
                 [email],
                 fail_silently=False,
             )
-            
-            return Response({"sucess": "We have sent you an email. Please check your inbox."}, status=200)
+
+            return Response(
+                {"sucess": "We have sent you an email. Please check your inbox."},
+                status=200,
+            )
         else:
             return Response({"error": "Employee not found"}, status=400)
-    
+
 
 class MoveProjectsViewSet(APIView):
     permission_classes = (IsAuthenticated,)
@@ -433,10 +439,19 @@ class RequiredAttachmentsViewSet(GenericAPIView):
 
         for attachment in attachments_list:
             if attachment.type not in attachments:
-                attachments[attachment.type] = []
-            attachments[attachment.type].insert(
-                0, (f"{attachment.id}_{attachment.attachment.url}")
-            )
+                if attachment.type == "other":
+                    attachments[attachment.type] = {"links": [], "notes": []}
+                else:
+                    attachments[attachment.type] = []
+            if attachment.type == "other":
+                attachments["other"]["links"].insert(
+                    0, (f"{attachment.id}_{attachment.attachment.url}")
+                )
+                attachments["other"]["notes"].insert(0,attachment.note)
+            else:
+                attachments[attachment.type].insert(
+                    0, (f"{attachment.id}_{attachment.attachment.url}")
+                )
 
         return Response(
             {
@@ -588,7 +603,6 @@ class CopyProjectsView(APIView):
         model_class = ATTACHMENT_TEMPLATES[project_category]["model"]
         ids = request.data.get("ids")
         stage = request.data.get("stage")
-        
 
         if not ids or not stage:
             return Response({"message": "ids and stage are required"}, status=400)
