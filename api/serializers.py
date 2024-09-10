@@ -15,6 +15,8 @@ from .models import (
     GlobalID,
     Payment,
     ReceptionProject,
+    SupervisionProject,
+    
 )
 from django.utils import timezone
 from .templates import ATTACHMENT_TEMPLATES
@@ -578,6 +580,11 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
         model = QatariOfficeProject
         fields = "__all__"
 
+
+class SupervisionProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SupervisionProject
+        fields = "__all__"
 
 # Projects Related Serializers
 class CopyProjectsSerializer(serializers.Serializer):

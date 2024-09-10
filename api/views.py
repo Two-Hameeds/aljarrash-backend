@@ -25,6 +25,7 @@ from .models import (
     QatariOfficeProject,
     ReceptionProject,
     PasswordReset,
+    SupervisionProject,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -47,6 +48,7 @@ from .serializers import (
     ProjectNameCheckSerializer,
     ReceptionProjectSerializer,
     ResetPasswordRequestSerializer,
+    SupervisionProjectSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -301,6 +303,13 @@ class QatariOfficeProjectsViewSet(ModelViewSet):
     ]
     filterset_fields = ["stage"]
 
+
+class SupervisionProjectsViewSet(ModelViewSet):
+    queryset = SupervisionProject.objects.all()
+    serializer_class = SupervisionProjectSerializer
+    
+    filter_Backends = [DjangoFilterBackend]
+    filterset_fields = ["stage"]
 
 # Projects Related Views
 class ResetPasswordView(GenericAPIView):

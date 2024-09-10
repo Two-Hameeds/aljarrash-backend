@@ -165,9 +165,21 @@ class SortingDeedsStages(models.TextChoices):
     completed_housing_sorting = "completed_housing_sorting"
     deleted_projects = "deleted_projects"
 
-class QataryStages(models.TextChoices):
+class QatariStages(models.TextChoices):
     main = "main"
     land_report = "land_report"
     completed_land_survey = "completed_land_survey"
     informal_transactions = "informal_transactions"
     deleted_projects = "deleted_projects"
+    
+
+class SupervisionStages(models.TextChoices):
+    main = 'main'
+    visit_supervision = 'visit_supervision'
+    completed_projects = 'completed_projects'
+    
+class SupervisionTypes(models.TextChoices):
+    indoor_contract = "indoor_contract"
+    outdoor_contract = "outdoor_contract"
+    indoor_visits = "indoor_visits"
+    outdoor_visits = "outdoor_visits"

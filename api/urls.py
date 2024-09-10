@@ -28,6 +28,7 @@ from .views import (
     DeletedProjectsView,
     ReceptionProjectsViewSet,
     ResetPasswordView,
+    SupervisionProjectsViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -49,6 +50,7 @@ router.register("attachments", AttachmentsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
 router.register("groups", GroupsViewSet)
 router.register("reception", ReceptionProjectsViewSet)
+router.register("supervision", SupervisionProjectsViewSet)
 # router.register("payments", PaymentsViewSet)
 
 urlpatterns = [

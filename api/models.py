@@ -12,7 +12,9 @@ from .choices import (
     BaladyStages,
     LandSurveyStages,
     SortingDeedsStages,
-    QataryStages,
+    QatariStages,
+    SupervisionStages,
+    SupervisionTypes,
 )
 
 
@@ -252,6 +254,8 @@ class BaladyProject(models.Model):
     municipality_visits = models.JSONField(null=True, blank=True, default=list)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    record_number = models.CharField(max_length=100, null=True, blank=True)
 
     # attachments
     required_attachments = models.JSONField(null=True, blank=True, default=list)
@@ -297,7 +301,7 @@ class LandSurveyProject(models.Model):
         max_length=100, choices=Status.choices, null=True, blank=True
     )
     location_visit_date = models.DateField(null=True, blank=True)
-    record_number = models.IntegerField(null=True, blank=True)
+    record_number = models.CharField(null=True, blank=True)
     transaction_review = models.CharField(max_length=255, null=True, blank=True)
     record_purpose = models.CharField(max_length=255, null=True, blank=True)
     payment_status = models.CharField(
@@ -379,7 +383,7 @@ class QatariOfficeProject(models.Model):
     )
 
     stage = models.CharField(
-        max_length=100, choices=QataryStages.choices, null=False, blank=False
+        max_length=100, choices=QatariStages.choices, null=False, blank=False
     )
     project_name = models.CharField(max_length=100, null=False, blank=False)
     client_phone = models.ForeignKey(
@@ -430,6 +434,42 @@ class QatariOfficeProject(models.Model):
 
     class Meta:
         ordering = ["moved_at"]
+
+class SupervisionProject(models.Model):
+    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
+    
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey("Client", on_delete=models.CASCADE, related_name="provision_projects", null=False, blank=False)
+
+    stage = models.CharField(max_length=100, choices=SupervisionStages.choices, null=False, blank=False)
+    
+    use_type = models.CharField(max_length=100, choices=UseTypes.choices, null=True, blank=True)
+    supervision_type = models.CharField(max_length=100, choices=SupervisionTypes.choices, null=True, blank=True)
+    contract_date = models.DateField(null=True, blank=True)
+    land_number = models.CharField(max_length=100, null=True, blank=True)
+    plan_number = models.CharField(max_length=100, null=True, blank=True)
+    project_location = models.CharField(max_length=100, null=True, blank=True)
+    floors_number = models.SmallIntegerField(null=True, blank=True)
+    visits = models.JSONField(null=True, blank=True, default=list)
+    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="provision_supervisor", null=True, blank=True)
+    investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
+    
+    moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # sensitive data
+    s_project_value = models.FloatField(null=True, blank=True)
+    s_payments = models.JSONField(default=list)
+
+    def s_paid(self):
+        paid = sum(float(payment["amount"]) for payment in self.s_payments)
+        if self.s_project_value:
+            return f"{int(paid / float(self.s_project_value) * 100)}%"
+        return "0%"
+
+    objects = ProjectManager()
+
+    class Meta:
+        ordering = ["-moved_at"]
 
 
 # Projects Related Models
@@ -550,4 +590,7 @@ class GlobalID(models.Model):
         null=True,
         blank=True,
         unique=True,
+    )
+    provision = models.OneToOneField(
+        SupervisionProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True
     )
