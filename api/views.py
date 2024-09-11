@@ -22,7 +22,7 @@ from .models import (
     LandSurveyProject,
     SortingDeedsProject,
     GlobalID,
-    QatariOfficeProject,
+    QatariProject,
     ReceptionProject,
     PasswordReset,
     SupervisionProject,
@@ -44,7 +44,7 @@ from .serializers import (
     GroupSerializer,
     RequestSubmissionSerializer,
     MunicipalityVisitSerializer,
-    QatariOfficeProjectSerializer,
+    QatariProjectSerializer,
     ProjectNameCheckSerializer,
     ReceptionProjectSerializer,
     ResetPasswordRequestSerializer,
@@ -267,16 +267,16 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     filterset_fields = ["stage"]
 
 
-class QatariOfficeProjectsViewSet(ModelViewSet):
+class QatariProjectsViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     # TODO: check if the attachments types are included in the required_attachments
-    queryset = QatariOfficeProject.objects.annotate(
+    queryset = QatariProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
         required_attachments_count=JsonbArrayLength("required_attachments"),
     )
-    serializer_class = QatariOfficeProjectSerializer
+    serializer_class = QatariProjectSerializer
 
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -403,14 +403,28 @@ class ProjectNameCheckViewSet(GenericAPIView):
     serializer_class = ProjectNameCheckSerializer
 
     def get(self, request, project_category):
-        data = request.query_params
-        response = (
-            ATTACHMENT_TEMPLATES[project_category]["model"]
-            .objects.filter(project_name=data["project_name"])
-            .exists()
-        )
+        project_name = request.query_params["project_name"]
+        if(ReceptionProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "reception"}, status=200)
+        elif(DesignProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "design"}, status=200)
+        elif(BaladyProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "balady"}, status=200)
+        elif(LandSurveyProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "land_survey"}, status=200)
+        elif(SortingDeedsProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "sorting_deeds"}, status=200)
+        elif(QatariProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "qatari"}, status=200)
+        elif(SupervisionProject.objects.filter(project_name=project_name).exists()):
+            return Response({"available": False, "category": "supervision"}, status=200)
+        # response = (
+        #     ATTACHMENT_TEMPLATES[project_category]["model"]
+        #     .objects.filter(project_name=data["project_name"])
+        #     .exists()
+        # )
 
-        return Response({"available": not response}, status=200)
+        return Response({"available": True}, status=200)
 
 
 # class HistoryViewSet(APIView):
@@ -668,7 +682,7 @@ class DeletedProjectsView(APIView):
             .annotate(category=Value("sorting_deeds"))
         )
         qatari_projects = (
-            QatariOfficeProject.objects.filter(stage="deleted_projects")
+            QatariProject.objects.filter(stage="deleted_projects")
             .values("id", "global_id", "client_phone", "project_name")
             .annotate(category=Value("qatari"))
         )

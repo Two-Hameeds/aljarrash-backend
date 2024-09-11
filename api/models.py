@@ -377,7 +377,7 @@ class SortingDeedsProject(models.Model):
         ordering = ["moved_at"]
 
 
-class QatariOfficeProject(models.Model):
+class QatariProject(models.Model):
     global_id = models.ForeignKey(
         "GlobalID", on_delete=models.CASCADE, null=True, blank=True
     )
@@ -585,7 +585,7 @@ class GlobalID(models.Model):
         LandSurveyProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True
     )
     qatari = models.OneToOneField(
-        QatariOfficeProject,
+        QatariProject,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

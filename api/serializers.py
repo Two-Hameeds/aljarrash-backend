@@ -11,7 +11,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
-    QatariOfficeProject,
+    QatariProject,
     GlobalID,
     Payment,
     ReceptionProject,
@@ -511,7 +511,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class QatariOfficeProjectSerializer(serializers.ModelSerializer):
+class QatariProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
@@ -577,7 +577,7 @@ class QatariOfficeProjectSerializer(serializers.ModelSerializer):
         return default
     
     class Meta:
-        model = QatariOfficeProject
+        model = QatariProject
         fields = "__all__"
 
 

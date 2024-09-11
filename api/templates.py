@@ -4,7 +4,7 @@ from .models import (
     BaladyProject,
     LandSurveyProject,
     SortingDeedsProject,
-    QatariOfficeProject,
+    QatariProject,
     SupervisionProject,
 )
 
@@ -656,7 +656,7 @@ ATTACHMENT_TEMPLATES = {
                 "plan",
             ],
         },
-        "model": QatariOfficeProject,
+        "model": QatariProject,
     },
     "supervision": {
         "required": [
