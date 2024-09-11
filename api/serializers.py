@@ -582,6 +582,17 @@ class QatariProjectSerializer(serializers.ModelSerializer):
 
 
 class SupervisionProjectSerializer(serializers.ModelSerializer):
+    def get_fields(self):
+        default = super().get_fields()
+        if not self.context:
+            return default
+        if (
+            str(self.context["request"].method) == "POST"
+            and self.context["request"].data
+        ):
+            Client.objects.get_or_create(
+                phone=self.context["request"].data["client_phone"]
+            )
     
     def create(self, validated_data):
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["supervision"][

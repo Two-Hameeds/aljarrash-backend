@@ -235,8 +235,14 @@ class BaladyProject(models.Model):
     request_types = models.JSONField(
         max_length=100, null=False, blank=False, default=list
     )
-    
-    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="balady_supervisor", null=True, blank=True)
+
+    supervisor = models.ForeignKey(
+        "Employee",
+        on_delete=models.PROTECT,
+        related_name="balady_supervisor",
+        null=True,
+        blank=True,
+    )
 
     request_review = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
@@ -254,7 +260,7 @@ class BaladyProject(models.Model):
     municipality_visits = models.JSONField(null=True, blank=True, default=list)
 
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     record_number = models.CharField(max_length=100, null=True, blank=True)
 
     # attachments
@@ -293,10 +299,15 @@ class LandSurveyProject(models.Model):
         null=False,
         blank=False,
     )
-    
-    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="land_survey_supervisor", null=True, blank=True)
 
-    
+    supervisor = models.ForeignKey(
+        "Employee",
+        on_delete=models.PROTECT,
+        related_name="land_survey_supervisor",
+        null=True,
+        blank=True,
+    )
+
     location_visit = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
     )
@@ -345,8 +356,14 @@ class SortingDeedsProject(models.Model):
         null=False,
         blank=False,
     )
-    
-    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="sorting_deeds_supervisor", null=True, blank=True)
+
+    supervisor = models.ForeignKey(
+        "Employee",
+        on_delete=models.PROTECT,
+        related_name="sorting_deeds_supervisor",
+        null=True,
+        blank=True,
+    )
 
     case_study = models.CharField(max_length=100, null=True, blank=True)
     spatial_inspection = models.CharField(max_length=100, null=True, blank=True)
@@ -394,8 +411,14 @@ class QatariProject(models.Model):
         null=False,
         blank=False,
     )
-    
-    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="qatari_supervisor", null=True, blank=True)
+
+    supervisor = models.ForeignKey(
+        "Employee",
+        on_delete=models.PROTECT,
+        related_name="qatari_supervisor",
+        null=True,
+        blank=True,
+    )
 
     location_visit = models.CharField(
         max_length=100, choices=Status.choices, null=True, blank=True
@@ -435,29 +458,50 @@ class QatariProject(models.Model):
     class Meta:
         ordering = ["moved_at"]
 
-class SupervisionProject(models.Model):
-    global_id = models.ForeignKey("GlobalID", on_delete=models.CASCADE, null=True, blank=True)
-    
-    project_name = models.CharField(max_length=100, null=False, blank=False)
-    client_phone = models.ForeignKey("Client", on_delete=models.CASCADE, related_name="provision_projects", null=False, blank=False)
 
-    stage = models.CharField(max_length=100, choices=SupervisionStages.choices, null=False, blank=False)
-    
-    use_type = models.CharField(max_length=100, choices=UseTypes.choices, null=True, blank=True)
-    supervision_type = models.CharField(max_length=100, choices=SupervisionTypes.choices, null=True, blank=True)
+class SupervisionProject(models.Model):
+    global_id = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    project_name = models.CharField(max_length=100, null=False, blank=False)
+    client_phone = models.ForeignKey(
+        "Client",
+        on_delete=models.CASCADE,
+        related_name="provision_projects",
+        null=False,
+        blank=False,
+    )
+
+    stage = models.CharField(
+        max_length=100, choices=SupervisionStages.choices, null=False, blank=False
+    )
+
+    use_type = models.CharField(
+        max_length=100, choices=UseTypes.choices, null=True, blank=True
+    )
+    supervision_type = models.CharField(
+        max_length=100, choices=SupervisionTypes.choices, null=True, blank=True
+    )
     contract_date = models.DateField(null=True, blank=True)
     land_number = models.CharField(max_length=100, null=True, blank=True)
     plan_number = models.CharField(max_length=100, null=True, blank=True)
     project_location = models.CharField(max_length=100, null=True, blank=True)
     floors_number = models.SmallIntegerField(null=True, blank=True)
     visits = models.JSONField(null=True, blank=True, default=list)
-    supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="provision_supervisor", null=True, blank=True)
+    supervisor = models.ForeignKey(
+        "Employee",
+        on_delete=models.PROTECT,
+        related_name="provision_supervisor",
+        null=True,
+        blank=True,
+    )
     investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
-    
+
     required_attachments = models.JSONField(null=True, blank=True, default=list)
-    
+
     moved_at = models.DateTimeField(auto_now_add=True)
-    
+
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
     s_payments = models.JSONField(default=list)
@@ -593,6 +637,10 @@ class GlobalID(models.Model):
         blank=True,
         unique=True,
     )
-    provision = models.OneToOneField(
-        SupervisionProject, on_delete=models.SET_NULL, null=True, blank=True, unique=True
+    supervision = models.OneToOneField(
+        SupervisionProject,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        unique=True,
     )
