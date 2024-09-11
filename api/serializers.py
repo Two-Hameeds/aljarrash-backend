@@ -582,6 +582,52 @@ class QatariProjectSerializer(serializers.ModelSerializer):
 
 
 class SupervisionProjectSerializer(serializers.ModelSerializer):
+    
+    def create(self, validated_data):
+        validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["supervision"][
+            "required"
+        ]
+        result = super().create(validated_data)
+        if validated_data.get("global_id") == None:
+            global_id, created = GlobalID.objects.get_or_create(supervision=result)
+            result.global_id = global_id
+            result.save()
+
+        return result
+    
+    
+    def attachments_status(self, instance):
+        attach_count = (
+            Attachment.objects.filter(
+                uploaded_for=instance.global_id, type__in=instance.required_attachments
+            )
+            .distinct("type")
+            .count()
+        )
+
+        attach_status = 0
+
+        try:
+            if(instance.required_attachments == []):
+                attach_status = -1
+            else:
+                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+        except:
+            pass
+
+        return attach_status
+    
+    def to_representation(self, instance):
+        default = super().to_representation(instance)
+
+        default["attachments_status"] = self.attachments_status(instance)
+
+        default.pop("required_attachments", None)
+        default.pop("s_payments", None)
+
+        return default
+    
+    
     class Meta:
         model = SupervisionProject
         fields = "__all__"
