@@ -454,6 +454,8 @@ class SupervisionProject(models.Model):
     supervisor = models.ForeignKey("Employee", on_delete=models.PROTECT, related_name="provision_supervisor", null=True, blank=True)
     investor_affiliation = models.CharField(max_length=100, null=True, blank=True)
     
+    required_attachments = models.JSONField(null=True, blank=True, default=list)
+    
     moved_at = models.DateTimeField(auto_now_add=True)
     
     # sensitive data
