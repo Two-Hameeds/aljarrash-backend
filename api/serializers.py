@@ -16,7 +16,7 @@ from .models import (
     Payment,
     ReceptionProject,
     SupervisionProject,
-    
+    Visit,
 )
 from django.utils import timezone
 from .templates import ATTACHMENT_TEMPLATES
@@ -285,7 +285,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         default["attachments_status"] = self.get_attachments_status(instance)
         default.pop("s_payments", None)
         default.pop("required_attachments", None)
-        
+
         return default
 
     def get_s_paid(self, obj):
@@ -354,10 +354,12 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         attach_status = 0
 
         try:
-            if(instance.required_attachments == []):
+            if instance.required_attachments == []:
                 attach_status = -1
             else:
-                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+                attach_status = int(
+                    attach_count / len(instance.required_attachments) * 3
+                )
         except:
             pass
 
@@ -422,10 +424,12 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
         attach_status = 0
 
         try:
-            if(instance.required_attachments == []):
+            if instance.required_attachments == []:
                 attach_status = -1
             else:
-                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+                attach_status = int(
+                    attach_count / len(instance.required_attachments) * 3
+                )
         except:
             pass
 
@@ -487,10 +491,12 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         attach_status = 0
 
         try:
-            if(instance.required_attachments == []):
+            if instance.required_attachments == []:
                 attach_status = -1
             else:
-                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+                attach_status = int(
+                    attach_count / len(instance.required_attachments) * 3
+                )
         except:
             pass
 
@@ -505,7 +511,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
         default.pop("s_payments", None)
 
         return default
-    
+
     class Meta:
         model = SortingDeedsProject
         fields = "__all__"
@@ -557,10 +563,12 @@ class QatariProjectSerializer(serializers.ModelSerializer):
         attach_status = 0
 
         try:
-            if(instance.required_attachments == []):
+            if instance.required_attachments == []:
                 attach_status = -1
             else:
-                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+                attach_status = int(
+                    attach_count / len(instance.required_attachments) * 3
+                )
         except:
             pass
 
@@ -575,7 +583,7 @@ class QatariProjectSerializer(serializers.ModelSerializer):
         default.pop("s_payments", None)
 
         return default
-    
+
     class Meta:
         model = QatariProject
         fields = "__all__"
@@ -593,9 +601,9 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
             Client.objects.get_or_create(
                 phone=self.context["request"].data["client_phone"]
             )
-            
+
         return default
-    
+
     def create(self, validated_data):
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["supervision"][
             "required"
@@ -607,8 +615,7 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
             result.save()
 
         return result
-    
-    
+
     def attachments_status(self, instance):
         attach_count = (
             Attachment.objects.filter(
@@ -621,15 +628,17 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
         attach_status = 0
 
         try:
-            if(instance.required_attachments == []):
+            if instance.required_attachments == []:
                 attach_status = -1
             else:
-                attach_status = int(attach_count / len(instance.required_attachments) * 3)
+                attach_status = int(
+                    attach_count / len(instance.required_attachments) * 3
+                )
         except:
             pass
 
         return attach_status
-    
+
     def to_representation(self, instance):
         default = super().to_representation(instance)
 
@@ -639,19 +648,35 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
         default.pop("s_payments", None)
 
         return default
-    
-    
+
     class Meta:
         model = SupervisionProject
         fields = "__all__"
 
+
 # Projects Related Serializers
+class VisitSerializer(serializers.ModelSerializer):
+    employee = serializers.CharField(read_only=True)
+    def create(self, validated_data):
+
+        validated_data["employee"] = self.context["request"].user
+        
+        return super().create(validated_data)
+    
+    
+    class Meta:
+        model = Visit
+        fields = "__all__"
+
+
 class CopyProjectsSerializer(serializers.Serializer):
     ids = serializers.ListField()
     stage = serializers.CharField()
 
+
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
 
 class ProjectNameCheckSerializer(serializers.Serializer):
     project_name = serializers.CharField()

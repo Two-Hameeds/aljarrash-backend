@@ -17,7 +17,7 @@ from .choices import (
     SupervisionTypes,
 )
 
-
+# TODO: rename to projectModelManager
 # Models Managers
 class ProjectManager(models.Manager):
     def get_queryset(self):
@@ -519,6 +519,16 @@ class SupervisionProject(models.Model):
 
 
 # Projects Related Models
+class Visit(models.Model):
+    employee = models.ForeignKey("Employee", on_delete=models.CASCADE, related_name="visits")
+    date = models.DateField()
+    visit_purpose = models.CharField(max_length=100, null=True, blank=True)
+    note = models.CharField(max_length=300, null=True, blank=True)
+    attachment = models.FileField(upload_to="visits_attachments/", null=True, blank=True)
+    visited_for = models.ForeignKey("GlobalID", on_delete=models.CASCADE, related_name="visits")
+    
+    
+
 class PasswordReset(models.Model):
     email = models.EmailField()
     token = models.CharField(max_length=100)

@@ -26,6 +26,7 @@ from .models import (
     ReceptionProject,
     PasswordReset,
     SupervisionProject,
+    Visit,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -49,6 +50,7 @@ from .serializers import (
     ReceptionProjectSerializer,
     ResetPasswordRequestSerializer,
     SupervisionProjectSerializer,
+    VisitSerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -312,6 +314,18 @@ class SupervisionProjectsViewSet(ModelViewSet):
     filterset_fields = ["stage"]
 
 # Projects Related Views
+class VisitsViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    queryset = Visit.objects.all()
+    serializer_class = VisitSerializer
+    
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+    
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["visited_for"]
+    
+    
 class ResetPasswordView(GenericAPIView):
     permission_classes = [
         AllowAny,
