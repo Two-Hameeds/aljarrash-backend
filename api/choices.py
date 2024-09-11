@@ -176,7 +176,7 @@ class QatariStages(models.TextChoices):
 class SupervisionStages(models.TextChoices):
     main = 'main'
     visit_supervision = 'visit_supervision'
-    completed_projects = 'completed_projects'
+    completed_supervision = 'completed_supervision'
     
 class SupervisionTypes(models.TextChoices):
     indoor_contract = "indoor_contract"

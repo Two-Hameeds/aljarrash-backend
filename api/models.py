@@ -469,7 +469,7 @@ class SupervisionProject(models.Model):
     objects = ProjectManager()
 
     class Meta:
-        ordering = ["-moved_at"]
+        ordering = ["moved_at"]
 
 
 # Projects Related Models

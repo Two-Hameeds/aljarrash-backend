@@ -33,3 +33,5 @@ Not Found: /favicon.ico
 "GET /favicon.ico HTTP/1.1" 404 2453
 Not Found: /admin/log-view/
 "GET /admin/log-view/ HTTP/1.1" 404 6161
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 2338
