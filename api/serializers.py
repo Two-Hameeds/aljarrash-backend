@@ -593,6 +593,8 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
             Client.objects.get_or_create(
                 phone=self.context["request"].data["client_phone"]
             )
+            
+        return default
     
     def create(self, validated_data):
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["supervision"][
