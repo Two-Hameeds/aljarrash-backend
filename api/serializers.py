@@ -657,13 +657,13 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
 # Projects Related Serializers
 class VisitSerializer(serializers.ModelSerializer):
     employee = serializers.CharField(read_only=True)
+
     def create(self, validated_data):
 
         validated_data["employee"] = self.context["request"].user
-        
+
         return super().create(validated_data)
-    
-    
+
     class Meta:
         model = Visit
         fields = "__all__"

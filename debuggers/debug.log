@@ -347,3 +347,9 @@ django.db.utils.IntegrityError: null value in column "employee_id" of relation "
 DETAIL:  Failing row contains (2, 2024-01-02, null, null, , null, 1).
 
 "POST /api/visits/ HTTP/1.1" 500 210724
+Unauthorized: /api/visits/
+"GET /api/visits/ HTTP/1.1" 401 58
+Unauthorized: /api/visits/
+"GET /api/visits/ HTTP/1.1" 401 58
+Unauthorized: /api/visits/
+"GET /api/visits/ HTTP/1.1" 401 58

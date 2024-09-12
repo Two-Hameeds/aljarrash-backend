@@ -78,14 +78,12 @@ class JsonbArrayLength(Func):
 
 # Projects Views
 class ReceptionProjectsViewSet(ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
 
     queryset = ReceptionProject.objects.all()
     serializer_class = ReceptionProjectSerializer
 
 
 class DesignProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = DesignProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
@@ -138,7 +136,6 @@ class DesignProjectsViewSet(ModelViewSet):
 
 
 class BaladyProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     # TODO: check if the attachments types are included in the required_attachments
     queryset = BaladyProject.objects.annotate(
@@ -194,7 +191,6 @@ class BaladyProjectsViewSet(ModelViewSet):
 
 
 class LandSurveyProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     # TODO: check if the attachments types are included in the required_attachments
     queryset = LandSurveyProject.objects.annotate(
@@ -232,7 +228,6 @@ class LandSurveyProjectsViewSet(ModelViewSet):
 
 
 class SortingDeedsProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     # TODO: check if the attachments types are included in the required_attachments
     queryset = SortingDeedsProject.objects.annotate(
@@ -270,7 +265,6 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 
 
 class QatariProjectsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     # TODO: check if the attachments types are included in the required_attachments
     queryset = QatariProject.objects.annotate(
@@ -307,25 +301,26 @@ class QatariProjectsViewSet(ModelViewSet):
 
 
 class SupervisionProjectsViewSet(ModelViewSet):
+
     queryset = SupervisionProject.objects.all()
     serializer_class = SupervisionProjectSerializer
-    
+
     filter_Backends = [DjangoFilterBackend]
     filterset_fields = ["stage"]
 
+
 # Projects Related Views
 class VisitsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
-    
+
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
-    
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["visited_for"]
-    
-    
+
+
 class ResetPasswordView(GenericAPIView):
     permission_classes = [
         AllowAny,
@@ -362,7 +357,6 @@ class ResetPasswordView(GenericAPIView):
 
 
 class MoveProjectsViewSet(APIView):
-    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -400,7 +394,6 @@ class MoveProjectsViewSet(APIView):
 
 
 class TableViewsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = TableView.objects.all()
     serializer_class = TableViewSerializer
@@ -412,25 +405,26 @@ class TableViewsViewSet(ModelViewSet):
 
 
 class ProjectNameCheckViewSet(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
 
     serializer_class = ProjectNameCheckSerializer
 
     def get(self, request, project_category):
         project_name = request.query_params["project_name"]
-        if(ReceptionProject.objects.filter(project_name=project_name).exists()):
+        if ReceptionProject.objects.filter(project_name=project_name).exists():
             return Response({"available": False, "category": "reception"}, status=200)
-        elif(DesignProject.objects.filter(project_name=project_name).exists()):
+        elif DesignProject.objects.filter(project_name=project_name).exists():
             return Response({"available": False, "category": "design"}, status=200)
-        elif(BaladyProject.objects.filter(project_name=project_name).exists()):
+        elif BaladyProject.objects.filter(project_name=project_name).exists():
             return Response({"available": False, "category": "balady"}, status=200)
-        elif(LandSurveyProject.objects.filter(project_name=project_name).exists()):
+        elif LandSurveyProject.objects.filter(project_name=project_name).exists():
             return Response({"available": False, "category": "land_survey"}, status=200)
-        elif(SortingDeedsProject.objects.filter(project_name=project_name).exists()):
-            return Response({"available": False, "category": "sorting_deeds"}, status=200)
-        elif(QatariProject.objects.filter(project_name=project_name).exists()):
+        elif SortingDeedsProject.objects.filter(project_name=project_name).exists():
+            return Response(
+                {"available": False, "category": "sorting_deeds"}, status=200
+            )
+        elif QatariProject.objects.filter(project_name=project_name).exists():
             return Response({"available": False, "category": "qatari"}, status=200)
-        elif(SupervisionProject.objects.filter(project_name=project_name).exists()):
+        elif SupervisionProject.objects.filter(project_name=project_name).exists():
             return Response({"available": False, "category": "supervision"}, status=200)
         # response = (
         #     ATTACHMENT_TEMPLATES[project_category]["model"]
@@ -441,15 +435,7 @@ class ProjectNameCheckViewSet(GenericAPIView):
         return Response({"available": True}, status=200)
 
 
-# class HistoryViewSet(APIView):
-#     permission_classes = (IsAuthenticated, )
-#     def get(self, request, project_id):
-#         project = DesignProject.objects.get(id=project_id)
-#         return Response(project.s_history, status=200)
-
-
 class RequiredAttachmentsViewSet(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
 
     serializer_class = RequiredAttachmentSerializer
 
@@ -484,7 +470,7 @@ class RequiredAttachmentsViewSet(GenericAPIView):
                 attachments["other"]["links"].insert(
                     0, (f"{attachment.id}_{attachment.attachment.url}")
                 )
-                attachments["other"]["notes"].insert(0,attachment.note)
+                attachments["other"]["notes"].insert(0, attachment.note)
             else:
                 attachments[attachment.type].insert(
                     0, (f"{attachment.id}_{attachment.attachment.url}")
@@ -525,7 +511,6 @@ class RequiredAttachmentsViewSet(GenericAPIView):
 
 
 class RequestSubmissionsView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = RequestSubmissionSerializer
 
     def get(self, request, project_id):
@@ -542,7 +527,7 @@ class RequestSubmissionsView(GenericAPIView):
 
 
 class PaymentsViewSet(GenericAPIView):
-    permission_classes = (IsAuthenticated, IsAdmin)
+    permission_classes = (IsAdmin, )
 
     serializer_class = PaymentsSerializer
 
@@ -587,7 +572,6 @@ class PaymentsViewSet(GenericAPIView):
 
 
 class MunicipalityVisitsView(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = MunicipalityVisitSerializer
 
     def get(self, request, project_id):
@@ -604,7 +588,6 @@ class MunicipalityVisitsView(GenericAPIView):
 
 
 class CopyBaladyProjectsView(APIView):
-    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         ids = request.data.get("ids")
@@ -634,7 +617,6 @@ class CopyBaladyProjectsView(APIView):
 
 
 class CopyProjectsView(APIView):
-    permission_classes = (IsAuthenticated,)
 
     def post(self, request, project_category):
         model_class = ATTACHMENT_TEMPLATES[project_category]["model"]
@@ -653,7 +635,6 @@ class CopyProjectsView(APIView):
 
 
 class EngineersView(APIView):
-    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         groups = Group.objects.all()
@@ -712,7 +693,6 @@ class DeletedProjectsView(APIView):
 
 # Auth Views
 class RemoveTokensAPI(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
 
     serializer_class = RemoveTokensSerializer
 
@@ -744,14 +724,12 @@ class LoginAPI(KnoxLoginView):
 
 # Other Views
 class GlobalIDsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = GlobalID.objects.all()
     serializer_class = GlobalIDSerializer
 
 
 class CommentsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     filter_Backends = [
         DjangoFilterBackend,
@@ -763,7 +741,6 @@ class CommentsViewSet(ModelViewSet):
 
 
 class AttachmentsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
@@ -775,21 +752,18 @@ class AttachmentsViewSet(ModelViewSet):
 
 
 class ClientsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
 
 class GroupsViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
 class EmployeesViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
 
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
@@ -818,7 +792,6 @@ class EmployeesViewSet(ModelViewSet):
 
 
 class EmployeeRolesViewSet(APIView):
-    permission_classes = (IsAuthenticated,)
 
     # queryset = Group.objects.all()
     # serializer_class = GroupSerializer

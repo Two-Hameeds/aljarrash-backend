@@ -17,6 +17,7 @@ from .choices import (
     SupervisionTypes,
 )
 
+
 # TODO: rename to projectModelManager
 # Models Managers
 class ProjectManager(models.Manager):
@@ -519,15 +520,29 @@ class SupervisionProject(models.Model):
 
 
 # Projects Related Models
+class History(models.Model):
+    user = models.ForeignKey("Employee", on_delete=models.CASCADE, related_name="history")
+    project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="history")
+    action = models.CharField(max_length=100)
+    date = models.DateTimeField(auto_now_add=True)
+    previous_stage = models.CharField(max_length=100, null=True, blank=True)
+    new_stage = models.CharField(max_length=100, null=True, blank=True)
+    ip = models.IPAddressField(null=True, blank=True)
+
 class Visit(models.Model):
-    employee = models.ForeignKey("Employee", on_delete=models.CASCADE, related_name="visits")
+    employee = models.ForeignKey(
+        "Employee", on_delete=models.CASCADE, related_name="visits"
+    )
     date = models.DateField()
     visit_purpose = models.CharField(max_length=100, null=True, blank=True)
     note = models.CharField(max_length=300, null=True, blank=True)
-    attachment = models.FileField(upload_to="visits_attachments/", null=True, blank=True)
-    visited_for = models.ForeignKey("GlobalID", on_delete=models.CASCADE, related_name="visits")
-    
-    
+    attachment = models.FileField(
+        upload_to="visits_attachments/", null=True, blank=True
+    )
+    visited_for = models.ForeignKey(
+        "GlobalID", on_delete=models.CASCADE, related_name="visits"
+    )
+
 
 class PasswordReset(models.Model):
     email = models.EmailField()
