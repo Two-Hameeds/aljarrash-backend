@@ -534,7 +534,7 @@ class Visit(models.Model):
         "Employee", on_delete=models.CASCADE, related_name="visits"
     )
     date = models.DateField()
-    visit_purpose = models.CharField(max_length=100, null=True, blank=True)
+    purpose = models.CharField(max_length=100, null=True, blank=True)
     note = models.CharField(max_length=300, null=True, blank=True)
     attachment = models.FileField(
         upload_to="visits_attachments/", null=True, blank=True
