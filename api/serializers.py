@@ -17,7 +17,9 @@ from .models import (
     ReceptionProject,
     SupervisionProject,
     Visit,
+    History,
 )
+from .mixins import GlobalIDMixin
 from django.utils import timezone
 from .templates import ATTACHMENT_TEMPLATES
 
@@ -118,7 +120,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 
 # Projects Serializers
-class ReceptionProjectSerializer(serializers.ModelSerializer):
+class ReceptionProjectSerializer(GlobalIDMixin, serializers.ModelSerializer):
 
     def get_fields(self):
         default = super().get_fields()
@@ -134,14 +136,24 @@ class ReceptionProjectSerializer(serializers.ModelSerializer):
 
         return default
 
-    def create(self, validated_data):
-        result = super().create(validated_data)
-        if validated_data.get("global_id") == None:
-            global_id = GlobalID.objects.create()
-            result.global_id = global_id
-            result.save()
+    # def create(self, validated_data):
+    #     result = super().create(validated_data)
+    #     if validated_data.get("global_id") == None:
+    #         global_id_serializer = GlobalIDSerializer(data={"user": self.context["request"].user})
+    #         global_id_serializer.is_valid(raise_exception=True)
+    #         global_id = global_id_serializer.save()
+    #         result.global_id = global_id
+    #         result.save()
+            
+    #     History.objects.create(
+    #         user=self.context["request"].user,
+    #         project=result.global_id,
+    #         action="created",
+    #         new_stage="reception.reception",
+    #         ip=self.context["request"].META.get("REMOTE_ADDR"),
+    #     )
 
-        return result
+    #     return result
 
     class Meta:
         model = ReceptionProject
@@ -202,16 +214,6 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         return filtered_fields
 
     def create(self, validated_data):
-        # validated_data["moved_at"] = timezone.now()
-
-        # if self.context["request"]:
-        #     validated_data["s_history"] = [
-        #         {
-        #             "created_by": str(self.context["request"].user),
-        #             "created_at": str(timezone.now()),
-        #             "created_in": validated_data["stage"],
-        #         }
-        #     ]
 
         project_type = validated_data["project_type"]
         use_type = validated_data["use_type"]
@@ -317,15 +319,6 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
         return default
 
     def create(self, validated_data):
-
-        # if self.context["request"]:
-        #     validated_data["s_history"] = [
-        #         {
-        #             "created_by": str(self.context["request"].user),
-        #             "created_at": str(timezone.now()),
-        #             "created_in": validated_data["stage"],
-        #         }
-        #     ]
         request_types = validated_data["request_types"]
         required_attachments = []
         for request_type in request_types:
@@ -655,6 +648,12 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
 
 
 # Projects Related Serializers
+class HistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = History
+        fields = "__all__"
+
+
 class VisitSerializer(serializers.ModelSerializer):
     employee = serializers.CharField(read_only=True)
 

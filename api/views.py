@@ -27,6 +27,7 @@ from .models import (
     PasswordReset,
     SupervisionProject,
     Visit,
+    History,
 )
 from .serializers import (
     EmployeeSerializer,
@@ -51,6 +52,7 @@ from .serializers import (
     ResetPasswordRequestSerializer,
     SupervisionProjectSerializer,
     VisitSerializer,
+    HistorySerializer,
 )
 
 # from .permissions import HasGroupPermission
@@ -114,18 +116,6 @@ class DesignProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        # if stage != data.get("stage"):
-        #     instance.moved_at = timezone.now()
-        #     if instance.s_history == None:
-        #         instance.s_history = []
-        #     instance.s_history.append(
-        #         {
-        #             "moved_by": str(self.request.user),
-        #             "moved_at": str(timezone.now()),
-        #             "from": stage,
-        #             "to": new_stage,
-        #         }
-        #     )
         instance.save()
         return Response(serializer.data)
 
@@ -310,6 +300,13 @@ class SupervisionProjectsViewSet(ModelViewSet):
 
 
 # Projects Related Views
+class HistoryViewSet(ModelViewSet):
+    queryset = History.objects.all()
+    serializer_class = HistorySerializer
+    
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project", "user", "action"]
+
 class VisitsViewSet(ModelViewSet):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
@@ -602,8 +599,6 @@ class CopyBaladyProjectsView(APIView):
             for project in projects:
                 project.id = None
                 project.stage = stage
-                # TODO: add s_history
-                # project.created_at = timezone.now()
                 project.moved_at = timezone.now()
                 project.save()
                 new_projects.append(project)

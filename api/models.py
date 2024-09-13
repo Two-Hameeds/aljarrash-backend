@@ -522,12 +522,12 @@ class SupervisionProject(models.Model):
 # Projects Related Models
 class History(models.Model):
     user = models.ForeignKey("Employee", on_delete=models.CASCADE, related_name="history")
-    project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="history")
+    project = models.ForeignKey("GlobalID", on_delete=models.CASCADE, related_name="history")
     action = models.CharField(max_length=100)
-    date = models.DateTimeField(auto_now_add=True)
-    previous_stage = models.CharField(max_length=100, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True, editable=False)
+    previous_stage = models.CharField(max_length=100, null=True, blank=True, default=None)
     new_stage = models.CharField(max_length=100, null=True, blank=True)
-    ip = models.IPAddressField(null=True, blank=True)
+    ip = models.GenericIPAddressField(null=True, blank=True)
 
 class Visit(models.Model):
     employee = models.ForeignKey(
@@ -612,14 +612,6 @@ class Attachment(models.Model):
         if self.title == None:
             return ""
         return self.title
-
-
-class History(models.Model):
-    action = models.CharField(max_length=100)
-    stage = models.CharField(max_length=100, null=True, blank=True)
-    new_stage = models.CharField(max_length=100, null=True, blank=True)
-    date = models.DateTimeField(auto_now_add=True)
-    by = models.ForeignKey("Employee", on_delete=models.PROTECT, null=True, blank=True)
 
 
 # Other Models

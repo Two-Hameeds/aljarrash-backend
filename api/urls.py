@@ -30,6 +30,7 @@ from .views import (
     ResetPasswordView,
     SupervisionProjectsViewSet,
     VisitsViewSet,
+    HistoryViewSet,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -53,6 +54,7 @@ router.register("groups", GroupsViewSet)
 router.register("reception", ReceptionProjectsViewSet)
 router.register("supervision", SupervisionProjectsViewSet)
 router.register("visits", VisitsViewSet)
+router.register("history", HistoryViewSet)
 # router.register("payments", PaymentsViewSet)
 
 urlpatterns = [
