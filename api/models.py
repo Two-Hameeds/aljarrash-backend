@@ -39,6 +39,9 @@ class ReceptionProject(models.Model):
         blank=False,
     )
     notes = models.CharField(max_length=255, null=True, blank=True)
+    
+    class Meta:
+        ordering = ["id"]
 
 
 class DesignProject(models.Model):
