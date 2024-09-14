@@ -121,7 +121,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 
 # Projects Serializers
 class ReceptionProjectSerializer(GlobalIDMixin, serializers.ModelSerializer):
-
+    comments_count = serializers.IntegerField(read_only=True)
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -135,25 +135,6 @@ class ReceptionProjectSerializer(GlobalIDMixin, serializers.ModelSerializer):
             )
 
         return default
-
-    # def create(self, validated_data):
-    #     result = super().create(validated_data)
-    #     if validated_data.get("global_id") == None:
-    #         global_id_serializer = GlobalIDSerializer(data={"user": self.context["request"].user})
-    #         global_id_serializer.is_valid(raise_exception=True)
-    #         global_id = global_id_serializer.save()
-    #         result.global_id = global_id
-    #         result.save()
-            
-    #     History.objects.create(
-    #         user=self.context["request"].user,
-    #         project=result.global_id,
-    #         action="created",
-    #         new_stage="reception.reception",
-    #         ip=self.context["request"].META.get("REMOTE_ADDR"),
-    #     )
-
-    #     return result
 
     class Meta:
         model = ReceptionProject
@@ -502,6 +483,8 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
 
         default.pop("required_attachments", None)
         default.pop("s_payments", None)
+        
+        
 
         return default
 
@@ -583,6 +566,8 @@ class QatariProjectSerializer(serializers.ModelSerializer):
 
 
 class SupervisionProjectSerializer(serializers.ModelSerializer):
+    comments_count = serializers.IntegerField(read_only=True)
+    s_paid = serializers.SerializerMethodField(read_only=True)
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -608,6 +593,9 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
             result.save()
 
         return result
+    
+    def get_s_paid(self, obj):
+        return obj.s_paid()
 
     def attachments_status(self, instance):
         attach_count = (

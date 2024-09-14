@@ -81,7 +81,9 @@ class JsonbArrayLength(Func):
 # Projects Views
 class ReceptionProjectsViewSet(ModelViewSet):
 
-    queryset = ReceptionProject.objects.all()
+    queryset = ReceptionProject.objects.annotate(
+        comments_count=Count("global_id__comments", distinct=True),
+    )
     serializer_class = ReceptionProjectSerializer
 
 
@@ -292,7 +294,9 @@ class QatariProjectsViewSet(ModelViewSet):
 
 class SupervisionProjectsViewSet(ModelViewSet):
 
-    queryset = SupervisionProject.objects.all()
+    queryset = SupervisionProject.objects.annotate(
+        comments_count=Count("global_id__comments", distinct=True),
+    )
     serializer_class = SupervisionProjectSerializer
 
     filter_Backends = [DjangoFilterBackend]
