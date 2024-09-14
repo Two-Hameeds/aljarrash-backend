@@ -1050,3 +1050,7 @@ Traceback (most recent call last):
           ^^^^^^^^^^^^^^^^^^^^
 AttributeError: 'dict' object has no attribute 'request'
 "POST /api/reception/ HTTP/1.1" 500 116013
+Bad Request: /api/design/1/
+"PUT /api/design/1/ HTTP/1.1" 400 55
+Not Found: /api/deleted/
+"GET /api/deleted/ HTTP/1.1" 404 19308

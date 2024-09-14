@@ -206,6 +206,9 @@ class DesignProject(models.Model):
     plan_delivery_date = models.DateField(null=True, blank=True)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # temporary fields
+    delete_stage = models.CharField(max_length=100, choices=DesignStages.choices, null=True, blank=True)
 
     objects = ProjectManager()
 
@@ -264,6 +267,9 @@ class BaladyProject(models.Model):
     municipality_visits = models.JSONField(null=True, blank=True, default=list)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # temporary fields
+    delete_stage = models.CharField(max_length=100, choices=BaladyStages.choices, null=True, blank=True)
 
     record_number = models.CharField(max_length=100, null=True, blank=True)
 
@@ -326,6 +332,9 @@ class LandSurveyProject(models.Model):
     required_attachments = models.JSONField(null=True, blank=True, default=list)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # temporary fields
+    delete_stage = models.CharField(max_length=100, choices=LandSurveyStages.choices, null=True, blank=True)
 
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)
@@ -379,6 +388,9 @@ class SortingDeedsProject(models.Model):
     notes = models.CharField(max_length=100, null=True, blank=True)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # temporary fields
+    delete_stage = models.CharField(max_length=100, choices=SortingDeedsStages.choices, null=True, blank=True)
 
     required_attachments = models.JSONField(null=True, blank=True, default=list)
 
@@ -444,6 +456,9 @@ class QatariProject(models.Model):
     land_survey_issuance = models.CharField(max_length=100, null=True, blank=True)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # temporary fields
+    delete_stage = models.CharField(max_length=100, choices=QatariStages.choices, null=True, blank=True)
 
     required_attachments = models.JSONField(null=True, blank=True, default=list)
 
@@ -505,6 +520,9 @@ class SupervisionProject(models.Model):
     required_attachments = models.JSONField(null=True, blank=True, default=list)
 
     moved_at = models.DateTimeField(auto_now_add=True)
+    
+    # temporary fields
+    delete_stage = models.CharField(max_length=100, choices=SupervisionStages.choices, null=True, blank=True)
 
     # sensitive data
     s_project_value = models.FloatField(null=True, blank=True)

@@ -108,6 +108,13 @@ class DesignProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
+        
+        if(new_stage != stage):
+            instance.moved_at = timezone.now()
+            if(new_stage == "deleted_projects"):
+                instance.delete_stage = stage
+            else:
+                instance.delete_stage = None
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -162,6 +169,13 @@ class BaladyProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
+        
+        if(new_stage != stage):
+            instance.moved_at = timezone.now()
+            if(new_stage == "deleted_projects"):
+                instance.delete_stage = stage
+            else:
+                instance.delete_stage = None
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -172,8 +186,6 @@ class BaladyProjectsViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         instance = serializer.save()
-        if stage != data.get("stage"):
-            instance.moved_at = timezone.now()
         instance.save()
         return Response(serializer.data)
 
@@ -200,6 +212,13 @@ class LandSurveyProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
+        
+        if(new_stage != stage):
+            instance.moved_at = timezone.now()
+            if(new_stage == "deleted_projects"):
+                instance.delete_stage = stage
+            else:
+                instance.delete_stage = None
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -238,6 +257,13 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
+        
+        if(new_stage != stage):
+            instance.moved_at = timezone.now()
+            if(new_stage == "deleted_projects"):
+                instance.delete_stage = stage
+            else:
+                instance.delete_stage = None
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -274,6 +300,13 @@ class QatariProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
+        
+        if(new_stage != stage):
+            instance.moved_at = timezone.now()
+            if(new_stage == "deleted_projects"):
+                instance.delete_stage = stage
+            else:
+                instance.delete_stage = None
 
         if data.get("client_phone") == None:
             data["client_phone"] = instance.client_phone.phone
@@ -300,6 +333,33 @@ class SupervisionProjectsViewSet(ModelViewSet):
         visits_count=Count("global_id__visits", distinct=True),
     )
     serializer_class = SupervisionProjectSerializer
+    
+    def update(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        instance = self.get_object()
+
+        stage = instance.stage
+        new_stage = data.get("stage")
+        
+        if(new_stage != stage):
+            instance.moved_at = timezone.now()
+            if(new_stage == "deleted_projects"):
+                instance.delete_stage = stage
+            else:
+                instance.delete_stage = None
+
+        if data.get("client_phone") == None:
+            data["client_phone"] = instance.client_phone.phone
+        else:
+            Client.objects.get_or_create(phone=data.get("client_phone"))
+
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        instance = serializer.save()
+        instance.save()
+        return Response(serializer.data)
 
     filter_Backends = [DjangoFilterBackend]
     filterset_fields = ["stage"]
@@ -659,27 +719,27 @@ class DeletedProjectsView(APIView):
 
         design_projects = (
             DesignProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name")
+            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("design"))
         )
         balady_projects = (
             BaladyProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name")
+            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("balady"))
         )
         land_projects = (
             LandSurveyProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name")
+            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("land_survey"))
         )
         sort_projects = (
             SortingDeedsProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name")
+            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("sorting_deeds"))
         )
         qatari_projects = (
             QatariProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name")
+            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("qatari"))
         )
 
