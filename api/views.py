@@ -717,37 +717,38 @@ class DeletedProjectsView(APIView):
     def get(self, request):
         deleted_projects = []
 
-        design_projects = (
+        design_projects = list(
             DesignProject.objects.filter(stage="deleted_projects")
             .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("design"))
         )
-        balady_projects = (
+        balady_projects = list(
             BaladyProject.objects.filter(stage="deleted_projects")
             .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("balady"))
         )
-        land_projects = (
+        land_projects = list(
             LandSurveyProject.objects.filter(stage="deleted_projects")
             .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("land_survey"))
         )
-        sort_projects = (
+        sort_projects = list(
             SortingDeedsProject.objects.filter(stage="deleted_projects")
             .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("sorting_deeds"))
         )
-        qatari_projects = (
+        qatari_projects = list(
             QatariProject.objects.filter(stage="deleted_projects")
             .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
             .annotate(category=Value("qatari"))
         )
+        supervision_projects = list(
+            SupervisionProject.objects.filter(stage="deleted_projects")
+            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .annotate(category=Value("supervision"))
+        )
 
-        deleted_projects.extend(design_projects)
-        deleted_projects.extend(balady_projects)
-        deleted_projects.extend(land_projects)
-        deleted_projects.extend(sort_projects)
-        deleted_projects.extend(qatari_projects)
+        deleted_projects = design_projects + balady_projects + land_projects + sort_projects + qatari_projects + supervision_projects
 
         return Response(deleted_projects, status=200)
 

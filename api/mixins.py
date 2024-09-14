@@ -4,7 +4,7 @@ from .models import History, ReceptionProject
 class GlobalIDMixin:
     def create(self, validated_data):
         result = super().create(validated_data)
-        # print(self.context["request"].query_params)
+        # category_name = self.context["request"].META["PATH_INFO"].split("/")[-2]
         if not validated_data.get("global_id"):
             global_id_serializer = serializers.GlobalIDSerializer(data={})
             global_id_serializer.is_valid(raise_exception=True)

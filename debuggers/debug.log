@@ -1054,3 +1054,70 @@ Bad Request: /api/design/1/
 "PUT /api/design/1/ HTTP/1.1" 400 55
 Not Found: /api/deleted/
 "GET /api/deleted/ HTTP/1.1" 404 19308
+Internal Server Error: /api/deleted_projects/
+Traceback (most recent call last):
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\api\views.py", line 757, in get
+    deleted_projects = design_projects + balady_projects + land_projects + sort_projects + qatari_projects + supervision_projects
+                       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for +: 'QuerySet' and 'QuerySet'
+"GET /api/deleted_projects/ HTTP/1.1" 500 101212
+Internal Server Error: /api/reception/
+Traceback (most recent call last):
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\viewsets.py", line 124, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\mixins.py", line 19, in create
+    self.perform_create(serializer)
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\mixins.py", line 24, in perform_create
+    serializer.save()
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\venv\Lib\site-packages\rest_framework\serializers.py", line 208, in save
+    self.instance = self.create(validated_data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ad-10\WebDev\Aljarrash\aljarrash-backend\api\mixins.py", line 7, in create
+    print(self.context["request"].META.PATH_INFO)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'PATH_INFO'
+"POST /api/reception/ HTTP/1.1" 500 116117
+Bad Request: /api/supervision/
+"POST /api/supervision/ HTTP/1.1" 400 123

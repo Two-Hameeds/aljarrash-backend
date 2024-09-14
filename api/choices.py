@@ -177,6 +177,7 @@ class SupervisionStages(models.TextChoices):
     main = 'main'
     visit_supervision = 'visit_supervision'
     completed_supervision = 'completed_supervision'
+    deleted_projects = 'deleted_projects'
     
 class SupervisionTypes(models.TextChoices):
     indoor_contract = "indoor_contract"
