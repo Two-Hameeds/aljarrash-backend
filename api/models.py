@@ -620,6 +620,9 @@ class Attachment(models.Model):
 # Other Models
 class Employee(AbstractUser):
     phone = models.CharField(max_length=13, null=True, blank=True)
+    
+    class Meta:
+        ordering = ["id"]
 
 
 class Client(models.Model):

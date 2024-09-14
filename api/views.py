@@ -132,6 +132,7 @@ class BaladyProjectsViewSet(ModelViewSet):
     # TODO: check if the attachments types are included in the required_attachments
     queryset = BaladyProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
+        visits_count=Count("global_id__visits", distinct=True),
         required_attachments_count=JsonbArrayLength("required_attachments"),
         attachments_count=Coalesce(
             Case(
@@ -296,6 +297,7 @@ class SupervisionProjectsViewSet(ModelViewSet):
 
     queryset = SupervisionProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
+        visits_count=Count("global_id__visits", distinct=True),
     )
     serializer_class = SupervisionProjectSerializer
 

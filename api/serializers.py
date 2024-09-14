@@ -31,8 +31,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
         default = super().to_representation(instance)
 
         default["name"] = self.get_name(instance)
+        default.pop("last_login", None)
+        default.pop("date_joined", None)
+        default.pop("password", None)
+        default.pop("user_permissions", None)
 
-        return super().to_representation(instance)
+        return default
 
     def update(self, instance, validated_data):
         if validated_data["username"]:
@@ -282,6 +286,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
 class BaladyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
+    visits_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
     required_attachments_count = serializers.IntegerField(read_only=True)
 
@@ -567,6 +572,7 @@ class QatariProjectSerializer(serializers.ModelSerializer):
 
 class SupervisionProjectSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField(read_only=True)
+    visits_count = serializers.IntegerField(read_only=True)
     s_paid = serializers.SerializerMethodField(read_only=True)
     def get_fields(self):
         default = super().get_fields()
