@@ -45,7 +45,7 @@ from .serializers import (
     GlobalIDSerializer,
     GroupSerializer,
     RequestSubmissionSerializer,
-    MunicipalityVisitSerializer,
+    CopyProjectsSerializer,
     QatariProjectSerializer,
     ProjectNameCheckSerializer,
     ReceptionProjectSerializer,
@@ -61,7 +61,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 from knox.models import AuthToken
@@ -69,7 +69,7 @@ from knox.views import LoginView as KnoxLoginView
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .permissions import IsAdmin
+# from .permissions import IsAdmin
 from .templates import ATTACHMENT_TEMPLATES
 
 
@@ -110,10 +110,10 @@ class DesignProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-        
-        if(new_stage != stage):
+
+        if new_stage != stage:
             instance.moved_at = timezone.now()
-            if(new_stage == "deleted_projects"):
+            if new_stage == "deleted_projects":
                 instance.delete_stage = stage
             else:
                 instance.delete_stage = None
@@ -172,10 +172,10 @@ class BaladyProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-        
-        if(new_stage != stage):
+
+        if new_stage != stage:
             instance.moved_at = timezone.now()
-            if(new_stage == "deleted_projects"):
+            if new_stage == "deleted_projects":
                 instance.delete_stage = stage
             else:
                 instance.delete_stage = None
@@ -216,10 +216,10 @@ class LandSurveyProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-        
-        if(new_stage != stage):
+
+        if new_stage != stage:
             instance.moved_at = timezone.now()
-            if(new_stage == "deleted_projects"):
+            if new_stage == "deleted_projects":
                 instance.delete_stage = stage
             else:
                 instance.delete_stage = None
@@ -262,10 +262,10 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-        
-        if(new_stage != stage):
+
+        if new_stage != stage:
             instance.moved_at = timezone.now()
-            if(new_stage == "deleted_projects"):
+            if new_stage == "deleted_projects":
                 instance.delete_stage = stage
             else:
                 instance.delete_stage = None
@@ -306,10 +306,10 @@ class QatariProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-        
-        if(new_stage != stage):
+
+        if new_stage != stage:
             instance.moved_at = timezone.now()
-            if(new_stage == "deleted_projects"):
+            if new_stage == "deleted_projects":
                 instance.delete_stage = stage
             else:
                 instance.delete_stage = None
@@ -340,7 +340,7 @@ class SupervisionProjectsViewSet(ModelViewSet):
         visits_count=Count("global_id__visits", distinct=True),
     )
     serializer_class = SupervisionProjectSerializer
-    
+
     def update(self, request, *args, **kwargs):
         data = request.data.copy()
 
@@ -348,10 +348,10 @@ class SupervisionProjectsViewSet(ModelViewSet):
 
         stage = instance.stage
         new_stage = data.get("stage")
-        
-        if(new_stage != stage):
+
+        if new_stage != stage:
             instance.moved_at = timezone.now()
-            if(new_stage == "deleted_projects"):
+            if new_stage == "deleted_projects":
                 instance.delete_stage = stage
             else:
                 instance.delete_stage = None
@@ -373,12 +373,64 @@ class SupervisionProjectsViewSet(ModelViewSet):
 
 
 # Projects Related Views
+class CopyProjectsView(GenericAPIView):
+    serializer_class = CopyProjectsSerializer
+    model_name_serializer = {
+        "reception": ReceptionProjectSerializer,
+        "design": DesignProjectSerializer,
+        "balady": BaladyProjectSerializer,
+        "land_survey": LandSurveyProjectSerializer,
+        "sorting_deeds": SortingDeedsProjectSerializer,
+        "qatari": QatariProjectSerializer,
+        "supervision": SupervisionProjectSerializer,
+    }
+
+    def post(self, request, project_category):
+        data = request.data
+        ser = self.get_serializer(data=data)
+        ser.is_valid(raise_exception=True)
+        src_model = ATTACHMENT_TEMPLATES[project_category]["model"]
+        # dest_model = ATTACHMENT_TEMPLATES[data["target_category"]]["model"]
+        
+
+        dest_serializer = self.model_name_serializer[data["target_category"]]
+        
+        
+        for id in ser.data["ids"]:
+            project = src_model.objects.get(id=id)
+            project.id = None
+            old_global_id = project.global_id
+            project.global_id = None
+            project.stage = data.get("target_stage")
+            
+            project.request_types = data.get("request_types", None)
+            project.project_type = data.get("project_type", None)
+            project.use_type = data.get("use_type", None)
+            
+            temp = dest_serializer(project)
+            dest_ser = dest_serializer(
+                data=temp.data,
+            )
+            dest_ser.is_valid(raise_exception=True)
+            dest_ser.save()
+            
+            if data.get("comments_included", False):
+                for comment in old_global_id.comments.all():
+                    # comment.global_id = dest_ser.instance.global_id
+                    # comment.save()
+                    Comment.objects.create(content=comment.content, written_for=dest_ser.instance.global_id, written_by=comment.written_by)
+
+
+        return Response({"category": project_category}, status=200)
+
+
 class HistoryViewSet(ModelViewSet):
     queryset = History.objects.all()
     serializer_class = HistorySerializer
-    
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project", "user", "action"]
+
 
 class VisitsViewSet(ModelViewSet):
     queryset = Visit.objects.all()
@@ -424,43 +476,6 @@ class ResetPasswordView(GenericAPIView):
             )
         else:
             return Response({"error": "Employee not found"}, status=400)
-
-
-class MoveProjectsViewSet(APIView):
-
-    def post(self, request, *args, **kwargs):
-        data = request.data
-
-        get_model_serializer = {
-            "design": {"model": DesignProject, "serializer": DesignProjectSerializer},
-            "balady": {"model": BaladyProject, "serializer": BaladyProjectSerializer},
-            "sorting": {
-                "model": SortingDeedsProject,
-                "serializer": SortingDeedsProjectSerializer,
-            },
-            "land": {
-                "model": LandSurveyProject,
-                "serializer": LandSurveyProjectSerializer,
-            },
-        }
-
-        from_model = get_model_serializer[data.get("from")]["model"]
-        to_serializer = get_model_serializer[data.get("to")]["serializer"]
-
-        origin_instance = from_model.objects.filter(id=data.get("id"))[0]
-        params = {
-            "project_name": origin_instance.project_name,
-            "stage": "sketch",
-            "client_phone": origin_instance.client_phone.phone,
-            "project_type": "new",
-            "use_type": "residential",
-        }
-
-        serializer = to_serializer(data=params, many=False)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({"status": "Moved"}, status=200)
 
 
 class TableViewsViewSet(ModelViewSet):
@@ -597,7 +612,7 @@ class RequestSubmissionsView(GenericAPIView):
 
 
 class PaymentsViewSet(GenericAPIView):
-    permission_classes = (IsAdmin, )
+    permission_classes = (IsAdminUser,)
 
     serializer_class = PaymentsSerializer
 
@@ -641,67 +656,6 @@ class PaymentsViewSet(GenericAPIView):
         )
 
 
-class MunicipalityVisitsView(GenericAPIView):
-    serializer_class = MunicipalityVisitSerializer
-
-    def get(self, request, project_id):
-        visits = BaladyProject.objects.get(id=project_id).municipality_visits
-        return Response({"visits": visits}, 200)
-
-    def put(self, request, project_id):
-        data = request.data
-        instance = BaladyProject.objects.get(id=project_id)
-        instance.municipality_visits = data.get("visits")
-        instance.save()
-
-        return Response(instance.municipality_visits, 200)
-
-
-class CopyBaladyProjectsView(APIView):
-
-    def post(self, request):
-        ids = request.data.get("ids")
-        stage = request.data.get("stage")
-
-        if not ids or not stage:
-            return Response({"message": "ids and stage are required"}, status=400)
-
-        try:
-            projects = BaladyProject.objects.filter(id__in=ids)
-            new_projects = []
-            for project in projects:
-                project.id = None
-                project.stage = stage
-                project.moved_at = timezone.now()
-                project.save()
-                new_projects.append(project)
-
-            serializer = BaladyProjectSerializer(new_projects, many=True)
-
-            return Response(serializer.data, status=201)
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=400)
-
-
-class CopyProjectsView(APIView):
-
-    def post(self, request, project_category):
-        model_class = ATTACHMENT_TEMPLATES[project_category]["model"]
-        ids = request.data.get("ids")
-        stage = request.data.get("stage")
-
-        if not ids or not stage:
-            return Response({"message": "ids and stage are required"}, status=400)
-
-        try:
-            return Response({"result": "Copied successfully"}, status=201)
-
-        except Exception as e:
-            raise e
-            return Response({"error": e}, status=400)
-
-
 class EngineersView(APIView):
 
     def get(self, request):
@@ -726,36 +680,85 @@ class DeletedProjectsView(APIView):
 
         design_projects = list(
             DesignProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .values(
+                "id",
+                "global_id",
+                "client_phone",
+                "project_name",
+                "delete_stage",
+                "moved_at",
+            )
             .annotate(category=Value("design"))
         )
         balady_projects = list(
             BaladyProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .values(
+                "id",
+                "global_id",
+                "client_phone",
+                "project_name",
+                "delete_stage",
+                "moved_at",
+            )
             .annotate(category=Value("balady"))
         )
         land_projects = list(
             LandSurveyProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .values(
+                "id",
+                "global_id",
+                "client_phone",
+                "project_name",
+                "delete_stage",
+                "moved_at",
+            )
             .annotate(category=Value("land_survey"))
         )
         sort_projects = list(
             SortingDeedsProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .values(
+                "id",
+                "global_id",
+                "client_phone",
+                "project_name",
+                "delete_stage",
+                "moved_at",
+            )
             .annotate(category=Value("sorting_deeds"))
         )
         qatari_projects = list(
             QatariProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .values(
+                "id",
+                "global_id",
+                "client_phone",
+                "project_name",
+                "delete_stage",
+                "moved_at",
+            )
             .annotate(category=Value("qatari"))
         )
         supervision_projects = list(
             SupervisionProject.objects.filter(stage="deleted_projects")
-            .values("id", "global_id", "client_phone", "project_name", "delete_stage", "moved_at")
+            .values(
+                "id",
+                "global_id",
+                "client_phone",
+                "project_name",
+                "delete_stage",
+                "moved_at",
+            )
             .annotate(category=Value("supervision"))
         )
 
-        deleted_projects = design_projects + balady_projects + land_projects + sort_projects + qatari_projects + supervision_projects
+        deleted_projects = (
+            design_projects
+            + balady_projects
+            + land_projects
+            + sort_projects
+            + qatari_projects
+            + supervision_projects
+        )
 
         return Response(deleted_projects, status=200)
 

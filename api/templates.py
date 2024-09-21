@@ -9,8 +9,8 @@ from .models import (
 )
 
 ATTACHMENT_TEMPLATES = {
-    "reception":{
-      "model": ReceptionProject,  
+    "reception": {
+        "model": ReceptionProject,
     },
     "design": {
         "new": {
@@ -445,7 +445,7 @@ ATTACHMENT_TEMPLATES = {
                 "facade_approval",
                 "columns_approval",
                 "ac_approval",
-            ],  
+            ],
             "type_3": [  # final
                 "architecture_plan",
                 "construction_plan",
@@ -663,7 +663,7 @@ ATTACHMENT_TEMPLATES = {
             "complete_plans",
         ],
         "constants": {
-                        "type_1": [  # administrative
+            "type_1": [  # administrative
                 "e_license",
                 "demolition_letters",
                 "owner_authorize",

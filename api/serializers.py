@@ -373,6 +373,9 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
     category = serializers.CharField(read_only=True)
 
     def get_fields(self):
+        default = super().get_fields()
+        if not self.context:
+            return default
         if (
             str(self.context["request"].method) == "POST"
             and self.context["request"].data
@@ -380,9 +383,10 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
             Client.objects.get_or_create(
                 phone=self.context["request"].data["client_phone"]
             )
-        return super().get_fields()
+        return default
 
     def create(self, validated_data):
+        print("here I am")
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["land_survey"][
             "required"
         ]
@@ -441,6 +445,9 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     category = serializers.CharField(read_only=True)
 
     def get_fields(self):
+        default = super().get_fields()
+        if not self.context:
+            return default
         if (
             str(self.context["request"].method) == "POST"
             and self.context["request"].data
@@ -448,7 +455,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
             Client.objects.get_or_create(
                 phone=self.context["request"].data["client_phone"]
             )
-        return super().get_fields()
+        return default
 
     def create(self, validated_data):
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["sorting_deeds"][
@@ -650,6 +657,18 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
 
 
 # Projects Related Serializers
+class CopyProjectsSerializer(serializers.Serializer):
+    ids = serializers.ListField(allow_empty=False)
+    target_category = serializers.CharField()
+    target_stage = serializers.CharField()
+    project_type = serializers.CharField(required=False)
+    use_type = serializers.CharField(required=False)
+    request_types = serializers.ListField(required=False)
+    comments_included = serializers.BooleanField(required=False)
+    visits_included = serializers.BooleanField(required=False)
+    attachments_included = serializers.BooleanField(required=False)
+    
+
 class HistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = History
@@ -670,11 +689,6 @@ class VisitSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CopyProjectsSerializer(serializers.Serializer):
-    ids = serializers.ListField()
-    stage = serializers.CharField()
-
-
 class ResetPasswordRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
@@ -691,10 +705,6 @@ class PaymentsSerializer(serializers.Serializer):
 
 class RequestSubmissionSerializer(serializers.Serializer):
     requests = serializers.ListField()
-
-
-class MunicipalityVisitSerializer(serializers.Serializer):
-    visits = serializers.ListField()
 
 
 class RequiredAttachmentSerializer(serializers.Serializer):

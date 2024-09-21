@@ -10,6 +10,7 @@ from .models import (
     LandSurveyProject,
     SortingDeedsProject,
     QatariProject,
+    SupervisionProject,
 )
 
 from django.urls import path
@@ -24,6 +25,7 @@ admin.site.register(BaladyProject)
 admin.site.register(LandSurveyProject)
 admin.site.register(SortingDeedsProject)
 admin.site.register(QatariProject)
+admin.site.register(SupervisionProject)
 admin.site.register(Employee)
 admin.site.register(Client)
 admin.site.register(Attachment)

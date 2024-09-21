@@ -10,7 +10,6 @@ from .views import (
     DesignProjectsViewSet,
     AttachmentsViewSet,
     RequiredAttachmentsViewSet,
-    CopyProjectsView,
     CommentsViewSet,
     TableViewsViewSet,
     BaladyProjectsViewSet,
@@ -18,12 +17,9 @@ from .views import (
     SortingDeedsProjectsViewSet,
     QatariProjectsViewSet,
     GlobalIDsViewSet,
-    CopyBaladyProjectsView,
-    MoveProjectsViewSet,
     GroupsViewSet,
     PaymentsViewSet,
     RequestSubmissionsView,
-    MunicipalityVisitsView,
     ProjectNameCheckViewSet,
     DeletedProjectsView,
     ReceptionProjectsViewSet,
@@ -31,6 +27,7 @@ from .views import (
     SupervisionProjectsViewSet,
     VisitsViewSet,
     HistoryViewSet,
+    CopyProjectsView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -39,43 +36,37 @@ from knox import views as knox_views
 
 
 router = DefaultRouter()
+# projects
+router.register("reception", ReceptionProjectsViewSet)
 router.register("design", DesignProjectsViewSet)
 router.register("balady", BaladyProjectsViewSet)
 router.register("land_survey", LandSurveyProjectsViewSet)
 router.register("sorting_deeds", SortingDeedsProjectsViewSet)
 router.register("qatari", QatariProjectsViewSet)
-router.register("employees", EmployeesViewSet)
-router.register("clients", ClientsViewSet)
-router.register("comments", CommentsViewSet)
+router.register("supervision", SupervisionProjectsViewSet)
+# projects related
 router.register("table_views", TableViewsViewSet)
 router.register("attachments", AttachmentsViewSet)
 router.register("global_ids", GlobalIDsViewSet)
-router.register("groups", GroupsViewSet)
-router.register("reception", ReceptionProjectsViewSet)
-router.register("supervision", SupervisionProjectsViewSet)
 router.register("visits", VisitsViewSet)
 router.register("history", HistoryViewSet)
-# router.register("payments", PaymentsViewSet)
+router.register("comments", CommentsViewSet)
+# others
+router.register("employees", EmployeesViewSet)
+router.register("clients", ClientsViewSet)
+router.register("groups", GroupsViewSet)
+
 
 urlpatterns = [
-    # Design Projects
-    path("move_projects/", MoveProjectsViewSet.as_view(), name="move_projects"),
-    path("engineers/", EngineersView.as_view(), name="engineers"),
     # Balady Projects
     path(
         "balady/<int:project_id>/requests/",
         RequestSubmissionsView.as_view(),
         name="balady_request_submissions",
     ),
-    path(
-        "balady/<int:project_id>/visits/",
-        MunicipalityVisitsView.as_view(),
-        name="balady_municipality_visits",
-    ),
     # common
-    path(
-        "<str:project_category>/copy", CopyProjectsView.as_view(), name="copy_projects"
-    ),
+    path("<str:project_category>/copy/", CopyProjectsView.as_view(), name="copy"),
+    path("engineers/", EngineersView.as_view(), name="engineers"),
     path(
         "<str:project_category>/<int:project_id>/attachments/",
         RequiredAttachmentsViewSet.as_view(),
