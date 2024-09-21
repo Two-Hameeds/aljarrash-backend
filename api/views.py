@@ -83,6 +83,7 @@ class ReceptionProjectsViewSet(ModelViewSet):
 
     queryset = ReceptionProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
+        category=Value("reception"),
     )
     serializer_class = ReceptionProjectSerializer
 
@@ -91,6 +92,7 @@ class DesignProjectsViewSet(ModelViewSet):
 
     queryset = DesignProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
+        category=Value("design"),
         # attachments_count=Count(
         #     "global_id__attachments__type",
         #     filter=~Q(global_id__attachments__type="other"),
@@ -141,6 +143,7 @@ class BaladyProjectsViewSet(ModelViewSet):
         comments_count=Count("global_id__comments", distinct=True),
         visits_count=Count("global_id__visits", distinct=True),
         required_attachments_count=JsonbArrayLength("required_attachments"),
+        category=Value("balady"),
         attachments_count=Coalesce(
             Case(
                 When(required_attachments_count=0, then=Value(0)),
@@ -201,6 +204,7 @@ class LandSurveyProjectsViewSet(ModelViewSet):
     queryset = LandSurveyProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
+        category=Value("land_survey"),
         required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = LandSurveyProjectSerializer
@@ -245,6 +249,7 @@ class SortingDeedsProjectsViewSet(ModelViewSet):
     queryset = SortingDeedsProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
+        category=Value("sorting_deeds"),
         required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = SortingDeedsProjectSerializer
@@ -289,6 +294,7 @@ class QatariProjectsViewSet(ModelViewSet):
     queryset = QatariProject.objects.annotate(
         comments_count=Count("global_id__comments"),
         attachments_count=Count("global_id__attachments"),
+        category=Value("qatari"),
         required_attachments_count=JsonbArrayLength("required_attachments"),
     )
     serializer_class = QatariProjectSerializer
@@ -330,6 +336,7 @@ class SupervisionProjectsViewSet(ModelViewSet):
 
     queryset = SupervisionProject.objects.annotate(
         comments_count=Count("global_id__comments", distinct=True),
+        category=Value("supervision"),
         visits_count=Count("global_id__visits", distinct=True),
     )
     serializer_class = SupervisionProjectSerializer

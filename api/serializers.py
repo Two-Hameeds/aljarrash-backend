@@ -126,6 +126,7 @@ class TableViewSerializer(serializers.ModelSerializer):
 # Projects Serializers
 class ReceptionProjectSerializer(GlobalIDMixin, serializers.ModelSerializer):
     comments_count = serializers.IntegerField(read_only=True)
+    category = serializers.CharField(read_only=True)
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
@@ -150,6 +151,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField(read_only=True)
     # attachments_count = serializers.IntegerField(read_only=True)
     # required_attachments_count = serializers.IntegerField(read_only=True)
+    category = serializers.CharField(read_only=True)
 
     def get_filtered_fields(self, default):
         user = self.context["request"].user
@@ -174,6 +176,7 @@ class DesignProjectSerializer(serializers.ModelSerializer):
         table_view_data.insert(2, "s_paid")
         table_view_data.insert(3, "comments_count")
         table_view_data.insert(4, "attachments_count")
+        table_view_data.insert(5, "category")
 
         if not user.is_staff:
             table_view_data = list(
@@ -289,6 +292,7 @@ class BaladyProjectSerializer(serializers.ModelSerializer):
     visits_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
     required_attachments_count = serializers.IntegerField(read_only=True)
+    category = serializers.CharField(read_only=True)
 
     def get_fields(self):
         default = super().get_fields()
@@ -366,6 +370,7 @@ class LandSurveyProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
+    category = serializers.CharField(read_only=True)
 
     def get_fields(self):
         if (
@@ -433,6 +438,7 @@ class SortingDeedsProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
+    category = serializers.CharField(read_only=True)
 
     def get_fields(self):
         if (
@@ -502,6 +508,7 @@ class QatariProjectSerializer(serializers.ModelSerializer):
     s_paid = serializers.SerializerMethodField(read_only=True)
     comments_count = serializers.IntegerField(read_only=True)
     attachments_count = serializers.IntegerField(read_only=True)
+    category = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
         validated_data["required_attachments"] = ATTACHMENT_TEMPLATES["qatari"][
@@ -574,6 +581,7 @@ class SupervisionProjectSerializer(serializers.ModelSerializer):
     comments_count = serializers.IntegerField(read_only=True)
     visits_count = serializers.IntegerField(read_only=True)
     s_paid = serializers.SerializerMethodField(read_only=True)
+    category = serializers.CharField(read_only=True)
     def get_fields(self):
         default = super().get_fields()
         if not self.context:
