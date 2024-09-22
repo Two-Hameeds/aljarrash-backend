@@ -592,7 +592,7 @@ class TableView(models.Model):
 class Comment(models.Model):
     content = models.TextField(max_length=255, null=True, blank=True)
     written_at = models.DateTimeField(null=True, blank=True)
-    attachment = models.FileField(upload_to="attachments/", null=True, blank=True)
+    attachment = models.FileField(upload_to="attachments/comments/", null=True, blank=True)
     written_by = models.ForeignKey(
         "Employee", on_delete=models.CASCADE, null=False, blank=False
     )
