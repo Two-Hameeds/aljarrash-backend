@@ -125,9 +125,11 @@ class AttachmentTypes(models.TextChoices):
 
 class BaladyStages(models.TextChoices):
     Balady = "balady"
+    Completed_Balady = "completed_balady"
     Service_Card = "service_card"
+    Completed_Service_Card = "completed_service_card"
     Quantity_Sorting = "quantity_sorting"
-    Supervision = "supervision"
+    Completed_Quantity_Sorting = "completed_quantity_sorting"
     Deleted_Projects = "deleted_projects"
 
 
@@ -150,9 +152,11 @@ class BaladyRequestTypes(models.TextChoices):
 
 class LandSurveyStages(models.TextChoices):
     land_survey = "land_survey"
+    completed_land_survey = "completed_land_survey"
     land_report = "land_report"
-    completed_projects = "completed_projects"
+    completed_land_report = "completed_land_report"
     informal_transactions = "informal_transactions"
+    completed_informal_transactions = "completed_informal_transactions"
     deleted_projects = "deleted_projects"
 
 
