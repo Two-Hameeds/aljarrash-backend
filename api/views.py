@@ -688,7 +688,7 @@ class DeletedProjectsView(APIView):
                 "delete_stage",
                 "moved_at",
             )
-            .annotate(category=Value("design"))
+            .annotate(category=Value("design"), comments_count=Count("global_id__comments"))
         )
         balady_projects = list(
             BaladyProject.objects.filter(stage="deleted_projects")
@@ -700,7 +700,7 @@ class DeletedProjectsView(APIView):
                 "delete_stage",
                 "moved_at",
             )
-            .annotate(category=Value("balady"))
+            .annotate(category=Value("balady"), comments_count=Count("global_id__comments"))
         )
         land_projects = list(
             LandSurveyProject.objects.filter(stage="deleted_projects")
@@ -712,7 +712,7 @@ class DeletedProjectsView(APIView):
                 "delete_stage",
                 "moved_at",
             )
-            .annotate(category=Value("land_survey"))
+            .annotate(category=Value("land_survey"), comments_count=Count("global_id__comments"))
         )
         sort_projects = list(
             SortingDeedsProject.objects.filter(stage="deleted_projects")
@@ -724,7 +724,7 @@ class DeletedProjectsView(APIView):
                 "delete_stage",
                 "moved_at",
             )
-            .annotate(category=Value("sorting_deeds"))
+            .annotate(category=Value("sorting_deeds"), comments_count=Count("global_id__comments"))
         )
         qatari_projects = list(
             QatariProject.objects.filter(stage="deleted_projects")
@@ -736,7 +736,7 @@ class DeletedProjectsView(APIView):
                 "delete_stage",
                 "moved_at",
             )
-            .annotate(category=Value("qatari"))
+            .annotate(category=Value("qatari"), comments_count=Count("global_id__comments"))
         )
         supervision_projects = list(
             SupervisionProject.objects.filter(stage="deleted_projects")
@@ -748,7 +748,7 @@ class DeletedProjectsView(APIView):
                 "delete_stage",
                 "moved_at",
             )
-            .annotate(category=Value("supervision"))
+            .annotate(category=Value("supervision"), comments_count=Count("global_id__comments"))
         )
 
         deleted_projects = (
