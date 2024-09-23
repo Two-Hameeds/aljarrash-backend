@@ -5,6 +5,8 @@ from django.db.models import Count, Q, Func, IntegerField, Case, When, Value, F
 from django.db.models.functions import Coalesce
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
+from urllib.parse import unquote
+
 from django.core.mail import send_mail
 
 import io
@@ -392,7 +394,7 @@ class CompressFilesView(APIView):
                     response = requests.get(url)
                     if response.status_code == 200:
                         # Get the file name from the URL
-                        filename = url.split("/")[-1].split("?")[0]
+                        filename = unquote(url.split("/")[-1].split("?")[0])
                         # Write the file content to the zip
                         zip_file.writestr(filename, response.content)
                 except Exception as e:
