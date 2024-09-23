@@ -392,7 +392,7 @@ class CompressFilesView(APIView):
                     response = requests.get(url)
                     if response.status_code == 200:
                         # Get the file name from the URL
-                        filename = url.split("/")[-1]
+                        filename = url.split("/")[-1].split("?")[0]
                         # Write the file content to the zip
                         zip_file.writestr(filename, response.content)
                 except Exception as e:
