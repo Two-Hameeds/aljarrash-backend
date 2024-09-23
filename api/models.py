@@ -89,6 +89,7 @@ class DesignProject(models.Model):
     project_receipt_date = models.DateField(null=True, blank=True)
     sketch_approval_date = models.DateField(null=True, blank=True)
     columns_approval_date = models.DateField(null=True, blank=True)
+    project_submission_date = models.DateField(null=True, blank=True)
     obstacles = models.CharField(max_length=100, null=True, blank=True)
 
     # sensitive fields
