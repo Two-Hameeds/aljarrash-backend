@@ -28,6 +28,7 @@ from .views import (
     VisitsViewSet,
     HistoryViewSet,
     CopyProjectsView,
+    CompressFilesView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -58,6 +59,7 @@ router.register("groups", GroupsViewSet)
 
 
 urlpatterns = [
+    path('compress-files/', CompressFilesView.as_view(), name='compress-files'),
     # Balady Projects
     path(
         "balady/<int:project_id>/requests/",

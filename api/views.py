@@ -7,6 +7,11 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from django.core.mail import send_mail
 
+import io
+import zipfile
+import requests
+from django.http import HttpResponse
+
 import os
 
 # from django.db.models.functions import JSONObject
@@ -373,6 +378,38 @@ class SupervisionProjectsViewSet(ModelViewSet):
 
 
 # Projects Related Views
+class CompressFilesView(APIView):
+    def post(self, request, *args, **kwargs):
+        # List of file URLs sent from the client
+        file_urls = request.data.get('file_urls', [])
+        
+        # Create an in-memory zip file
+        zip_buffer = io.BytesIO()
+
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for url in file_urls:
+                try:
+                    response = requests.get(url)
+                    if response.status_code == 200:
+                        # Get the file name from the URL
+                        filename = url.split("/")[-1]
+                        # Write the file content to the zip
+                        zip_file.writestr(filename, response.content)
+                except Exception as e:
+                    # Handle exception if the file cannot be downloaded
+                    print(f"Error downloading {url}: {e}")
+                    continue
+        
+        # Set the pointer to the beginning of the stream
+        zip_buffer.seek(0)
+        
+        # Create an HTTP response with the zip file
+        response = HttpResponse(zip_buffer, content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename=compressed_files.zip'
+        
+        return response
+    
+
 class CopyProjectsView(GenericAPIView):
     serializer_class = CopyProjectsSerializer
     model_name_serializer = {
