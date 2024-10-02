@@ -126,6 +126,7 @@ class AttachmentTypes(models.TextChoices):
 class BaladyStages(models.TextChoices):
     Balady = "balady"
     Completed_Balady = "completed_balady"
+    Stopped_Balady = "stopped_balady"
     Service_Card = "service_card"
     Completed_Service_Card = "completed_service_card"
     Quantity_Sorting = "quantity_sorting"
